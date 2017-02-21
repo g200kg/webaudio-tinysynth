@@ -70,6 +70,33 @@ If the destinationNode is specified, all sounds are send to destinationNode. Not
 **stopMIDI()**
 > stop playing MIDI data.
 
+## MIDI implimentation chart
+
+|                       |Recognized|Description                     |
+|-----------------------|----------|--------------------------------|
+|**Basic Channel**      | Yes      | 1-16. ch10 = drum track        |
+|**NoteOn / NoteOff**   | Yes      | note# 0-127 / velocity 0-127   |
+|**Polyphonic Pressure**| No       |                                |
+|**Control Change**     | Yes      | see bellow                     |
+|**Program Change**     | Yes      | program 0-127                  |
+|**Channel Pressure**   | No       |                                |
+|**Pitch Bend**         | Yes      | -8192 - +8191                               |
+||||
+|**Control Number**|||
+|**6 / 38**|Yes|Data Entry|
+|**7**|Yes|Channel Volume|
+|**11**|Yes|Expression|
+|**100/101**|Yes|RPN Index|
+||||
+|**Channel Mode Message**|||
+|**120**| Yes | all sound off|
+|**121**| Yes | reset all controller|
+|**123**| Yes | all note off|
+||||
+|**RPN**|||
+|**0**|Bend Range||
+|||||
+
 ## License
 
 webaudio-pianoroll is licensed under the Apache License, Version 2.0
