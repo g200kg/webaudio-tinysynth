@@ -5,7 +5,7 @@ WebAudio Tiny GM Synthesizer [Polymer]
 
 **webaudio-tinysynth** is a small synthesizer written in JavaScript with GM like timbre map.
 
-- Polymer dom-module. It can be used with just a Tag, 'webaudio-tinysynth'.
+- webaudio-tinysynth is a Polymer dom-module. It can be used with just a Tag, 'webaudio-tinysynth'.
 - Receive MIDI message data and generate sounds
 - All sounds are generated algolithmically, without any external samples.
 - Two timbre set is available. 1 oscillator per 1 note ('quality=0', light-weight, chiptune like sounds), or 2 oscillators for 1 note ('quality=1', FM based sounds).
@@ -37,13 +37,14 @@ Install Polymer and webaudio-tinysynth
 
 ## Attributes
 
-|Attribute|Options|Default   |Description               |
-|---------|-------|----------|--------------------------|
-|**width**    |String |"256px"       | width of element  |
-|**height**   |String |"64px"       | height of element  |
-|**masterVol**|Number | 1.0 | master volume|
-|**reverbLev**|Number | 0.5 | reverb level |
-|**quality**  |Number | 1   | 0: 1osc/note chiptune like<br/> 1: 2osc/note FM based|
+|Attribute    |Options|Default   |Description         |
+|-------------|-------|----------|--------------------|
+|**width**    |String |"256px"   | width of element   |
+|**height**   |String |"64px"    | height of element  |
+|**masterVol**|Number | 1.0      | master volume      |
+|**reverbLev**|Number | 0.5      | reverb level       |
+|**quality**  |Number | 1        | 0: 1osc/note chiptune like<br/> 1: 2osc/note FM based|
+|**src**      |String |null      | .mid file url      |
 
 * attributes values can be modified from javascript if needed.
 
