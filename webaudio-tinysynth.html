@@ -1,0 +1,811 @@
+<dom-module id="webaudio-tinysynth">
+  <template>
+  <canvas id="wa-canvas" width="256" height="64" touch-action="none" tabindex="0"></canvas>
+  <div id="wa-logo">TinySynth</div>
+  <style>
+  :host {
+    user-select: none;
+    display: inline-block;
+    position:relative;
+    padding:0;
+    margin:0;
+  }
+  #wa-canvas {
+    display:block;
+    margin:0;
+    border:2px solid #666;
+    width:256px;
+    height:32px;
+  }
+  #wa-logo{
+    position:absolute;
+    top:5px;
+    left:5px;
+    color:#fff;
+    font-size:8px;
+    background:rgba(0,0,0,0.5);
+  }
+  </style>
+  </template>
+
+  <script>
+  Polymer({
+    is:"webaudio-tinysynth",
+    properties:{
+      width:      {type:String, value:"256px", observer:"layout"},
+      height:     {type:String, value:"64px", observer:"layout"},
+      masterVol:	{type:Number, value:1, observer:"setMasterVol"},
+      reverbLev:  {type:Number, value:0.5, observer:"setReverbLev"},
+      quality:		{type:Number, value:0, observer:"setQuality"},
+      send:				{type:Function, value:this.send},
+      setAudioContext:	{type:Function, value:this.setAudioContext},
+      graph:			{type:Number, value:2},
+      debug:      {type:Number, value:0},
+    },
+    layout:function(){
+      this.$["wa-canvas"].style.width=this.width;
+      this.$["wa-canvas"].style.height=this.height;
+    },
+    program:[
+    ],
+    drummap:[
+
+    ],
+    program1:[
+      [[1],{w1:"sine",v1:0.5,d1:0.7,r1:0.1,w2:"triangle",t2:1,v2:4,d2:0.7,s2:0.8,}],
+      [[2],{w1:"triangle",v1:0.4,d1:0.7,r1:0.1,w2:"triangle",t2:3,v2:9,d2:0.4,s2:0.8,}],
+      [[3],{w1:"sine",v1:0.5,d1:0.7,r1:0.1,w2:"triangle",t2:1,v2:4,d2:0.5,s2:0.5,f2:2,}],
+      [[4],{w1:"sine",v1:0.5,b1:2,d1:0.7,w2:"sawtooth",t2:2,f2:2,v2:2,d2:1,s2:0,}],
+      [[5],{w1:"sine",v1:0.4,b1:2,d1:0.7,w2:"sine",t2:7,v2:3,d2:1,s2:1,f2:1,}],
+      [[6],{w1:"sine",v1:0.4,b1:2,d1:0.7,w2:"sine",t2:7,v2:11,d2:0.5,s2:1,f2:1,}],
+      [[7],{w1:"sawtooth",v1:0.4,d1:2,w2:"sine",t2:1,f2:0.1,v2:8,d2:0.1,s2:8,}],
+      [[8],{w1:"triangle",v1:0.4,d1:1.5,w2:"square",t2:1,f2:0.1,v2:6,d2:0.1,s2:3,}],
+      [[9],{w1:"sine",v1:0.5,d1:0.3,r1:0.3,w2:"sine",t2:11,v2:7,d2:0.03,s2:0,}],
+      [[10],{w1:"sine",v1:0.5,d1:0.3,r1:0.3,w2:"sine",t2:6,v2:11,d2:0.2,s2:4,}],
+      [[11],{w1:"sine",v1:0.2,d1:0.3,r1:0.3,w2:"sine",t2:5,v2:11,d2:0.1,s2:5,}],
+      [[12],{w1:"sine",v1:0.2,d1:0.6,r1:0.6,w2:"triangle",t2:5,f2:1,v2:11,d2:0.01,s2:6,}],
+      [[13],{w1:"sine",v1:0.3,d1:0.2,w2:"sine",t2:5,v2:6,d2:0.02,s2:0,}],
+      [[14],{w1:"sine",v1:0.3,d1:0.2,w2:"sine",t2:11,v2:7,d2:0.03,s2:0,}],
+      [[15],{w1:"sine",v1:0.2,d1:1,r1:1,t1:1,f1:0,a1:0,h1:0.01,p1:1,b1:0,w2:"sine",t2:3.5,f2:0,v2:11,d2:1,s2:0}],
+      [[16],{w1:"triangle",v1:0.2,d1:0.5,r1:0.5,w2:"sine",t2:2.5,v2:6,d2:0.2,s2:0.2,}],
+      [[17],{w1:"sine",v1:0.3,a1:0.002,d1:11,t2:2,v2:7,d2:0.1,s2:7,w2:"sine",f2:1,}],
+      [[18],{w1:"sine",v1:0.3,d1:11,w2:"sine",t2:5,f2:1.5,v2:15,d2:0.04,s2:5,}],
+      [[19],{w1:"triangle",v1:0.3,d1:11,w2:"triangle",t2:3,f2:1.5,v2:5,d2:0.01,s2:3,}],
+      [[20],{w1:"sine",v1:0.3,a1:0.01,d1:11,t2:5,v2:0,d2:0.01,s2:5,w2:"sine",f2:1.5,}],
+      [[21],{w1:"sine",v1:0.2,a1:0.02,d1:9,w2:"sine",t2:3,f2:1,v2:0,d2:0.03,s2:6,}],
+      [[22],{w1:"triangle",v1:0.2,a1:0.02,d1:11,w2:"square",t2:3,f2:1,v2:7,d2:0.02,s2:11,}],
+      [[23],{w1:"square",v1:0.2,a1:0.02,d1:9,w2:"square",t2:1,v2:1,d2:0.03,s2:2,}],
+      [[24],{w1:"square",v1:0.2,a1:0.02,d1:9,w2:"square",t2:1,v2:1,d2:0.03,s2:2,}],
+      [[25],{w1:"triangle",v1:0.3,d1:0.5,w2:"triangle",t2:3,f2:1.5,v2:5,d2:1,s2:0.1,}],
+      [[26],{w1:"triangle",v1:0.4,d1:0.6,h1:0.01,r1:0.05,p1:1,t2:1.001,v2:8,d2:1,s2:1,w2:"triangle"}],
+      [[27,28],{w1:"triangle",v1:0.3,d1:1,w2:"triangle",t2:1,f2:2,v2:6,d2:0.4,s2:0.5,}],
+      [[29],{w1:"sine",v1:0.4,d1:0.1,w2:"sine",t2:1,v2:7,d2:0.01,s2:0,}],
+      [[30],{w1:"triangle",v1:0.3,d1:1,w2:"square",t2:1,f2:2,v2:7,d2:0.3,s2:3,}],
+      [[31],{w1:"triangle",v1:0.3,d1:1,w2:"square",t2:1,f2:2,v2:4,d2:1,s2:3,}],
+      [[32],{w1:"sine",v1:0.2,d1:0.6,t1:1.5,a1:0.005,h1:0.2,w2:"sine",t2:5,f2:2,v2:11,d2:1,s2:5,}],
+      [[33,34],{w1:"sine",v1:0.5,d1:0.3,w2:"sine",t2:3,v2:4,d2:1,s2:4,}],
+      [[35],{w1:"sine",v1:0.5,d1:0.3,w2:"sine",t2:3,v2:11,d2:0.05,s2:6,}],
+      [[36],{w1:"sine",v1:0.5,d1:0.3,w2:"sine",t2:3,v2:4,d2:1,s2:4,}],
+      [[37],{w1:"triangle",v1:0.3,d1:1,t2:2.5,v2:15,d2:0.04,s2:1,w2:"triangle",t1:2,s1:0,b2:0,}],
+      [[38],{w1:"triangle",v1:0.3,d1:1,t2:2.5,v2:15,d2:0.04,s2:1,w2:"triangle",t1:2,s1:0,b2:0,}],
+      [[39,40],{w1:"triangle",v1:0.5,d1:0.7,w2:"square",t2:0.5,f2:1,v2:0,d2:0.2,s2:4,}],
+      [[41],{w1:"sawtooth",v1:0.4,a1:0.1,d1:11,t2:1,v2:5,d2:11,s2:1,w2:"sine",}],
+      [[42],{w1:"sawtooth",v1:0.4,a1:0.1,d1:11,t2:1,v2:5,d2:11,s2:1,w2:"sine",}],
+      [[43],{w1:"sawtooth",v1:0.4,a1:0.1,d1:11,t2:0.5,v2:5,d2:11,s2:1,w2:"sine",}],
+      [[44],{w1:"sawtooth",v1:0.4,a1:0.1,d1:11,t2:0.5,v2:5,d2:11,s2:1,w2:"sine",}],
+      [[45],{w1:"sine",v1:0.4,a1:0.1,d1:11,t2:1,v2:6,d2:0.05,s2:8,w2:"sine",f2:2.5,}],
+      [[46],{w1:"sine",v1:0.3,d1:0.1,w2:"square",t2:3,v2:4,d2:1,s2:1,r1:0.1,}],
+      [[47],{w1:"sine",v1:0.2,d1:0.5,r1:0.5,w2:"sine",t2:1,f2:2,v2:4,d2:1,s2:0,}],
+      [[57],{w1:"square",v1:0.3,d1:2,a1:0.01,w2:"sine",t2:1,v2:1,d2:0.1,s2:4,r1:0.04,}],
+      [[58,59,61,62,63,64],{w1:"square",v1:0.3,d1:2,a1:0.02,w2:"sine",t2:1,v2:1,d2:0.1,s2:4,r1:0.08,}],
+      [[66,67,68],{w1:"square",v1:0.3,a1:0.02,d1:2,w2:"sine",t2:1,v2:2,d2:1,s2:0,}],
+      [[81],{w1:"square",v1:0.3,d1:2,w2:"square",t2:1,v2:1,d2:1,s2:0,}],
+      [[82],{w1:"sawtooth",v1:0.4,d1:2,w2:"square",t2:1,f2:0.1,v2:2,d2:0.01,s2:0,}],
+      [[83],{w1:"triangle",v1:0.5,d1:2,a1:0.05,w2:"sine",t2:2,v2:44,d2:0.015,s2:3,}],
+      [[84],{w1:"triangle",v1:0.5,d1:2,a1:0.05,w2:"sine",t2:2,f2:1,v2:22,d2:0.03,s2:5,}],
+      [[85],{w1:"sawtooth",v1:0.4,d1:2,w2:"sine",t2:5,v2:7,d2:0.05,s2:0,}],
+      [[86],{w1:"sine",v1:0.4,a1:0.06,d1:2,w2:"sine",t2:1,f2:1,v2:7,d2:1,s2:1,}],
+      [[88],{w1:"triangle",v1:0.3,d1:11,a1:0.01,w2:"square",t2:0.5,v2:4,d2:0.7,s2:2,}],
+      [[89],{w1:"triangle",v1:0.3,d1:11,w2:"square",t2:4,f2:1,v2:3,d2:0.1,s2:1,s1:0,}],
+      [[90],{w1:"triangle",v1:0.5,d1:5,a1:0.05,w2:"sawtooth",t2:4,f2:1,v2:0,d2:0.3,s2:3,}],
+      [[91],{w1:"square",v1:0.3,d1:11,w2:"square",t2:1,v2:11,d2:0.07,s2:2,}],
+      [[92],{w1:"triangle",v1:0.5,a1:0.08,d1:1,w2:"square",t2:1,v2:3,d2:0.3,s2:1,}],
+      [[93],{w1:"sine",v1:0.5,a1:0.05,d1:9,w2:"sine",t2:2.001,f2:1,v2:0.1,d2:1,s2:5,}],
+      [[94],{w1:"triangle",v1:0.5,d1:11,a1:0.03,w2:"sine",t2:4,f2:1,v2:3,d2:0.5,s2:5,}],
+      [[95],{w1:"sine",v1:0.5,d1:11,a1:0.05,w2:"sawtooth",t2:6,v2:22,d2:0.06,s2:7,}],
+      [[96],{w1:"triangle",v1:0.4,d1:11,a1:0.05,w2:"triangle",t2:1,v2:1,d2:1,s2:12,}],
+      [[97],{w1:"square",v1:0.3,d1:11,w2:"square",t2:2,f2:8,v2:0,d2:1,s2:1,}],
+      [[98],{w1:"square",v1:0.3,d1:11,w2:"square",t2:1,f2:1,v2:1,d2:0.3,s2:0,}],
+      [[99],{w1:"sine",v1:0.3,d1:11,w2:"square",t2:11,v2:22,d2:0.5,s2:3,}],
+      [[100],{w1:"sawtooth",v1:0.3,a1:0.04,d1:11,r1:0.1,w2:"square",t2:0.5,v2:2,d2:1,s2:4,}],
+      [[101],{w1:"triangle",v1:0.5,d1:1,w2:"sine",t2:6,v2:22,d2:0.6,s2:1,}],
+      [[108],{w1:"sawtooth",v1:0.5,d1:0.3,r1:0.3,t1:1,f1:0,a1:0,h1:0.01,p1:1,b1:0,w2:"sine",t2:5,f2:0,v2:12,d2:1,s2:0}],
+      [[125],{w1:"square",f1:111,v1:0.3,d1:11,p1:1,a1:0,h1:0.01,t2:0.1,v2:12,d2:1,s2:12,t2:1,w2:"square"}],
+    ],
+    drummap1:[
+      [51,{w1:"sine",f1:2000,v1:0.5,d1:0.2,b1:552,r1:0.01,h1:0,t1:0,s1:0,w2:"triangle",t2:0,f2:1277,v2:12,d2:1,s2:12,}],
+      [56,{w1:"sine",f1:666,v1:0.4,d1:0.06,s1:0,w2:"square",t2:2.6,v2:2,d2:1,s2:2,b2:0,}],
+      [65,{w1:"sine",f1:223,v1:0.3,d1:0.2,p1:1.05,t1:0,s1:0,w2:"square",t2:4,v2:11,d2:0.05,s2:3,b2:0,}],
+      [66,{w1:"sine",f1:173,v1:0.3,d1:0.2,p1:1.05,t1:0,s1:0,w2:"square",t2:4,v2:11,d2:0.05,s2:3,b2:0,}],
+    ],
+    program0:[
+// 1-8 : Piano
+      {w1:"triangle",v1:.5,d1:.7,					name:"Acoustic Grand Piano"},
+      {w1:"triangle",v1:.5,d1:.7,					name:"Bright Acoustic Piano"},
+      {w1:"triangle",v1:.5,d1:.7,					name:"Electric Grand Piano"},
+      {w1:"triangle",v1:.5,d1:.7,					name:"Honky-tonk Piano"},
+      {w1:"triangle",v1:.5,d1:.7,					name:"Electric Piano 1"},
+      {w1:"triangle",v1:.5,d1:.7,					name:"Electric Piano 2"},
+      {w1:"sawtooth",v1:.3,d1:.7,					name:"Harpsichord"},
+      {w1:"sawtooth",v1:.3,d1:.7,					name:"Clavi"},
+/* 8-16 : Chromatic Perc*/
+      {w1:"sine",v1:.5,d1:.3,r1:.3,							name:"Celesta"},
+      {w1:"triangle",v1:.5,d1:.3,r1:.3,					name:"Glockenspiel"},
+      {w1:"square",v1:.2,d1:.3,r1:.3,						name:"Music Box"},
+      {w1:"square",v1:.2,d1:.3,r1:.3,						name:"Vibraphone"},
+      {w1:"sine",v1:.5,d1:.1,r1:.1,							name:"Marimba"},
+      {w1:"sine",v1:.5,d1:.1,r1:.1,							name:"Xylophone"},
+      {w1:"square",v1:.2,d1:1,r1:1,							name:"Tubular Bells"},
+      {w1:"sawtooth",v1:.3,d1:.7,r1:.7,					name:"Dulcimer"},
+/* 17-24 : Organ */
+      {w1:"sine",v1:0.5,a1:0.01,s1:1,		        name:"Drawbar Organ"},
+      {w1:"sine",v1:0.7,d1:0.02,s1:0.7,					name:"Percussive Organ"},
+      {w1:"square",v1:.2,s1:1,									name:"Rock Organ"},
+      {w1:"triangle",v1:.5,a1:.01,s1:1,					name:"Church Organ"},
+      {w1:"square",v1:.2,a1:.02,s1:1,						name:"Reed Organ"},
+      {w1:"square",v1:0.2,a1:0.02,s1:1,					name:"Accordion"},
+      {w1:"square",v1:0.2,a1:0.02,s1:1,					name:"Harmonica"},
+      {w1:"square",v1:.2,a1:.05,s1:1,						name:"Tango Accordion"},
+/* 25-32 : Guitar */
+      {w1:"triangle",v1:.5,d1:.5,								name:"Acoustic Guitar (nylon)"},
+      {w1:"square",v1:.2,d1:.6,									name:"Acoustic Guitar (steel)"},
+      {w1:"square",v1:.2,d1:.6,									name:"Electric Guitar (jazz)"},
+      {w1:"triangle",v1:.8,d1:.6,								name:"Electric Guitar (clean)"},
+      {w1:"triangle",v1:.4,d1:.05,							name:"Electric Guitar (muted)"},
+      {w1:"square",v1:.2,d1:1,									name:"Overdriven Guitar"},
+      {w1:"square",v1:.2,d1:1,									name:"Distortion Guitar"},
+      {w1:"sine",v1:.4,d1:.6,										name:"Guitar harmonics"},
+/* 33-40 : Bass */
+      {w1:"triangle",v1:.7,d1:.4,								name:"Acoustic Bass"},
+      {w1:"triangle",v1:.7,d1:.7,								name:"Electric Bass (finger)"},
+      {w1:"triangle",v1:.7,d1:.7,								name:"Electric Bass (pick)"},
+      {w1:"triangle",v1:.7,d1:.7,								name:"Fretless Bass"},
+      {w1:"square",v1:.3,d1:.2,									name:"Slap Bass 1"},
+      {w1:"square",v1:.3,d1:.2,									name:"Slap Bass 2"},
+      {w1:"square",v1:.3,d1:.1,s1:.2,		        name:"Synth Bass 1"},
+      {w1:"sawtooth",v1:.4,d1:.1,s1:.2,       	name:"Synth Bass 2"},
+/* 41-48 : Strings */
+      {w1:"sawtooth",v1:.2,a1:.02,s1:1,       	name:"Violin"},
+      {w1:"sawtooth",v1:.2,a1:.02,s1:1,       	name:"Viola"},
+      {w1:"sawtooth",v1:.2,a1:.02,s1:1,       	name:"Cello"},
+      {w1:"sawtooth",v1:.2,a1:.02,s1:1,       	name:"Contrabass"},
+      {w1:"sawtooth",v1:.2,a1:.02,s1:1,        	name:"Tremolo Strings"},
+      {w1:"sawtooth",v1:.3,d1:.1,								name:"Pizzicato Strings"},
+      {w1:"sawtooth",v1:.3,d1:.5,r1:.5,					name:"Orchestral Harp"},
+      {w1:"triangle",v1:.6,d1:.1,r1:.1,h1:0.03,p1:0.8,			name:"Timpani"},
+/* 49-56 : Ensamble */
+      {w1:"sawtooth",v1:.2,a1:.02,s1:1,       	name:"String Ensemble 1"},
+      {w1:"sawtooth",v1:.2,a1:.02,s1:1,					name:"String Ensemble 2"},
+      {w1:"sawtooth",v1:.2,a1:.02,s1:1,					name:"SynthStrings 1"},
+      {w1:"sawtooth",v1:.2,a1:.02,s1:1,					name:"SynthStrings 2"},
+      {w1:"triangle",v1:.3,a1:.03,s1:1,					name:"Choir Aahs"},
+      {w1:"sine",v1:.3,a1:.03,s1:1,							name:"Voice Oohs"},
+      {w1:"triangle",v1:.3,a1:.05,s1:1,					name:"Synth Voice"},
+      {w1:"sawtooth",v1:.5,a1:.01,d1:.1,				name:"Orchestra Hit"},
+/* 57-64 : Brass */
+      {w1:"square",v1:.3,a1:.1,d1:.2,s1:.6, 		name:"Trumpet"},
+      {w1:"square",v1:.3,a1:.1,d1:.2,s1:.6,			name:"Trombone"},
+      {w1:"square",v1:.3,a1:.1,d1:.2,s1:.6,			name:"Tuba"},
+      {w1:"square",v1:0.2,a1:0.1,d1:0.01,s1:1,	name:"Muted Trumpet"},
+      {w1:"square",v1:.3,a1:.05,s1:1,						name:"French Horn"},
+      {w1:"square",v1:.3,s1:.7,									name:"Brass Section"},
+      {w1:"square",v1:.3,s1:.7,									name:"SynthBrass 1"},
+      {w1:"square",v1:.3,s1:.7,									name:"SynthBrass 2"},
+/* 65-72 : Reed */
+      {w1:"square",v1:.3,a1:.02,d1:2,						name:"Soprano Sax"},
+      {w1:"square",v1:.3,a1:.02,d1:2,						name:"Alto Sax"},
+      {w1:"square",v1:.3,a1:.03,d1:2,						name:"Tenor Sax"},
+      {w1:"square",v1:.3,a1:.04,d1:2,						name:"Baritone Sax"},
+      {w1:"square",v1:.3,a1:.02,d1:2,						name:"Oboe"},
+      {w1:"square",v1:.3,a1:.05,d1:2,						name:"English Horn"},
+      {w1:"square",v1:.3,a1:.03,d1:2,						name:"Bassoon"},
+      {w1:"square",v1:.3,a1:.03,d1:2,						name:"Clarinet"},
+/* 73-80 : Pipe */
+      {w1:"sine",v1:.7,a1:.02,d1:2,							name:"Piccolo"},
+      {w1:"sine",v1:.7,a1:.02,d1:2,							name:"Flute"},
+      {w1:"sine",v1:.7,a1:.02,d1:2,							name:"Recorder"},
+      {w1:"sine",v1:.7,a1:.02,d1:2,							name:"Pan Flute"},
+      {w1:"sine",v1:.7,a1:.02,d1:2,							name:"Blown Bottle"},
+      {w1:"sine",v1:.7,a1:.02,d1:2,							name:"Shakuhachi"},
+      {w1:"sine",v1:.7,a1:.02,d1:2,							name:"Whistle"},
+      {w1:"sine",v1:.7,a1:.02,d1:2,							name:"Ocarina"},
+/* 81-88 : SynthLead */
+      {w1:"square",v1:.3,s1:.7,									name:"Lead 1 (square)"},
+      {w1:"sawtooth",v1:.4,s1:.7,								name:"Lead 2 (sawtooth)"},
+      {w1:"triangle",v1:.5,s1:.7,								name:"Lead 3 (calliope)"},
+      {w1:"sawtooth",v1:.4,s1:.7,								name:"Lead 4 (chiff)"},
+      {w1:"sawtooth",v1:.4,d1:12,								name:"Lead 5 (charang)"},
+      {w1:"sine",v1:.4,a1:.06,d1:12,						name:"Lead 6 (voice)"},
+      {w1:"sawtooth",v1:.4,d1:12,								name:"Lead 7 (fifths)"},
+      {w1:"sawtooth",v1:.4,d1:12,								name:"Lead 8 (bass + lead)"},
+/* 89-96 : SynthPad */
+      {w1:"sawtooth",v1:.3,d1:12,								name:"Pad 1 (new age)"},
+      {w1:"triangle",v1:.5,d1:12,								name:"Pad 2 (warm)"},
+      {w1:"square",v1:.3,d1:12,									name:"Pad 3 (polysynth)"},
+      {w1:"triangle",v1:.5,a1:.08,d1:11,				name:"Pad 4 (choir)"},
+      {w1:"sawtooth",v1:.5,a1:.05,d1:11,				name:"Pad 5 (bowed)"},
+      {w1:"sawtooth",v1:.5,d1:11,								name:"Pad 6 (metallic)"},
+      {w1:"triangle",v1:.5,d1:11,								name:"Pad 7 (halo)"},
+      {w1:"triangle",v1:.5,d1:11,								name:"Pad 8 (sweep)"},
+/* 97-104 : FX */
+      {w1:"triangle",v1:.5,d1:11,																					name:"FX 1 (rain)"},
+      {w1:"triangle",v1:.5,d1:11,																					name:"FX 2 (soundtrack)"},
+      {w1:"square",v1:.3,d1:11,																						name:"FX 3 (crystal)"},
+      {w1:"sawtooth",v1:0.5,a1:0.04,d1:11,																name:"FX 4 (atmosphere)"},
+      {w1:"sawtooth",v1:.5,d1:11,																					name:"FX 5 (brightness)"},
+      {w1:"triangle",v1:.5,a1:.8,d1:11,																		name:"FX 6 (goblins)"},
+      {w1:"triangle",v1:.5,d1:11,																					name:"FX 7 (echoes)"},
+      {w1:"square",v1:.3,d1:11,																						name:"FX 8 (sci-fi)"},
+/* 105-112 : Ethnic */
+      {w1:"sawtooth",v1:.3,d1:1,r1:1,																			name:"Sitar"},
+      {w1:"sawtooth",v1:.5,d1:.3,																					name:"Banjo"},
+      {w1:"sawtooth",v1:.5,d1:.3,r1:.3,																		name:"Shamisen"},
+      {w1:"sawtooth",v1:.5,d1:.3,r1:.3,																		name:"Koto"},
+      {w1:"square",v1:.3,d1:.2,r1:.2,																			name:"Kalimba"},
+      {w1:"square",v1:.3,a1:.02,d1:2,																			name:"Bag pipe"},
+      {w1:"sawtooth",v1:.2,a1:.02,d1:.7,																	name:"Fiddle"},
+      {w1:"triangle",v1:.5,d1:1,																					name:"Shanai"},
+/* 113-120 : Percussive */
+      {w1:"sawtooth",v1:.3,d1:.3,r1:.3,																		name:"Tinkle Bell"},
+      {w1:"sine",v1:.8,d1:.1,r1:.1,																				name:"Agogo"},
+      {w1:"square",v1:.2,d1:.1,r1:.1,b1:7,p1:1.05,												name:"Steel Drums"},
+      {w1:"sine",v1:.8,d1:.05,r1:.05,																			name:"Woodblock"},
+      {w1:"triangle",v1:0.5,d1:0.1,r1:0.1,b1:0,p1:0.96,										name:"Taiko Drum"},
+      {w1:"triangle",v1:0.5,d1:0.1,r1:0.1,b1:0,p1:0.97,										name:"Melodic Tom"},
+      {w1:"square",v1:.3,d1:.1,r1:.1,p1:.1,																name:"Synth Drum"},
+      {w1:"square",v1:0.3,a1:1,d1:0.01,r1:0.01,b1:3532,p1:1.2,						name:"Reverse Cymbal"},
+/* 121-128 : SE */
+      {w1:"triangle",v1:0.5,d1:0.03,t1:0,f1:1332,r1:0.001,b1:823,p1:1.1,	name:"Guitar Fret Noise"},
+      {w1:"triangle",v1:0.2,b1:3266,d1:0.02,a1:0.05,h1:0.02,r1:0.02,			name:"Breath Noise"},
+      {w1:"sine",v1:0.3,a1:1,b1:2305,d1:1,																name:"Seashore"},
+      {w1:"sine",v1:0.3,a1:0.8,b1:942,d1:1,t1:0,f1:1832,									name:"Bird Tweet"},
+      {w1:"triangle",v1:0.5,d1:0.5,t1:0,f1:864,b1:778,										name:"Telephone Ring"},
+      {w1:"sine",v1:0.4,d1:11,t1:0,f1:500,b1:590,													name:"Helicopter"},
+      {w1:"triangle",v1:0.5,a1:0.2,b1:1782,d1:11,t1:0,f1:1221,						name:"Applause"},
+      {w1:"triangle",v1:0.5,b1:2200,d1:0.4,r1:0.4,                        name:"Gunshot"},
+    ],
+    drummap0:[
+      {w1:"triangle",f1:150,v1:0.8,d1:0.1,p1:0.1,h1:0.02,r1:0.01,b1:0,				name:"Acoustic Bass Drum"},
+      {w1:"triangle",f1:110,v1:1,d1:.1,h1:.02,p1:.1,b1:1, 										name:"Bass Drum 1"},
+      {w1:"triangle",f1:392,v1:0.5,d1:0.01,p1:0,b1:2343,t1:0,r1:0.05, 				name:"Side Stick"},
+      {w1:"triangle",f1:322,v1:0.5,d1:0.05,p1:0.2,b1:1200,t1:0,r1:0.05, 			name:"Acoustic Snare"},
+      {w1:"triangle",f1:244,v1:0.7,d1:0.03,b1:2231,t1:0,r1:0.03, 							name:"Hand Clap"},
+      {w1:"square",f1:310,v1:.7,d1:.02,p1:.1,b1:20, 													name:"Electric Snare"},
+      {w1:"triangle",f1:150,v1:.9,d1:.1,h1:.02,p1:.1,b1:10, 									name:"Low Floor Tom"},
+      {w1:"square",f1:1250,v1:0.2,d1:0.01,b1:8423,r1:0.01, 										name:"Closed Hi Hat"},
+      {w1:"triangle",f1:210,v1:.9,d1:.1,h1:.02,p1:.1,b1:11, 									name:"High Floor Tom"},
+      {w1:"square",f1:250,v1:0.2,d1:0.03,b1:8423,r1:0.03, 										name:"Pedal Hi-Hat"},
+      {w1:"triangle",f1:260,v1:.9,d1:.1,h1:.001,p1:.1,b1:10, 									name:"Low Tom"},
+      {w1:"square",f1:1250,v1:0.2,d1:0.05,b1:8423,r1:0.01,h1:0.02, 						name:"Open Hi-Hat"},
+      {w1:"triangle",f1:320,v1:.9,d1:.1,h1:.001,p1:.1,b1:10, 									name:"Low-Mid Tom"},
+      {w1:"triangle",f1:360,v1:.9,d1:.1,h1:.001,p1:.1,b1:10, 									name:"Hi-Mid Tom"},
+      {w1:"square",f1:150,v1:0.2,d1:0.1,b1:2823,r1:0.01,h1:0.05,t1:0,p1:0.1,	name:"Crash Cymbal 1"},
+      {w1:"triangle",f1:400,v1:.9,d1:.1,h1:.001,p1:.1,b1:10, 									name:"High Tom"},
+      {w1:"square",f1:150,v1:0.2,d1:0.1,b1:2823,r1:0.01,h1:0.05,t1:0,p1:0.1,	name:"Ride Cymbal 1"},
+      {w1:"square",f1:150,v1:0.2,d1:0.1,b1:2823,r1:0.01,h1:0.05,t1:0,p1:0.1, 	name:"Chinese Cymbal"},
+      {w1:"triangle",f1:900,v1:.3,d1:.14,p1:.9,b1:4000, 											name:"Ride Bell"},
+      {w1:"square",f1:800,v1:0.2,d1:0.05,p1:0.9,b1:700, 											name:"Tambourine"},
+      {w1:"square",f1:1200,v1:0.3,d1:0.12,p1:0.9,b1:3322,s1:0,								name:"Splash Cymbal"},
+      {w1:"sine",f1:600,v1:.4,d1:.06, 																				name:"Cowbell"},
+      {w1:"square",f1:150,v1:0.2,d1:0.1,b1:2823,r1:0.01,h1:0.05,t1:0,p1:0.1, 	name:"Crash Cymbal 2"},
+      {w1:"square",f1:800,v1:0.3,d1:0.2,p1:0.9,b1:844,t1:0, 									name:"Vibraslap"},
+      {w1:"triangle",f1:500,v1:.3,d1:.14,p1:.9,b1:4000, 											name:"Ride Cymbal 2"},
+      {w1:"sine",f1:200,v1:.5,d1:.06, 																				name:"Hi Bongo"},
+      {w1:"sine",f1:150,v1:.5,d1:.06, 																				name:"Low Bongo"},
+      {w1:"sine",f1:300,v1:.5,d1:.01, 																				name:"Mute Hi Conga"},
+      {w1:"sine",f1:300,v1:.5,d1:.06, 																				name:"Open Hi Conga"},
+      {w1:"sine",f1:250,v1:.5,d1:.06, 																				name:"Low Conga"},
+      {w1:"square",f1:300,v1:.3,d1:.06,p1:.8,b1:23, 													name:"High Timbale"},
+      {w1:"square",f1:260,v1:.3,d1:.06,p1:.8,b1:43, 													name:"Low Timbale"},
+      {w1:"sine",f1:850,v1:.5,d1:.07, 																				name:"High Agogo"},
+      {w1:"sine",f1:790,v1:.5,d1:.07, 																				name:"Low Agogo"},
+      {w1:"sine",f1:920,v1:.3,a1:.05,d1:.01,b1:1700, 													name:"Cabasa"},
+      {w1:"sawtooth",f1:1120,v1:.3,a1:.05,d1:.01,b1:2700, 										name:"Maracas"},
+      {w1:"square",f1:1800,v1:0.3,d1:0.01,p1:0.9,b1:820,t1:0,h1:0.03, 				name:"Short Whistle"},
+      {w1:"square",f1:1800,v1:0.3,d1:0.01,p1:0.9,b1:820,t1:0,h1:0.13, 				name:"Long Whistle"},
+      {w1:"sine",f1:920,v1:.3,a1:.02,d1:.01,b1:1700,													name:"Short Guiro"},
+      {w1:"sine",f1:920,v1:.3,a1:.02,d1:.04,b1:1700, 													name:"Long Guiro"},
+      {w1:"square",f1:1450,v1:.3,d1:.01,b1:2400, 															name:"Claves"},
+      {w1:"sine",f1:650,v1:.5,d1:.01, 																				name:"Hi Wood Block"},
+      {w1:"sine",f1:550,v1:.5,d1:.01, 																				name:"Low Wood Block"},
+      {w1:"square",f1:550,v1:.3,d1:.01,b1:300, 																name:"Mute Cuica"},
+      {w1:"square",f1:550,v1:0.3,d1:0.01,b1:300,t1:0,h1:0.06,r1:0.01,p1:0.7, 	name:"Open Cuica"},
+      {w1:"sine",f1:1600,v1:.3,d1:.01, 																				name:"Mute Triangle"},
+      {w1:"sine",f1:1600,v1:.3,d1:.1, 																				name:"Open Triangle"},
+
+    ],
+    ready:function(){
+      var i;
+      this.pg=[]; this.vol=[]; this.ex=[]; this.bend=[]; this.rpnidx=[]; this.brange=[];
+      this.notetab=[];
+      this.canvas=this.$["wa-canvas"];
+      this.ctx=this.canvas.getContext("2d");
+      this.ctx.fillStyle="#000";
+      this.ctx.fillRect(0,0,256,64);
+      if(this.graph){
+        setInterval(
+          function(){
+            if(this.ana){
+              var g=new Uint8Array(256);
+              this.ana.getByteTimeDomainData(g);
+              this.ctx.globalCompositeOperation="lighter";
+              this.ctx.fillStyle="#0f0";
+              for(var i=0;i<256;++i){
+                var v=g[i];
+                this.ctx.fillRect(i,((v-128)>>1)+32,1,1);
+              }
+            }
+            this.ctx.globalCompositeOperation="source-over";
+            this.ctx.fillStyle="rgba(0,0,0,0.05)";
+            this.ctx.fillRect(0,0,256,64);
+            if(this.song){
+              this.ctx.fillStyle="#036";
+              this.ctx.fillRect(180,10,50,50);
+              this.ctx.fillStyle="#fff";
+              if(this.playing){
+                this.ctx.fillRect(190,22,10,20);
+                this.ctx.fillRect(210,22,10,20);
+              }
+              else{
+                this.ctx.beginPath();
+                this.ctx.moveTo(220,32);
+                this.ctx.lineTo(200,42);
+                this.ctx.lineTo(200,22);
+                this.ctx.fill();
+              }
+            }
+            if(this.playing && this.song.ev.length>0){
+              var e=this.song.ev[this.playIndex];
+              while(this.actx.currentTime+1>this.playTime){
+                if(e.m[0]==0xff51){
+                  this.song.tempo=e.m[1];
+                  this.tick2Time=4*60/this.song.tempo/this.song.timebase;
+                }
+                else
+                  this.send(e.m,this.playTime);
+                ++this.playIndex;
+                if(this.playIndex>=this.song.ev.length){
+                  this.playing=0;
+                  break;
+                }
+                else{
+                  e=this.song.ev[this.playIndex];
+                  this.playTime+=(e.t-this.playTick)*this.tick2Time;
+                  this.playTick=e.t;
+                }
+              }
+            }
+          }.bind(this)
+          ,60);
+        }
+        this.canvas.addEventListener("dragover",this.dragOver.bind(this),false);
+				this.canvas.addEventListener("drop",this.drop.bind(this),false);
+        this.canvas.addEventListener("click",this.click.bind(this),false);
+      },
+      setMasterVol:function(){
+        if(this.out)
+          this.out.gain.value=this.masterVol;
+      },
+      setReverbLev:function(){
+        if(this.rev)
+          this.rev.gain.value=this.reverbLev*10;
+      },
+      click:function(e){
+        if(this.playing)
+          this.stopMIDI();
+        else if(this.song){
+          this.playMIDI();
+        }
+      },
+      dragOver:function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "copy";
+      },
+      drop:function(e){
+        var f = e.dataTransfer.files;
+        var reader = new FileReader();
+        reader.onload=(e)=>{
+          this.loadMIDI(reader.result);
+        }
+        reader.readAsArrayBuffer(f[0]);
+        e.stopPropagation();
+        e.preventDefault();
+      },
+      loadMIDIUrl:function(url){
+        var xhr=new XMLHttpRequest();
+        xhr.open("GET",url,true);
+        xhr.responseType="arraybuffer";
+        xhr.loadMIDI=this.loadMIDI.bind(this);
+        xhr.onload=function(e){
+          if(this.status==200){
+            this.loadMIDI(this.response);
+          }
+        };
+        xhr.send();
+      },
+      stopMIDI:function(){
+        this.playing=0;
+        for(var i=0;i<16;++i)
+          this.send([0xb0+i,120,0],0);
+      },
+      playMIDI:function(){
+        this.playTick=0;
+        this.playIndex=0;
+        this.playTime=this.actx.currentTime+.1;
+        this.tick2Time=4*60/this.song.tempo/this.song.timebase;
+        this.playing=1;
+      },
+      loadMIDI:function(data){
+        console.log("loadMIDI")
+				function Get2(s, i) {
+					return (s[i]<<8) + s[i+1];
+				}
+				function Get3(s, i) {
+					return (s[i]<<16) + (s[i+1]<<8) + s[i+2];
+				}
+				function Get4(s, i) {
+					return (s[i]<<24) + (s[i+1]<<16) + (s[i+2]<<8) + s[i+3];
+				}
+				function GetStr(s, i, len) {
+					return String.fromCharCode.apply(null,s.slice(i,i+len));
+				}
+				function Delta(s, i) {
+					var v, d;
+					v = 0;
+					datalen = 1;
+					while((d = s[i]) & 0x80) {
+						v = (v<<7) + (d&0x7f);
+						++datalen;
+						++i;
+					}
+					return (v<<7)+d;
+				}
+        function Msg(song,tick,s,i){
+          var v=s[i];
+          datalen=1;
+          if((v&0x80)==0)
+            v=runst,datalen=0;
+          runst=v;
+          switch(v&0xf0){
+          case 0xc0:
+          case 0xd0:
+            song.ev.push({t:tick,m:[v,s[i+datalen]]});
+            datalen+=1;
+            break;
+          case 0xf0:
+            switch(v) {
+            case 0xff:
+              var len = Delta(s, i + 2);
+              datastart = 2+datalen;
+              datalen = len+datalen+2;
+              switch(s[i+1]) {
+              case 0x02: song.copyright+=GetStr(s, i + datastart, datalen - 3); break;
+              case 0x01: case 0x03: case 0x04: case 0x09:
+                song.text=GetStr(s, i + datastart, datalen - datastart);
+                break;
+              case 0x2f:
+                return 1;
+              case 0x51:
+                var val = Math.floor(60000000 / Get3(s, i + 3));
+                song.ev.push({t:tick, m:[0xff51, val]});
+                break;
+              }
+              break;
+            }
+            break;
+          default:
+            song.ev.push({t:tick,m:[v,s[i+datalen],s[i+datalen+1]]});
+            datalen+=2;
+          }
+          return 0;
+        }
+        if(!this.actx)
+          return;
+        var s=new Uint8Array(data);
+				var datalen = 0, datastart = 0, runst = 0x90;
+        var idx = 0;
+				var hd = s.slice(0,	4);
+				if(hd.toString()!="77,84,104,100")	//MThd
+					return;
+        var len = Get4(s, 4);
+				var fmt = Get2(s, 8);
+				var numtrk = Get2(s, 10);
+				var tickmax=0;
+				var tb = Get2(s, 12)*4;
+        console.log("format:"+fmt);
+        console.log("numtrk:"+numtrk);
+        console.log("timebase:"+tb);
+        idx = (len + 8);
+        this.song={title:"",copyright:"",text:"",tempo:120,timebase:tb,ev:[]};
+        for(tr=0;tr<numtrk;++tr){
+          hd=s.slice(idx, idx+4);
+					len=Get4(s, idx+4);
+          if(hd.toString()=="77,84,114,107") {//MTrk
+						var tick = 0;
+						var j = 0;
+						this.notetab.length = 0;
+						for(;;) {
+							tick += Delta(s, idx + 8 + j);
+							j += datalen;
+							var e = Msg(this.song, tick, s, idx + 8 + j);
+							j += datalen;
+							if(e){
+								break;
+              }
+						}
+						tick=Math.floor(tick / tb * this.timebase);
+						if(tick>tickmax)
+							tickmax=tick;
+					}
+          idx += (len+8);
+        }
+        this.song.ev.sort(function(x,y){return x.t-y.t});
+      },
+      setQuality:function(){
+        var i,j,p;
+        var def={w1:"sine",t1:1,f1:0,v1:0.5,a1:0,h1:0.01,d1:0.01,s1:0,r1:0.05,p1:1,b1:0, w2:"",t2:1,f2:0,v2:1,d2:1,s2:0,b2:0};
+        function filldefparam(w){
+          for(p in def){
+            if(!w.hasOwnProperty(p))
+              w[p]=def[p];
+          }
+        }
+        for(i=0;i<128;++i){
+          this.program[i]={};
+          this.program[i].name=this.program0[i].name;
+          this.program[i].w=this.program0[i];
+        }
+        for(i=0;i<this.drummap0.length;++i){
+          this.drummap[i]={};
+          this.drummap[i].name=this.drummap0[i].name;
+          this.drummap[i].w=this.drummap0[i];
+        }
+        if(this.quality){
+          for(i=0;i<this.program1.length;++i){
+            for(j=0;j<this.program1[i][0].length;++j)
+              this.program[this.program1[i][0][j]-1].w=this.program1[i][1];
+          }
+          for(i=0;i<this.drummap1.length;++i)
+            this.drummap[this.drummap1[i][0]-35].w=this.drummap1[i][1];
+        }
+        for(i=0;i<128;++i)
+          filldefparam(this.program[i].w);
+        for(i=0;i<this.drummap.length;++i)
+          filldefparam(this.drummap[i].w);
+      },
+      note:function(t,ch,n,v,w){	/* note trigger */
+        var o1=actx.createOscillator();
+        var g1=actx.createGain();
+        var f=440*Math.pow(2,(n-69)/12)*w.t1+w.f1;
+        o1.type=w.w1;
+        o1.detune.value=this.bend[ch];
+        o1.frequency.value=f;
+        g1.gain.value=0;
+        o1.connect(g1);
+        g1.connect(this.chvol[ch]);
+        o1.start(t);
+        if(w.w2){
+          var o2=actx.createOscillator();
+          var g2=actx.createGain();
+          o2.type=w.w2;
+          o2.detune.value=this.bend[ch];
+          o2.connect(g2);
+          g2.connect(o1.frequency);
+          o2.frequency.value=f*w.t2+w.f2;
+          g2.gain.setValueAtTime(f*w.v2,t);
+          if(w.s2!=1 && w.d2!=0)
+            g2.gain.setTargetAtTime(f*w.s2,t,w.d2);
+          if(w.b2){
+            var g4=actx.createGain();
+            o2.connect(g4);
+            g4.gain.setValueAtTime(w.b2,t);
+            g4.connect(o2.frequency);
+          }
+          o2.start(t);
+        }
+        v=v/127*w.v1;
+        if(w.a1){
+          g1.gain.setValueAtTime(0,t);
+          g1.gain.linearRampToValueAtTime(v,t+w.a1);
+        }
+        else
+          g1.gain.setValueAtTime(v,t);
+        var dt=t+w.a1+w.h1;
+        g1.gain.setTargetAtTime(w.v1*w.s1,dt,w.d1);
+        if(w.b1){
+          var g3=actx.createGain();
+          o1.connect(g3);
+          g3.gain.setValueAtTime(w.b1,t);
+          g3.connect(o1.frequency);
+        }
+        if(w.p1!=1)
+          o1.frequency.setTargetAtTime(f*w.p1,dt,w.d1);
+        if(n>=0)
+          this.notetab.push({t:t,e:99999,ch:ch,n:n,o:o1,o2:o2,g:g1,r1:w.r1,t2:t+w.a1,v:v});
+        else{
+          var t2=dt+w.d1*10;
+          o1.stop(t2);
+          if(o2)
+            o2.stop(t2);
+        }
+      },
+      resetAllController(ch){
+        this.bend[ch]=0; this.vol[ch]=100; this.ex[ch]=64;
+        this.brange[ch]=2<<7; this.rpnidx[ch]=0x3fff;
+        this.chvol[ch].gain.value=this.vol[ch]*this.ex[ch]*3/16384;
+      },
+      send:function(msg,t,tr){		/* send midi message */
+        var i;
+        var ch=msg[0]&0xf;
+        var cmd=msg[0]&~0xf;
+        var n=msg[1],v=msg[2];
+        if(cmd<0x80||cmd>=0x100)
+          return;
+        if(cmd==0x90 && v==0)
+          cmd=0x80;
+        if(!t)
+          t=this.actx.currentTime;
+        switch(cmd){
+        case 0xb0:	/* ctl change */
+          if(this.debug)
+            console.log("CTL("+ch+")="+n+","+v);
+          switch(n){
+          case 7: /* ch vol */
+            this.chvol[ch].gain.setValueAtTime((this.vol[ch]=v)*this.ex[ch]*3/16384,t);
+            break;
+          case 11: /* expression */
+            this.chvol[ch].gain.setValueAtTime(this.vol[ch]*(this.ex[ch]=v)*3/16384,t);
+            break;
+          case 98:  /* nrpn lsb */
+          case 99:  /* nrpn msb */
+            this.rpnidx[ch]=0x3fff;
+            break;
+          case 100: /* rpn lsb */
+            this.rpnidx[ch]=(this.rpnidx[ch]&0x380)|v;
+            break;
+          case 101: /* rpn msb */
+            this.rpnidx[ch]=(this.rpnidx[ch]&0x7f)|(v<<7);
+            break;
+          case 6:	/* data entry msb */
+            if(this.rpnidx[ch]==0){
+              this.brange[ch]=(v<<7)+(this.brange[ch]&0x7f);
+            }
+            break;
+          case 38:	/* data entry lsb */
+            if(this.rpnidx[ch]==0){
+              this.brange[ch]=(this.brange[ch]&0x380)|v;
+              if(this.debug)
+                console.log("BRANGE("+ch+")="+(this.brange[ch]>>7)+","+(this.brange[ch]&0x7f));
+            }
+            break;
+          case 120:	/* all sound off */
+          case 123:	/* all notes off */
+            for(var i=this.notetab.length-1;i>=0;--i){
+              var nt=this.notetab[i];
+              nt.g.gain.setTargetAtTime(0,t,0.05);
+              nt.o.stop(t+0.5);
+              if(nt.o2)
+                nt.o2.stop(t+0.5);
+              nt.e=t+0.5;
+              this.notetab.splice(i,1);
+            }
+            break;
+          case 121:	/* reset all controller */
+            for(var i=0;i<16;++i){
+              this.resetAllController(i);
+            }
+            break;
+          }
+          break;
+        case 0xc0:	/* prg change */
+          this.pg[ch]=n;
+          if(this.debug)
+					     console.log("PRG:"+ch+","+(n+1));
+          break;
+        case 0xe0:	/* pitch bend */
+          var br=(this.brange[ch]>>7)*100+(this.brange[ch]&0x7f);
+          this.bend[ch]=(n+(v<<7)-8192)*br/8192;
+          for(var i=this.notetab.length-1;i>=0;--i){
+            var nt=this.notetab[i];
+            if(nt.ch==ch){
+              nt.o.detune.setValueAtTime(this.bend[ch],t);
+              if(nt.o2)
+                nt.o2.detune.setValueAtTime(this.bend[ch],t);
+            }
+          }
+          break;
+        case 0x90:	/* note on */
+          this.ctx.fillStyle="#f00";
+          this.ctx.globalCompositeOperation="lighter";
+//          this.ctx.fillRect(n*2,0,1,64);
+          this.ctx.fillRect(240,62-ch*4,10,3);
+          if(this.debug)
+            console.log("NOTEON("+ch+")="+n+","+v+","+t);
+          if(ch==9){
+            if(n>=35&&n<=81){
+              var w=this.drummap[n-35].w;
+              this.note(t,ch,-1,v,w);
+            }
+            return;
+          }
+          var w=this.program[this.pg[ch]].w;
+          this.note(t,ch,n,v,w);
+          break;
+        case 0x80:	/* note off */
+          if(this.debug)
+            console.log("NOTEOFF("+ch+")="+n+","+v+","+t);
+          for(var i=this.notetab.length-1;i>=0;--i){
+            var nt=this.notetab[i];
+            if(t>nt.e){
+              nt.o.stop(nt.e);
+              if(nt.o2)
+                nt.o2.stop(nt.e);
+              this.notetab.splice(i,1);
+            }
+            else if(t>=nt.t && nt.ch==ch && nt.n==n && !nt.f){
+              if(!nt.r1)
+                nt.r1=.05;
+              nt.g.gain.cancelScheduledValues(t);
+              if(t<=nt.t2){
+                if(t==nt.t2)
+                  nt.g.gain.setValueAtTime(nt.v,t);
+                else
+                  nt.g.gain.setValueAtTime(nt.v*(t-nt.t)/(nt.t2-nt.t),t);
+              }
+              nt.g.gain.setTargetAtTime(0,t,nt.r1);
+              nt.e=t+nt.r1*10;
+              nt.f=1;
+            }
+          }
+          break;
+        }
+      },
+      setAudioContext:function(actx,dest){
+        var i;
+        this.actx=actx;
+        this.dest=dest;
+        if(!dest)
+          this.dest=actx.destination;
+        this.conv=this.actx.createConvolver();
+        this.rev=this.actx.createGain();
+        this.rev.gain.value=this.reverbLev;
+        this.out=this.actx.createGain();
+        this.out.gain.value=.3;
+        this.out.connect(this.conv);
+        this.out.connect(this.dest);
+        this.conv.connect(this.rev);
+        this.rev.connect(this.dest);
+        var blen=this.actx.sampleRate*.5|0;
+        this.convBuf=this.actx.createBuffer(1,blen,this.actx.sampleRate);
+        var d=this.convBuf.getChannelData(0);
+        for(i=0;i<blen;++i)
+          d[i]=Math.exp(-3*i/blen)*(Math.random()-.5);
+        this.conv.buffer=this.convBuf;
+        this.chvol=[];
+        for(i=0;i<16;++i){
+          this.chvol[i]=this.actx.createGain();
+          this.chvol[i].connect(this.out);
+          this.pg[i]=i;
+          this.resetAllController(i);
+        }
+        if(this.graph>=2){
+          this.ana=this.actx.createAnalyser();
+          this.out.connect(this.ana);
+        }
+      },
+      redraw:function(){
+      }
+    });
+  </script>
+</dom-module>

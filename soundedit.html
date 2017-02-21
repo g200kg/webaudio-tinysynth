@@ -1,0 +1,367 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/webaudio-controls/webaudio-controls.html" >
+<link rel="import" href="webaudio-tinysynth.html" >
+<link rel="import" href="webaudio-pianoroll.html" >
+<style>
+#soundeditor{
+	display:none;
+}
+td{
+	text-align: center;
+}
+</style>
+<script>
+var curProg=0;
+var curNote=60;
+var curMidi=0;
+function Init(){
+	actx=new AudioContext();
+	synth=document.getElementById("tinysynth");
+	kb=document.getElementById("kb");
+	kb.addEventListener("change",KeyIn);
+	var sh=document.getElementById("shot");
+	sh.addEventListener("mousedown",function(){
+		synth.send([0x90+curMidi,curNote,100],0);
+	});
+	sh.addEventListener("mouseup",function(){
+		synth.send([0x80+curMidi,curNote,100],0);
+	});
+	timerid=setInterval(function(){					/* need to wait initialize for webcomponents polyfill */
+		console.log("Initialize checking.");
+		if(synth.setAudioContext){
+			synth.setAudioContext(actx);
+			clearInterval(timerid);
+			ProgChange(0);
+			console.log("Initialized");
+		}
+	},200);
+}
+function Ctrl(){
+	if(typeof(synth)!="undefined"){
+		synth.masterVol=document.getElementById("vol").value;
+		synth.reverbLev=document.getElementById("rev").value;
+	}
+}
+function KeyIn(e){
+	curNote=e.note[1];
+	document.getElementById("shot").innerHTML=curNote;
+	if(e.note[0])
+		synth.send([0x90+curMidi,e.note[1],100]);
+	else
+		synth.send([0x80+curMidi,e.note[1],0]);
+	if(curMidi==9){
+		var w=synth.drummap[e.note[1]-35];
+		ViewParam(w);
+	}
+}
+function ChChange(e){
+	if(e.selectedIndex)
+		curMidi=9;
+	else
+		curMidi=0;
+}
+function ViewDef(pg){
+	var s=JSON.stringify(pg);
+	s=s.replace("}",",}");
+	s=s.replace(/\"name\":\"[a-zA-Z0-9\(\) ]*\",/,"");
+	s=s.replace("\"w2\":\"\"","").replace(/\"(..)\"/g,"$1");
+	s=s.replace(/..:null,/g,"");
+	if(!pg.w2)
+		s=s.replace(/.2:[0-9]*(,|})/g,"$1");
+	s=s.replace("t1:1,",",").replace("f1:0,",",").replace("a1:0,",",").replace("b1:0,",",")
+		.replace("h1:0.01,",",").replace("p1:1,",",").replace("r1:0.05,",",");
+	s=s.replace("f2:0,",",");
+	s=s.replace(/,+/g,",");
+	document.getElementById("patch").value=s;
+}
+function ViewParam(pg){
+	if(!pg)
+		return;
+	document.getElementById("name").innerHTML=pg.name+" : ";
+	pg=pg.w;
+	document.getElementById("w1").value=pg.w1;
+	document.getElementById("v1").value=pg.v1;
+	document.getElementById("t1").value=pg.t1?pg.t1:"";
+	document.getElementById("f1").value=pg.f1?pg.f1:"";
+	document.getElementById("a1").value=pg.a1?pg.a1:"";
+	document.getElementById("h1").value=pg.h1?pg.h1:"";
+	document.getElementById("d1").value=pg.d1?pg.d1:"";
+	document.getElementById("s1").value=pg.s1;
+	document.getElementById("r1").value=pg.r1?pg.r1:"";
+	document.getElementById("b1").value=pg.b1?pg.b1:"";
+	document.getElementById("p1").value=pg.p1?pg.p1:"";
+
+	document.getElementById("w2").value=pg.w2;
+	document.getElementById("v2").value=pg.v2?pg.v2:"";
+	document.getElementById("t2").value=pg.t2?pg.t2:"";
+	document.getElementById("f2").value=pg.f2?pg.f2:"";
+	document.getElementById("d2").value=pg.d2?pg.d2:"";
+	document.getElementById("s2").value=pg.s2?pg.s2:"";
+	document.getElementById("b2").value=pg.b2;
+
+	ViewDef(pg);
+}
+function ProgChange(p){
+	if(synth){
+		synth.send([0xc0,p]);
+		if(curMidi!=9){
+			curProg=p;
+			var pg=synth.program[curProg];
+			ViewParam(pg);
+		}
+	}
+}
+function SetQuality(n){
+	var pg;
+	synth.quality=n;
+	if(curMidi==9){
+		pg=synth.drummap[curNote];
+	}
+	else{
+		pg=synth.program[curProg];
+	}
+	ViewParam(pg);
+}
+function GetVal(id){
+	var s=+document.getElementById(id).value;
+	if(isNaN(s))
+		s=0;
+	return s;
+}
+function OpenEditor(){
+	var e=document.getElementById("soundeditor");
+	if(e.style.display=="block")
+		e.style.display="none";
+	else
+		e.style.display="block";
+}
+function Edit(){
+	var prog;
+	if(curMidi==9)
+		prog=synth.drummap[curNote-35].w;
+	else
+		prog=synth.program[curProg].w;
+	prog.w1=document.getElementById("w1").value;
+	prog.v1=GetVal("v1");
+	prog.t1=GetVal("t1");
+	prog.f1=GetVal("f1");
+	prog.a1=GetVal("a1");
+	prog.h1=GetVal("h1");
+	prog.d1=GetVal("d1");
+	prog.s1=GetVal("s1");
+	prog.r1=GetVal("r1");
+	prog.b1=GetVal("b1");
+	prog.p1=GetVal("p1");
+	prog.w2=document.getElementById("w2").value;
+	prog.v2=GetVal("v2");
+	prog.t2=GetVal("t2");
+	prog.f2=GetVal("f2");
+	prog.d2=GetVal("d2");
+	prog.s2=GetVal("s2");
+	prog.b2=GetVal("b2");
+	ViewDef(prog);
+}
+window.onload=()=>{
+	Init();
+}
+
+</script>
+</head>
+<body>
+<h1>TinySynth Test Page</h1>
+<b>webaudio-tinysynth</b> is a small GM like mapped synthesizer.<br/>
+Repository : <a href="https://github.com/g200kg/webaudio-tinysynth">https://github.com/g200kg/webaudio-tinysynth</a>
+<ul>
+	<li>Polymer module. written in JavaScript</li>
+	<li>playable with mouse or qwerty-keyboard.</li>
+	<li>GM like timbre map. Ch10 is drum track.</li>
+	<li>Quality setting switches two timbre set. light-weighted 1osc or FMbased 2osc</li>
+	<li>built-in MIDI sequencer is also available. drag &amp; drop .mid file to TinySynth</li>
+</ul>
+<hr/>
+<webaudio-keyboard id="kb" keys="73" min="35" width="800" tabindex="1"></webaudio-keyboard>
+<br/>
+Ch : <select onchange="ChChange(this)"><option>Ch1</option><option>Drum (Ch10)</option></select>
+Prog : <select onchange="ProgChange(this.selectedIndex)">
+<option>1 : Acoustic Piano</option>
+<option>2 : Bright Acoustic Piano</option>
+<option>3 : Electric Grand Piano</option>
+<option>4 : Honky-tonk Piano</option>
+<option>5 : Electric Piano 1</option>
+<option>6 : Electric Piano 2</option>
+<option>7 : Harpsichord</option>
+<option>8 : Clavi</option>
+<option>9 : Celesta</option>
+<option>10 : Glockenspiel</option>
+<option>11 : Music Box</option>
+<option>12 : Vibraphone</option>
+<option>13 : Marimba</option>
+<option>14 : Xylophone</option>
+<option>15 : Tubular Bells</option>
+<option>16 : Dulcimer</option>
+<option>17 : Drawbar Organ</option>
+<option>18 : Percussive Organ</option>
+<option>19 : Rock Organ</option>
+<option>20 : Church Organ</option>
+<option>21 : Reed Organ</option>
+<option>22 : Accordion</option>
+<option>23 : Harmonica</option>
+<option>24 : Tango Accordion</option>
+<option>25 : Acoustic Guitar (nylon)</option>
+<option>26 : Acoustic Guitar (steel)</option>
+<option>27 : Electric Guitar (jazz)</option>
+<option>28 : Electric Guitar (clean)</option>
+<option>29 : Electric Guitar (muted)</option>
+<option>30 : Overdriven Guitar</option>
+<option>31 : Distortion Guitar</option>
+<option>32 : Guitar harmonics</option>
+<option>33 : Acoustic Bass</option>
+<option>34 : Electric Bass (finger)</option>
+<option>35 : Electric Bass (pick)</option>
+<option>36 : Fretless Bass</option>
+<option>37 : Slap Bass 1</option>
+<option>38 : Slap Bass 2</option>
+<option>39 : Synth Bass 1</option>
+<option>40 : Synth Bass 2</option>
+<option>41 : Violin</option>
+<option>42 : Viola</option>
+<option>43 : Cello</option>
+<option>44 : Contrabass</option>
+<option>45 : Tremolo Strings</option>
+<option>46 : Pizzicato Strings</option>
+<option>47 : Orchestral Harp</option>
+<option>48 : Timpani</option>
+<option>49 : String Ensemble 1</option>
+<option>50 : String Ensemble 2</option>
+<option>51 : SynthStrings 1</option>
+<option>52 : SynthStrings 2</option>
+<option>53 : Choir Aahs</option>
+<option>54 : Voice Oohs</option>
+<option>55 : Synth Voice</option>
+<option>56 : Orchestra Hit</option>
+<option>57 : Trumpet</option>
+<option>58 : Trombone</option>
+<option>59 : Tuba</option>
+<option>60 : Muted Trumpet</option>
+<option>61 : French Horn</option>
+<option>62 : Brass Section</option>
+<option>63 : SynthBrass 1</option>
+<option>64 : SynthBrass 2</option>
+<option>65 : Soprano Sax</option>
+<option>66 : Alto Sax</option>
+<option>67 : Tenor Sax</option>
+<option>68 : Baritone Sax</option>
+<option>69 : Oboe</option>
+<option>70 : English Horn</option>
+<option>71 : Bassoon</option>
+<option>72 : Clarinet</option>
+<option>73 : Piccolo</option>
+<option>74 : Flute</option>
+<option>75 : Recorder</option>
+<option>76 : Pan Flute</option>
+<option>77 : Blown Bottle</option>
+<option>78 : Shakuhachi</option>
+<option>79 : Whistle</option>
+<option>80 : Ocarina</option>
+<option>81 : Lead 1 (square)</option>
+<option>82 : Lead 2 (sawtooth)</option>
+<option>83 : Lead 3 (calliope)</option>
+<option>84 : Lead 4 (chiff)</option>
+<option>85 : Lead 5 (charang)</option>
+<option>86 : Lead 6 (voice)</option>
+<option>87 : Lead 7 (fifths)</option>
+<option>88 : Lead 8 (bass + lead)</option>
+<option>89 : Pad 1 (new age)</option>
+<option>90 : Pad 2 (warm)</option>
+<option>91 : Pad 3 (polysynth)</option>
+<option>92 : Pad 4 (choir)</option>
+<option>93 : Pad 5 (bowed)</option>
+<option>94 : Pad 6 (metallic)</option>
+<option>95 : Pad 7 (halo)</option>
+<option>96 : Pad 8 (sweep)</option>
+<option>97 : FX 1 (rain)</option>
+<option>98 : FX 2 (soundtrack)</option>
+<option>99 : FX 3 (crystal)</option>
+<option>100 : FX 4 (atmosphere)</option>
+<option>101 : FX 5 (brightness)</option>
+<option>102 : FX 6 (goblins)</option>
+<option>103 : FX 7 (echoes)</option>
+<option>104 : FX 8 (sci-fi)</option>
+<option>105 : Sitar</option>
+<option>106 : Banjo</option>
+<option>107 : Shamisen</option>
+<option>108 : Koto</option>
+<option>109 : Kalimba</option>
+<option>110 : Bag pipe</option>
+<option>111 : Fiddle</option>
+<option>112 : Shanai</option>
+<option>113 : Tinkle Bell</option>
+<option>114 : Agogo</option>
+<option>115 : Steel Drums</option>
+<option>116 : Woodblock</option>
+<option>117 : Taiko Drum</option>
+<option>118 : Melodic Tom</option>
+<option>119 : Synth Drum</option>
+<option>120 : Reverse Cymbal</option>
+<option>121 : Guitar Fret Noise</option>
+<option>122 : Breath Noise</option>
+<option>123 : Seashore</option>
+<option>124 : Bird Tweet</option>
+<option>125 : Telephone Ring</option>
+<option>126 : Helicopter</option>
+<option>127 : Applause</option>
+<option>128 : Gunshot</option>
+</select>
+<hr/>
+<webaudio-tinysynth id="tinysynth" quality="1" src="./websequencerdemo.mid"></webaudio-tinysynth>
+<table>
+<tr>
+	<td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" onchange="Ctrl()"></webaudio-knob></td>
+	<td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="rev" value="0.5" onchange="Ctrl()"></webaudio-knob></td>
+</tr>
+<tr><td>Vol</td><td>Reverb</td></tr>
+</table>
+<hr/>
+Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><option selected>1</option></select>
+<br/>
+<button onclick="synth.loadMIDIUrl('./websequencerdemo.mid')">Load Demo MIDI</button>
+<hr/>
+<button onclick="OpenEditor()">Sound Editor</button> <span id="name"></span><button id="shot"></button><br/>
+<div id="soundeditor">
+<table>
+	<tr><td>W1</td><td>V1</td><td>T1</td><td>F1</td><td>A1</td><td>H1</td><td>D1</td><td>S1</td><td>R1</td><td>B1</td><td>P1</td></tr>
+	<tr>
+		<td><select id="w1" onchange="Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
+		<td><input id="v1"  oninput="Edit()" value="0.5" size="4"/></td>
+		<td><input id="t1"  oninput="Edit()" value="0" size="4"/></td>
+		<td><input id="f1"  oninput="Edit()" value="0" size="4"/></td>
+		<td><input id="a1"  oninput="Edit()" value="0" size="4"/></td>
+		<td><input id="h1"  oninput="Edit()" value="0" size="4"/></td>
+		<td><input id="d1"  oninput="Edit()" value="0.1" size="4"/></td>
+		<td><input id="s1"  oninput="Edit()" value="0" size="4"/></td>
+		<td><input id="r1"  oninput="Edit()" value="0.1" size="4"/></td>
+		<td><input id="b1"  oninput="Edit()" value="0" size="4"/></td>
+		<td><input id="p1"  oninput="Edit()" value="0" size="4"/></td>
+	</tr>
+	<tr><td>W2</td><td>V2</td><td>T2</td><td>F2</td><td>D2</td><td>S2</td><td>B2</td></tr>
+	<tr>
+		<td><select id="w2" onchange="Edit()"><option value=""></option><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
+		<td><input id="v2"  oninput="Edit()" value="0.5" size="4"/></td>
+		<td><input id="t2"  oninput="Edit()" value="0.5" size="4"/></td>
+		<td><input id="f2"  oninput="Edit()" value="0.5" size="4"/></td>
+		<td><input id="d2"  oninput="Edit()" value="0" size="4"/></td>
+		<td><input id="s2"  oninput="Edit()" value="0" size="4"/></td>
+		<td><input id="b2"  oninput="Edit()" value="0" size="4"/></td>
+	</tr>
+</table>
+<br/>
+<input id="patch" size="80"/>
+</div>
+<hr/>
+</body>
+</html>
