@@ -27,7 +27,7 @@ function Init(){
   var sh=document.getElementById("shot");
   for(var i=0;i<128;++i){
     var o=document.createElement("option");
-    o.innerHTML=(i+1)+" : "+synth.program[i].name;
+    o.innerHTML=(i+1)+" : "+synth.getTimbreName(0,i);
     document.getElementById("prog").appendChild(o);
   }
   sh.addEventListener("mousedown",function(){
@@ -71,47 +71,60 @@ function ChChange(e){
     curMidi=0;
 }
 function ViewDef(pg){
-  var s=JSON.stringify(pg);
-  s=s.replace("}",",}");
-  s=s.replace(/\"name\":\"[-a-zA-Z0-9\(\) \+]*\",/,"");
-  s=s.replace("\"w2\":\"\"","").replace(/\"(..)\"/g,"$1");
-  s=s.replace(/..:null,/g,"");
-  if(!pg.w2)
-    s=s.replace(/.2:[0-9]*(,|})/g,"$1");
-  s=s.replace("t1:1,",",").replace("f1:0,",",").replace("a1:0,",",").replace("b1:0,",",")
-  .replace("h1:0.01,",",").replace("p1:1,",",").replace("r1:0.05,",",").replace("r2:0.05,",",");
-  s=s.replace("f2:0,",",");
+  var s=JSON.stringify(pg.p);
+  s=s.replace(/}/g,",}").replace(/\"([a-z])\"/g,"$1");
+  var ss=["g:0,","t:1,","f:0,","v:0.5,","a:0,","h:0.01,","d:0.01,","s:0,","r:0.05,","p:1,","b:0,"];
+  for(p=0;p<ss.length;++p){
+    s=s.replace(ss[p],",");
+    s=s.replace(ss[p],",");
+  }
   s=s.replace(/,+/g,",");
   document.getElementById("patch").value=s;
 }
+
 function ViewParam(pg){
   if(!pg)
     return;
   document.getElementById("name").innerHTML=pg.name+" : ";
-  pg=pg.w;
-  document.getElementById("ag").value=pg.ag;
+  document.getElementById("g1").value=pg.p[0].g;
+  document.getElementById("w1").value=pg.p[0].w;
+  document.getElementById("v1").value=pg.p[0].v;
+  document.getElementById("t1").value=pg.p[0].t;
+  document.getElementById("f1").value=pg.p[0].f;
+  document.getElementById("a1").value=pg.p[0].a;
+  document.getElementById("h1").value=pg.p[0].h;
+  document.getElementById("d1").value=pg.p[0].d;
+  document.getElementById("s1").value=pg.p[0].s;
+  document.getElementById("r1").value=pg.p[0].r;
+  document.getElementById("b1").value=pg.p[0].b;
+  document.getElementById("p1").value=pg.p[0].p;
 
-  document.getElementById("w1").value=pg.w1;
-  document.getElementById("v1").value=pg.v1;
-  document.getElementById("t1").value=pg.t1;
-  document.getElementById("f1").value=pg.f1;
-  document.getElementById("a1").value=pg.a1;
-  document.getElementById("h1").value=pg.h1;
-  document.getElementById("d1").value=pg.d1;
-  document.getElementById("s1").value=pg.s1;
-  document.getElementById("r1").value=pg.r1;
-  document.getElementById("b1").value=pg.b1;
-  document.getElementById("p1").value=pg.p1;
-
-  document.getElementById("w2").value=pg.w2;
-  document.getElementById("v2").value=pg.v2;
-  document.getElementById("t2").value=pg.t2;
-  document.getElementById("f2").value=pg.f2;
-  document.getElementById("d2").value=pg.d2;
-  document.getElementById("s2").value=pg.s2;
-  document.getElementById("r2").value=pg.r2;
-  document.getElementById("b2").value=pg.b2;
-
+  if(pg.p.length>=2 && pg.p[1].w!=""){
+    document.getElementById("g2").value=pg.p[1].g;
+    document.getElementById("w2").value=pg.p[1].w;
+    document.getElementById("v2").value=pg.p[1].v;
+    document.getElementById("t2").value=pg.p[1].t;
+    document.getElementById("f2").value=pg.p[1].f;
+    document.getElementById("a2").value=pg.p[1].a;
+    document.getElementById("d2").value=pg.p[1].d;
+    document.getElementById("s2").value=pg.p[1].s;
+    document.getElementById("r2").value=pg.p[1].r;
+    document.getElementById("b2").value=pg.p[1].b;
+    document.getElementById("p2").value=pg.p[1].p;
+  }
+  else{
+    document.getElementById("g2").value="";
+    document.getElementById("w2").value="";
+    document.getElementById("v2").value="";
+    document.getElementById("t2").value="";
+    document.getElementById("f2").value="";
+    document.getElementById("a2").value="";
+    document.getElementById("d2").value="";
+    document.getElementById("s2").value="";
+    document.getElementById("r2").value="";
+    document.getElementById("b2").value="";
+    document.getElementById("p2").value="";
+  }
   ViewDef(pg);
 }
 function ProgChange(p){
@@ -149,29 +162,40 @@ function OpenEditor(){
 function Edit(){
   var prog;
   if(curMidi==9)
-    prog=synth.drummap[curNote-35].w;
+    prog=synth.drummap[curNote-35];
   else
-    prog=synth.program[curProg].w;
-  prog.ag=document.getElementById("ag").selectedIndex;
-  prog.w1=document.getElementById("w1").value;
-  prog.v1=GetVal("v1");
-  prog.t1=GetVal("t1");
-  prog.f1=GetVal("f1");
-  prog.a1=GetVal("a1");
-  prog.h1=GetVal("h1");
-  prog.d1=GetVal("d1");
-  prog.s1=GetVal("s1");
-  prog.r1=GetVal("r1");
-  prog.b1=GetVal("b1");
-  prog.p1=GetVal("p1");
-  prog.w2=document.getElementById("w2").value;
-  prog.v2=GetVal("v2");
-  prog.t2=GetVal("t2");
-  prog.f2=GetVal("f2");
-  prog.d2=GetVal("d2");
-  prog.s2=GetVal("s2");
-  prog.r2=GetVal("r2");
-  prog.b2=GetVal("b2");
+    prog=synth.program[curProg];
+  if(prog.p.length<2 && document.getElementById("w2").selectedIndex){
+    prog.p[1]={g:0,t:1,f:0,v:0.5,a:0,h:0.01,d:0.01,s:0,r:0.05,p:1,b:0,};
+    ViewParam(prog);
+  }
+  if(prog.p.length>=2 && !document.getElementById("w2").selectedIndex)
+    prog.p.length=1;
+  prog.p[0].g=GetVal("g1");
+  prog.p[0].w=document.getElementById("w1").value;
+  prog.p[0].v=GetVal("v1");
+  prog.p[0].t=GetVal("t1");
+  prog.p[0].f=GetVal("f1");
+  prog.p[0].a=GetVal("a1");
+  prog.p[0].h=GetVal("h1");
+  prog.p[0].d=GetVal("d1");
+  prog.p[0].s=GetVal("s1");
+  prog.p[0].r=GetVal("r1");
+  prog.p[0].b=GetVal("b1");
+  prog.p[0].p=GetVal("p1");
+  if(prog.p.length>=2 && prog.p[1].w!=""){
+    prog.p[1].w=document.getElementById("w2").value;
+    prog.p[1].g=GetVal("g2");
+    prog.p[1].v=GetVal("v2");
+    prog.p[1].t=GetVal("t2");
+    prog.p[1].f=GetVal("f2");
+    prog.p[1].a=GetVal("a2");
+    prog.p[1].d=GetVal("d2");
+    prog.p[1].s=GetVal("s2");
+    prog.p[1].r=GetVal("r2");
+    prog.p[1].b=GetVal("b2");
+    prog.p[1].p=GetVal("p2");
+  }
   ViewDef(prog);
 }
 window.onload=()=>{
@@ -185,7 +209,7 @@ window.onload=()=>{
 <b>webaudio-tinysynth</b> is a small GM like mapped synthesizer.<br/>
 Repository : <a href="https://github.com/g200kg/webaudio-tinysynth">https://github.com/g200kg/webaudio-tinysynth</a>
 <ul>
-  <li>Polymer module. written in JavaScript</li>
+  <li>webaudio-tinysynth is a Polymer module. written in JavaScript</li>
   <li>playable with mouse or qwerty-keyboard.</li>
   <li>GM like timbre map. Ch10 is drum track.</li>
   <li>Quality setting switches two timbre set. light-weighted 1osc or FMbased 2osc</li>
@@ -198,7 +222,7 @@ Ch : <select onchange="ChChange(this)"><option>Ch1</option><option>Drum (Ch10)</
 Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
 </select>
 <hr/>
-<webaudio-tinysynth id="tinysynth" quality="1"></webaudio-tinysynth>
+<webaudio-tinysynth id="tinysynth" quality="1" loop="1"></webaudio-tinysynth>
 <table>
 <tr>
   <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" onchange="Ctrl()"></webaudio-knob></td>
@@ -214,10 +238,9 @@ Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><o
 <button onclick="OpenEditor()">Sound Editor</button> <span id="name"></span><button id="shot"></button><br/>
 <div id="soundeditor">
 <table>
-  <tr><td>AG</td></tr>
-  <tr><td><select id="ag" onchange="Edit()"><option>0</option><option>1</option></select></td></tr>
-  <tr><td>W1</td><td>V1</td><td>T1</td><td>F1</td><td>A1</td><td>H1</td><td>D1</td><td>S1</td><td>R1</td><td>B1</td><td>P1</td></tr>
+  <tr><td>G1</td><td>W1</td><td>V1</td><td>T1</td><td>F1</td><td>A1</td><td>H1</td><td>D1</td><td>S1</td><td>R1</td><td>B1</td><td>P1</td></tr>
   <tr>
+  <td><input id="g1" oninput="Edit()" value="0" size="4"/></td>
   <td><select id="w1" onchange="Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
   <td><input id="v1"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="t1"  oninput="Edit()" value="0" size="4"/></td>
@@ -230,16 +253,19 @@ Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><o
   <td><input id="b1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="p1"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
-  <tr><td>W2</td><td>V2</td><td>T2</td><td>F2</td><td>D2</td><td>S2</td><td>R2</td><td>B2</td></tr>
+  <tr><td>G1</td><td>W2</td><td>V2</td><td>T2</td><td>F2</td><td>A2</td><td>D2</td><td>S2</td><td>R2</td><td>B2</td><td>P2</td></tr>
   <tr>
+  <td><input id="g2" oninput="Edit()" value="0" size="4"/></td>
   <td><select id="w2" onchange="Edit()"><option value=""></option><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
   <td><input id="v2"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="t2"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="f2"  oninput="Edit()" value="0.5" size="4"/></td>
+  <td><input id="a2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="d2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="s2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="r2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="b2"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="p2"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
 </table>
 <br/>

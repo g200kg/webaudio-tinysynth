@@ -42,300 +42,390 @@
       graph:      {type:Number, value:2},
       debug:      {type:Number, value:0},
       src:        {type:String, value:null, observer:"loadMIDIUrl"},
+      loop:       {type:Number, value:0},
     },
     layout:function(){
       this.$["wa-canvas"].style.width=this.width;
       this.$["wa-canvas"].style.height=this.height;
     },
     program:[
+// 1-8 : Piano
+      {name:"Acoustic Grand Piano"},    {name:"Bright Acoustic Piano"},
+      {name:"Electric Grand Piano"},    {name:"Honky-tonk Piano"},
+      {name:"Electric Piano 1"},        {name:"Electric Piano 2"},
+      {name:"Harpsichord"},             {name:"Clavi"},
+/* 9-16 : Chromatic Perc*/
+      {name:"Celesta"},                 {name:"Glockenspiel"},
+      {name:"Music Box"},               {name:"Vibraphone"},
+      {name:"Marimba"},                 {name:"Xylophone"},
+      {name:"Tubular Bells"},           {name:"Dulcimer"},
+/* 17-24 : Organ */
+      {name:"Drawbar Organ"},           {name:"Percussive Organ"},
+      {name:"Rock Organ"},              {name:"Church Organ"},
+      {name:"Reed Organ"},              {name:"Accordion"},
+      {name:"Harmonica"},               {name:"Tango Accordion"},
+/* 25-32 : Guitar */
+      {name:"Acoustic Guitar (nylon)"}, {name:"Acoustic Guitar (steel)"},
+      {name:"Electric Guitar (jazz)"},  {name:"Electric Guitar (clean)"},
+      {name:"Electric Guitar (muted)"}, {name:"Overdriven Guitar"},
+      {name:"Distortion Guitar"},       {name:"Guitar harmonics"},
+/* 33-40 : Bass */
+      {name:"Acoustic Bass"},           {name:"Electric Bass (finger)"},
+      {name:"Electric Bass (pick)"},    {name:"Fretless Bass"},
+      {name:"Slap Bass 1"},             {name:"Slap Bass 2"},
+      {name:"Synth Bass 1"},            {name:"Synth Bass 2"},
+/* 41-48 : Strings */
+      {name:"Violin"},                  {name:"Viola"},
+      {name:"Cello"},                   {name:"Contrabass"},
+      {name:"Tremolo Strings"},         {name:"Pizzicato Strings"},
+      {name:"Orchestral Harp"},         {name:"Timpani"},
+/* 49-56 : Ensamble */
+      {name:"String Ensemble 1"},       {name:"String Ensemble 2"},
+      {name:"SynthStrings 1"},          {name:"SynthStrings 2"},
+      {name:"Choir Aahs"},              {name:"Voice Oohs"},
+      {name:"Synth Voice"},             {name:"Orchestra Hit"},
+/* 57-64 : Brass */
+      {name:"Trumpet"},                 {name:"Trombone"},
+      {name:"Tuba"},                    {name:"Muted Trumpet"},
+      {name:"French Horn"},             {name:"Brass Section"},
+      {name:"SynthBrass 1"},            {name:"SynthBrass 2"},
+/* 65-72 : Reed */
+      {name:"Soprano Sax"},             {name:"Alto Sax"},
+      {name:"Tenor Sax"},               {name:"Baritone Sax"},
+      {name:"Oboe"},                    {name:"English Horn"},
+      {name:"Bassoon"},                 {name:"Clarinet"},
+/* 73-80 : Pipe */
+      {name:"Piccolo"},                 {name:"Flute"},
+      {name:"Recorder"},                {name:"Pan Flute"},
+      {name:"Blown Bottle"},            {name:"Shakuhachi"},
+      {name:"Whistle"},                 {name:"Ocarina"},
+/* 81-88 : SynthLead */
+      {name:"Lead 1 (square)"},         {name:"Lead 2 (sawtooth)"},
+      {name:"Lead 3 (calliope)"},       {name:"Lead 4 (chiff)"},
+      {name:"Lead 5 (charang)"},        {name:"Lead 6 (voice)"},
+      {name:"Lead 7 (fifths)"},         {name:"Lead 8 (bass + lead)"},
+/* 89-96 : SynthPad */
+      {name:"Pad 1 (new age)"},         {name:"Pad 2 (warm)"},
+      {name:"Pad 3 (polysynth)"},       {name:"Pad 4 (choir)"},
+      {name:"Pad 5 (bowed)"},           {name:"Pad 6 (metallic)"},
+      {name:"Pad 7 (halo)"},            {name:"Pad 8 (sweep)"},
+/* 97-104 : FX */
+      {name:"FX 1 (rain)"},             {name:"FX 2 (soundtrack)"},
+      {name:"FX 3 (crystal)"},          {name:"FX 4 (atmosphere)"},
+      {name:"FX 5 (brightness)"},       {name:"FX 6 (goblins)"},
+      {name:"FX 7 (echoes)"},           {name:"FX 8 (sci-fi)"},
+/* 105-112 : Ethnic */
+      {name:"Sitar"},                   {name:"Banjo"},
+      {name:"Shamisen"},                {name:"Koto"},
+      {name:"Kalimba"},                 {name:"Bag pipe"},
+      {name:"Fiddle"},                  {name:"Shanai"},
+/* 113-120 : Percussive */
+      {name:"Tinkle Bell"},             {name:"Agogo"},
+      {name:"Steel Drums"},             {name:"Woodblock"},
+      {name:"Taiko Drum"},              {name:"Melodic Tom"},
+      {name:"Synth Drum"},              {name:"Reverse Cymbal"},
+/* 121-128 : SE */
+      {name:"Guitar Fret Noise"},       {name:"Breath Noise"},
+      {name:"Seashore"},                {name:"Bird Tweet"},
+      {name:"Telephone Ring"},          {name:"Helicopter"},
+      {name:"Applause"},                {name:"Gunshot"},
     ],
     drummap:[
-
+// 35
+      {name:"Acoustic Bass Drum"},      {name:"Bass Drum 1"},      {name:"Side Stick"},              {name:"Acoustic Snare"},
+      {name:"Hand Clap"},               {name:"Electric Snare"},   {name:"Low Floor Tom"},           {name:"Closed Hi Hat"},
+      {name:"High Floor Tom"},          {name:"Pedal Hi-Hat"},     {name:"Low Tom"},                 {name:"Open Hi-Hat"},
+      {name:"Low-Mid Tom"},             {name:"Hi-Mid Tom"},       {name:"Crash Cymbal 1"},          {name:"High Tom"},
+      {name:"Ride Cymbal 1"},           {name:"Chinese Cymbal"},   {name:"Ride Bell"},               {name:"Tambourine"},
+      {name:"Splash Cymbal"},           {name:"Cowbell"},          {name:"Crash Cymbal 2"},          {name:"Vibraslap"},
+      {name:"Ride Cymbal 2"},           {name:"Hi Bongo"},         {name:"Low Bongo"},               {name:"Mute Hi Conga"},
+      {name:"Open Hi Conga"},           {name:"Low Conga"},        {name:"High Timbale"},            {name:"Low Timbale"},
+      {name:"High Agogo"},              {name:"Low Agogo"},        {name:"Cabasa"},                  {name:"Maracas"},
+      {name:"Short Whistle"},           {name:"Long Whistle"},     {name:"Short Guiro"},             {name:"Long Guiro"},
+      {name:"Claves"},                  {name:"Hi Wood Block"},    {name:"Low Wood Block"},          {name:"Mute Cuica"},
+      {name:"Open Cuica"},              {name:"Mute Triangle"},    {name:"Open Triangle"},
     ],
     program1:[
-      [[1],{w1:"sine",v1:0.5,d1:0.7,r1:0.1,w2:"triangle",t2:1,v2:4,d2:0.7,s2:0.8,}],
-      [[2],{w1:"triangle",v1:0.4,d1:0.7,r1:0.1,w2:"triangle",t2:3,v2:9,d2:0.4,s2:0.8,}],
-      [[3],{w1:"sine",v1:0.5,d1:0.7,r1:0.1,w2:"triangle",t2:1,v2:4,d2:0.5,s2:0.5,f2:2,}],
-      [[4],{w1:"sine",v1:0.5,b1:2,d1:0.7,w2:"sawtooth",t2:2,f2:2,v2:2,d2:1,s2:0,}],
-      [[5],{w1:"sine",v1:0.4,b1:2,d1:0.7,w2:"sine",t2:7,v2:3,d2:1,s2:1,f2:1,}],
-      [[6],{w1:"sine",v1:0.4,b1:2,d1:0.7,w2:"sine",t2:7,v2:11,d2:0.5,s2:1,f2:1,}],
-      [[7],{w1:"sawtooth",v1:0.4,d1:2,w2:"sine",t2:1,f2:0.1,v2:8,d2:0.1,s2:8,}],
-      [[8],{w1:"triangle",v1:0.4,d1:1.5,w2:"square",t2:1,f2:0.1,v2:6,d2:0.1,s2:3,}],
-      [[9],{w1:"sine",v1:0.5,d1:0.3,r1:0.3,w2:"sine",t2:11,v2:7,d2:0.03,s2:0,}],
-      [[10],{w1:"sine",v1:0.5,d1:0.3,r1:0.3,w2:"sine",t2:6,v2:11,d2:0.2,s2:4,}],
-      [[11],{w1:"sine",v1:0.2,d1:0.3,r1:0.3,w2:"sine",t2:5,v2:11,d2:0.1,s2:5,}],
-      [[12],{w1:"sine",v1:0.2,d1:0.6,r1:0.6,w2:"triangle",t2:5,f2:1,v2:11,d2:0.01,s2:6,}],
-      [[13],{w1:"sine",v1:0.3,d1:0.2,w2:"sine",t2:5,v2:6,d2:0.02,s2:0,}],
-      [[14],{w1:"sine",v1:0.3,d1:0.2,w2:"sine",t2:11,v2:7,d2:0.03,s2:0,}],
-      [[15],{w1:"sine",v1:0.2,d1:1,r1:1,t1:1,f1:0,a1:0,h1:0.01,p1:1,b1:0,w2:"sine",t2:3.5,f2:0,v2:11,d2:1,s2:0}],
-      [[16],{w1:"triangle",v1:0.2,d1:0.5,r1:0.5,w2:"sine",t2:2.5,v2:6,d2:0.2,s2:0.2,}],
-      [[17],{w1:"sine",v1:0.3,a1:0.002,d1:11,t2:2,v2:7,d2:0.1,s2:7,w2:"sine",f2:1,}],
-      [[18],{w1:"sine",v1:0.3,d1:11,w2:"sine",t2:5,f2:1.5,v2:15,d2:0.04,s2:5,}],
-      [[19],{w1:"triangle",v1:0.3,d1:11,w2:"triangle",t2:3,f2:1.5,v2:5,d2:0.01,s2:3,}],
-      [[20],{w1:"sine",v1:0.3,a1:0.01,d1:11,t2:5,v2:0,d2:0.01,s2:5,w2:"sine",f2:1.5,}],
-      [[21],{w1:"sine",v1:0.2,a1:0.02,d1:9,w2:"sine",t2:3,f2:1,v2:0,d2:0.03,s2:6,}],
-      [[22],{w1:"triangle",v1:0.2,a1:0.02,d1:11,w2:"square",t2:3,f2:1,v2:7,d2:0.02,s2:11,}],
-      [[23],{w1:"square",v1:0.2,a1:0.02,d1:9,w2:"square",t2:1,v2:1,d2:0.03,s2:2,}],
-      [[24],{w1:"square",v1:0.2,a1:0.02,d1:9,w2:"square",t2:1,v2:1,d2:0.03,s2:2,}],
-      [[25],{w1:"triangle",v1:0.3,d1:0.5,w2:"triangle",t2:3,f2:1.5,v2:5,d2:1,s2:0.1,}],
-      [[26],{w1:"triangle",v1:0.4,d1:0.6,h1:0.01,r1:0.05,p1:1,t2:1.001,v2:8,d2:1,s2:1,w2:"triangle"}],
-      [[27,28],{w1:"triangle",v1:0.3,d1:1,w2:"triangle",t2:1,f2:2,v2:6,d2:0.4,s2:0.5,}],
-      [[29],{w1:"sine",v1:0.4,d1:0.1,w2:"sine",t2:1,v2:7,d2:0.01,s2:0,}],
-      [[30],{w1:"triangle",v1:0.3,d1:1,w2:"square",t2:1,f2:2,v2:7,d2:0.3,s2:3,}],
-      [[31],{w1:"triangle",v1:0.3,d1:1,w2:"square",t2:1,f2:2,v2:4,d2:1,s2:3,}],
-      [[32],{w1:"sine",v1:0.2,d1:0.6,t1:1.5,a1:0.005,h1:0.2,w2:"sine",t2:5,f2:2,v2:11,d2:1,s2:5,}],
-      [[33,34],{w1:"sine",v1:0.5,d1:0.3,w2:"sine",t2:3,v2:4,d2:1,s2:4,}],
-      [[35],{w1:"sine",v1:0.5,d1:0.3,w2:"sine",t2:3,v2:11,d2:0.05,s2:6,}],
-      [[36],{w1:"sine",v1:0.5,d1:0.3,w2:"sine",t2:3,v2:4,d2:1,s2:4,}],
-      [[37],{w1:"triangle",v1:0.3,d1:1,t2:2.5,v2:15,d2:0.04,s2:1,w2:"triangle",t1:2,s1:0,b2:0,}],
-      [[38],{w1:"triangle",v1:0.3,d1:1,t2:2.5,v2:15,d2:0.04,s2:1,w2:"triangle",t1:2,s1:0,b2:0,}],
-      [[39,40],{w1:"triangle",v1:0.5,d1:0.7,w2:"square",t2:0.5,f2:1,v2:0,d2:0.2,s2:4,}],
-      [[41],{w1:"sawtooth",v1:0.4,a1:0.1,d1:11,t2:1,v2:5,d2:11,s2:1,w2:"sine",}],
-      [[42],{w1:"sawtooth",v1:0.4,a1:0.1,d1:11,t2:1,v2:5,d2:11,s2:1,w2:"sine",}],
-      [[43],{w1:"sawtooth",v1:0.4,a1:0.1,d1:11,t2:0.5,v2:5,d2:11,s2:1,w2:"sine",}],
-      [[44],{w1:"sawtooth",v1:0.4,a1:0.1,d1:11,t2:0.5,v2:5,d2:11,s2:1,w2:"sine",}],
-      [[45],{w1:"sine",v1:0.4,a1:0.1,d1:11,t2:1,v2:6,d2:0.05,s2:8,w2:"sine",f2:2.5,}],
-      [[46],{w1:"sine",v1:0.3,d1:0.1,w2:"square",t2:3,v2:4,d2:1,s2:1,r1:0.1,}],
-      [[47],{w1:"sine",v1:0.2,d1:0.5,r1:0.5,w2:"sine",t2:1,f2:2,v2:4,d2:1,s2:0,}],
-      [[51],{ag:1,w1:"sawtooth",v1:0.2,a1:0.02,s1:1,w2:"sawtooth",v2:0.2,a2:0.02,s2:1,f2:2,d1:0.01,t2:2,d2:1,r2:0.05,p2:1,b2:0,},],
-      [[52],{ag:1,w1:"sawtooth",v1:0.2,a1:0.02,s1:1,w2:"sawtooth",v2:0.2,a2:0.02,s2:1,f2:2,d1:0.01,t2:1,d2:1,r2:0.05,p2:1,b2:0,},],
-      [[53],{w1:"triangle",v1:0.3,a1:0.03,s1:1,ag:0,d1:0.01,w2:"sine",t2:5,f2:1,v2:3,d2:1,s2:3,r2:0.05,p2:1,b2:0,}],
-      [[57],{w1:"square",v1:0.3,d1:2,a1:0.01,w2:"sine",t2:1,v2:1,d2:0.1,s2:4,r1:0.04,}],
-      [[60],{w1:"square",v1:0.2,a1:0.04,d1:0.01,s1:1,ag:0,w2:"sine",t2:1,v2:2,d2:0.1,s2:0,p2:1,b2:0,}],
-      [[58,59,61,62,63,64],{w1:"square",v1:0.3,d1:2,a1:0.02,w2:"sine",t2:1,v2:1,d2:0.1,s2:4,r1:0.08,}],
-      [[65,66,67,68],{w1:"square",v1:0.3,a1:0.02,d1:2,w2:"sine",t2:1,v2:2,d2:1,s2:0,}],
-      [[81],{w1:"square",v1:0.3,d1:2,w2:"square",t2:1,v2:1,d2:1,s2:0,}],
-      [[82],{w1:"sawtooth",v1:0.4,d1:2,w2:"square",t2:1,f2:0.1,v2:2,d2:0.01,s2:0,}],
-      [[83],{w1:"triangle",v1:0.5,d1:2,a1:0.05,w2:"sine",t2:2,v2:44,d2:0.015,s2:3,}],
-      [[84],{w1:"triangle",v1:0.5,d1:2,a1:0.05,w2:"sine",t2:2,f2:1,v2:22,d2:0.03,s2:5,}],
-      [[85],{w1:"sawtooth",v1:0.4,d1:2,w2:"sine",t2:5,v2:7,d2:0.05,s2:0,}],
-      [[86],{w1:"sine",v1:0.4,a1:0.06,d1:2,w2:"sine",t2:1,f2:1,v2:7,d2:1,s2:1,}],
-      [[87],{w1:"sawtooth",v1:0.4,d1:0.2,ag:0,a1:0.1,s1:0.4,r1:0.08,w2:"square",t2:0.75,f2:0.5,v2:0.3,d2:0.2,s2:0.3,r2:0.08,p2:1,b2:0,}],
-      [[88],{w1:"triangle",v1:0.3,d1:11,a1:0.01,w2:"square",t2:0.5,v2:4,d2:0.7,s2:2,}],
-      [[89],{w1:"triangle",v1:0.3,d1:11,w2:"square",t2:4,f2:1,v2:3,d2:0.1,s2:1,s1:0,}],
-      [[90],{w1:"triangle",v1:0.5,d1:5,a1:0.05,w2:"sawtooth",t2:4,f2:1,v2:0,d2:0.3,s2:3,}],
-      [[91],{w1:"square",v1:0.3,d1:11,w2:"square",t2:1,v2:11,d2:0.07,s2:2,}],
-      [[92],{w1:"triangle",v1:0.5,a1:0.08,d1:1,w2:"square",t2:1,v2:3,d2:0.3,s2:1,}],
-      [[93],{w1:"sine",v1:0.5,a1:0.05,d1:9,w2:"sine",t2:2.001,f2:1,v2:0.1,d2:1,s2:5,}],
-      [[94],{w1:"triangle",v1:0.5,d1:11,a1:0.03,w2:"sine",t2:4,f2:1,v2:3,d2:0.5,s2:5,}],
-      [[95],{w1:"sine",v1:0.5,d1:11,a1:0.05,w2:"sawtooth",t2:6,v2:22,d2:0.06,s2:7,}],
-      [[96],{w1:"triangle",v1:0.4,d1:11,a1:0.05,w2:"triangle",t2:1,v2:1,d2:1,s2:12,}],
-      [[97],{w1:"square",v1:0.3,d1:11,w2:"square",t2:2,f2:8,v2:0,d2:1,s2:1,}],
-      [[98],{w1:"square",v1:0.3,d1:11,w2:"square",t2:1,f2:1,v2:1,d2:0.3,s2:0,}],
-      [[99],{w1:"sine",v1:0.3,d1:11,w2:"square",t2:11,v2:22,d2:0.5,s2:3,}],
-      [[100],{w1:"sawtooth",v1:0.3,a1:0.04,d1:11,r1:0.1,w2:"square",t2:0.5,v2:2,d2:1,s2:4,}],
-      [[101],{w1:"triangle",v1:0.5,d1:1,w2:"sine",t2:6,v2:22,d2:0.6,s2:1,}],
-      [[104],{w1:"square",v1:0.3,d1:0.1,a1:0.1,s1:0.4,w2:"square",t2:1,v2:1,d2:0.3,s2:0,b2:0,}],
-      [[105],{w1:"sawtooth",v1:0.3,d1:0.5,r1:0.5,s1:0,w2:"sawtooth",t2:5,v2:11,d2:0.2,s2:0,b2:0,}],
-      [[106],{w1:"square",v1:0.5,d1:0.2,r1:0.2,s1:0,w2:"sine",t2:3,v2:7,d2:0.1,s2:1,b2:1,}],
-      [[107],{w1:"sawtooth",v1:0.5,d1:0.2,r1:0.2,s1:0,w2:"triangle",t2:5,v2:7,d2:0.1,s2:1,b2:1,}],
-      [[108],{w1:"sawtooth",v1:0.5,d1:0.3,r1:0.3,t1:1,f1:0,a1:0,h1:0.01,p1:1,b1:0,w2:"sine",t2:5,f2:0,v2:12,d2:1,s2:0}],
-      [[124],{w1:"sine",v1:0.3,a1:0.8,d1:1,s1:0,w2:"sawtooth",t2:0,f2:12,v2:6,d2:1,s2:6,b2:14,}],
-      [[125],{w1:"square",v1:0.3,d1:11,t2:0,v2:12,d2:1,s2:12,w2:"square",t1:0.25,s1:0,f2:8,b2:0,}],
-      [[126],{w1:"sine",v1:0.4,d1:11,t1:0,f1:500,b1:1133,a1:1,s1:1,r1:0.5,w2:"square",t2:0,f2:14,v2:2,d2:1,s2:2,b2:0,}],
-      [[128],{w1:"square",v1:0.5,d1:0.2,r1:0.4,s1:0,p1:0.7,w2:"sine",t2:1.3,v2:7,d2:1,s2:0,b2:1224,}],
-    ],
-
-    drummap1:[
-      [51,{w1:"sine",f1:2000,v1:0.5,d1:0.2,b1:552,r1:0.01,h1:0,t1:0,s1:0,w2:"triangle",t2:0,f2:1277,v2:12,d2:1,s2:12,}],
-      [56,{w1:"sine",f1:666,v1:0.4,d1:0.06,s1:0,w2:"square",t2:2.6,v2:2,d2:1,s2:2,b2:0,}],
-      [65,{w1:"sine",f1:223,v1:0.3,d1:0.2,p1:1.05,t1:0,s1:0,w2:"square",t2:4,v2:11,d2:0.05,s2:3,b2:0,}],
-      [66,{w1:"sine",f1:173,v1:0.3,d1:0.2,p1:1.05,t1:0,s1:0,w2:"square",t2:4,v2:11,d2:0.05,s2:3,b2:0,}],
+      // 1-8 : Piano
+      [{w:"sine",d:0.7,r:0.1,},{w:"triangle",v:6,d:0.7,s:.1,g:1,}],
+      [{w:"triangle",v:0.4,d:0.7,r:0.1,},{w:"triangle",v:9,t:3,d:0.4,s:0.1,g:1,}],
+      [{w:"sine",d:0.7,r:0.1,},{w:"triangle",v:4,f:2,d:0.5,s:0.5,g:1,}],
+      [{w:"sine",d:0.7,b:2,},{w:"sawtooth",v:2,t:2,f:2,d:1,g:1,}],
+      [{w:"sine",v:0.4,d:0.7,b:2,},{w:"sine",v:3,t:7,f:1,d:1,s:1,g:1,}],
+      [{w:"sine",v:0.4,d:0.7,b:2,},{w:"sine",v:11,t:7,f:1,d:0.5,s:1,g:1,}],
+      [{w:"sawtooth",v:0.4,d:2,},{w:"sine",v:8,f:0.1,d:2,s:1,r:2,g:1,}],
+      [{w:"triangle",v:0.4,d:1.5,},{w:"square",v:6,f:0.1,d:1.5,s:0.5,r:2,g:1,}],
+      /* 9-16 : Chromatic Perc*/
+      [{w:"sine",d:0.3,r:0.3,},{w:"sine",v:7,t:11,d:0.03,g:1,}],
+      [{w:"sine",d:0.3,r:0.3,},{w:"sine",v:11,t:6,d:0.2,s:0.4,g:1,}],
+      [{w:"sine",v:0.2,d:0.3,r:0.3,},{w:"sine",v:11,t:5,d:0.1,s:0.4,g:1,}],
+      [{w:"sine",v:0.2,d:0.6,r:0.6,},{w:"triangle",v:11,t:5,f:1,s:0.5,g:1,}],
+      [{w:"sine",v:0.3,d:0.2,r:0.2,},{w:"sine",v:6,t:5,d:0.02,g:1,}],
+      [{w:"sine",v:0.3,d:0.2,r:0.2,},{w:"sine",v:7,t:11,d:0.03,g:1,}],
+      [{w:"sine",v:0.2,d:1,r:1,},{w:"sine",v:11,t:3.5,d:1,r:1,g:1,}],
+      [{w:"triangle",v:0.2,d:0.5,r:0.5,},{w:"sine",v:6,t:2.5,d:0.2,s:0.1,r:0.2,g:1,}],
+      /* 17-24 : Organ */
+      [{w:"sine",v:0.3,s:0.9,},{w:"sine",v:0.3,t:4,f:2,s:0.9,}],
+      [{w:"sine",v:0.3,d:0.05,s:0.9,},{w:"sine",v:33,t:5,f:1.5,d:0.005,s:0.1,g:1,}],
+      [{w:"triangle",v:0.3,d:11,},{w:"triangle",v:15,t:3,f:1.5,s:0.2,g:1,}],
+      [{w:"sine",v:0.3,a:0.02,s:0.9,},{w:"sine",v:5,t:5,f:1.5,a:0.02,s:0.9,g:1,}],
+      [{w:"sine",v:0.2,a:0.02,d:0.05,s:1,},{w:"sine",v:6,t:3,f:1,a:0.02,d:0.05,s:1,g:1,}],
+      [{w:"triangle",v:0.2,a:0.02,d:0.05,s:0.8,},{w:"square",v:7,t:3,f:1,d:0.05,s:1.5,g:1,}],
+      [{w:"square",v:0.2,a:0.02,d:0.2,s:0.5,},{w:"square",v:1,d:0.03,s:2,g:1,}],
+      [{w:"square",v:0.2,a:0.02,d:0.1,s:0.8,},{w:"square",v:1,a:0.3,d:0.1,s:2,g:1,}],
+      /* 25-32 : Guitar */
+      [{w:"triangle",v:0.3,d:0.5,},{w:"triangle",v:5,t:3,f:1.5,d:1,s:0.1,g:1,}],
+      [{w:"triangle",v:0.4,d:0.6,},{w:"triangle",v:8,t:1.001,d:1,s:1,g:1,}],
+      [{w:"triangle",v:0.3,d:1,},{w:"triangle",v:6,f:2,d:0.4,s:0.5,g:1,}],
+      [{w:"sine",v:0.3,d:1,},{w:"triangle",v:6,f:1,d:0.4,s:0.5,g:1,}],
+      [{w:"sine",v:0.4,d:0.1,},{w:"sine",v:7,g:1,}],
+      [{w:"triangle",v:0.3,d:1,},{w:"square",v:7,f:2,d:0.3,s:0.5,g:1,}],
+      [{w:"triangle",v:0.4,d:1,},{w:"square",v:4,f:2,d:1,s:0.7,g:1,}],
+      [{w:"sine",v:0.2,t:1.5,a:0.005,h:0.2,d:0.6,},{w:"sine",v:11,t:5,f:2,d:1,s:0.5,g:1,}],
+      /* 33-40 : Bass */
+      [{w:"sine",d:0.3,},{w:"sine",v:4,t:3,d:1,s:1,g:1,}],
+      [{w:"sine",d:0.3,},{w:"sine",v:4,t:3,d:1,s:1,g:1,}],
+      [{w:"sine",d:0.3,},{w:"sine",v:11,t:3,d:0.05,s:0.5,g:1,}],
+      [{w:"sine",d:0.3,},{w:"sine",v:4,t:3,d:1,s:1,g:1,}],
+      [{w:"triangle",v:0.3,t:2,d:1,},{w:"triangle",v:15,t:2.5,d:0.04,s:0.1,g:1,}],
+      [{w:"triangle",v:0.3,t:2,d:1,},{w:"triangle",v:15,t:2.5,d:0.04,s:0.1,g:1,}],
+      [{w:"triangle",d:0.7,},{w:"square",v:0.4,t:0.5,f:1,d:0.2,s:10,g:1,}],
+      [{w:"triangle",d:0.7,},{w:"square",v:0.4,t:0.5,f:1,d:0.2,s:10,g:1,}],
+      /* 41-48 : Strings */
+      [{w:"sawtooth",v:0.4,a:0.1,d:11,},{w:"sine",v:5,d:11,s:0.2,g:1,}],
+      [{w:"sawtooth",v:0.4,a:0.1,d:11,},{w:"sine",v:5,d:11,s:0.2,g:1,}],
+      [{w:"sawtooth",v:0.4,a:0.1,d:11,},{w:"sine",v:5,t:0.5,d:11,s:0.2,g:1,}],
+      [{w:"sawtooth",v:0.4,a:0.1,d:11,},{w:"sine",v:5,t:0.5,d:11,s:0.2,g:1,}],
+      [{w:"sine",v:0.4,a:0.1,d:11,},{w:"sine",v:6,f:2.5,d:0.05,s:1.1,g:1,}],
+      [{w:"sine",v:0.3,d:0.1,r:0.1,},{w:"square",v:4,t:3,d:1,s:0.2,g:1,}],
+      [{w:"sine",v:0.3,d:0.5,r:0.5,},{w:"sine",v:7,t:2,f:2,d:1,r:1,g:1,}],
+      [{w:"triangle",v:0.6,h:0.03,d:0.1,r:0.1,p:0.8,},{w:"sine",v:4,t:3,d:0.08,r:0.08,p:0.8,g:1,}],
+      /* 49-56 : Ensamble */
+      [{w:"sawtooth",v:0.3,a:0.03,s:0.5,},{w:"sawtooth",v:0.2,t:2,f:2,d:1,s:2,}],
+      [{w:"sawtooth",v:0.3,f:-2,a:0.03,s:0.5,},{w:"sawtooth",v:0.2,t:2,f:2,d:1,s:2,}],
+      [{w:"sawtooth",v:0.2,a:0.02,s:1,},{w:"sawtooth",v:0.2,t:2,f:2,a:1,d:1,s:1,}],
+      [{w:"sawtooth",v:0.2,a:0.02,s:1,},{w:"sawtooth",v:0.2,f:2,a:0.02,d:1,s:1,}],
+      [{w:"triangle",v:0.3,a:0.03,s:1,},{w:"sine",v:3,t:5,f:1,d:1,s:1,g:1,}],
+      [{w:"sine",v:0.4,a:0.03,s:0.9,},{w:"sine",v:1,t:2,f:3,d:0.03,s:0.2,g:1,}],
+      [{w:"triangle",v:0.6,a:0.05,s:0.5,},{w:"sine",v:1,f:0.8,d:0.2,s:0.2,g:1,}],
+      [{w:"square",a:0.01,d:0.2,r:0.005,},{w:"sawtooth",v:0.3,t:1.5,f:1,d:0.2,r:0.1,}],
+      /* 57-64 : Brass */
+      [{w:"square",v:0.3,a:0.01,d:1,s:0.6,r:0.04,},{w:"sine",v:1,d:0.1,s:4,g:1,}],
+      [{w:"square",v:0.3,a:0.02,d:1,s:0.5,r:0.08,},{w:"sine",v:1,d:0.1,s:4,g:1,}],
+      [{w:"square",v:0.3,a:0.04,d:1,s:0.4,r:0.08,},{w:"sine",v:1,d:0.1,s:4,g:1,}],
+      [{w:"square",v:0.2,a:0.04,s:1,},{w:"sine",v:2,d:0.1,g:1,}],
+      [{w:"square",v:0.3,a:0.02,d:1,s:0.5,r:0.08,},{w:"sine",v:1,d:0.1,s:4,g:1,}],
+      [{w:"square",v:0.3,a:0.02,d:1,s:0.6,r:0.08,},{w:"sine",v:1,f:0.2,d:0.1,s:4,g:1,}],
+      [{w:"square",v:0.25,a:0.02,d:0.5,s:0.7,r:0.08,},{w:"sine",v:1,d:0.1,s:4,g:1,}],
+      [{w:"square",v:0.3,a:0.02,d:1,s:0.5,r:0.08,},{w:"sine",v:1,d:0.1,s:4,g:1,}],
+      /* 65-72 : Reed */
+      [{w:"square",v:0.3,a:0.02,d:2,s:0.6,},{w:"sine",v:2,d:1,g:1,}],
+      [{w:"square",v:0.3,a:0.02,d:2,s:0.6,},{w:"sine",v:2,d:1,g:1,}],
+      [{w:"square",v:0.3,a:0.02,d:1,s:0.6,},{w:"sine",v:2,d:1,g:1,}],
+      [{w:"square",v:0.3,a:0.02,d:1,s:0.6,},{w:"sine",v:2,d:1,g:1,}],
+      [{w:"sine",v:0.4,a:0.02,d:0.7,s:0.5,},{w:"square",v:5,t:2,d:0.2,s:0.5,g:1,}],
+      [{w:"sine",v:0.3,a:0.05,d:0.2,s:0.8,},{w:"sawtooth",v:6,f:0.1,d:0.1,s:0.3,g:1,}],
+      [{w:"sine",v:0.3,a:0.03,d:0.2,s:0.4,},{w:"square",v:7,f:0.2,d:1,s:0.1,g:1,}],
+      [{w:"square",v:0.3,a:0.05,d:0.1,s:0.8,},{w:"square",v:4,d:0.1,s:1.1,g:1,}],
+      /* 73-80 : Pipe */
+      [{w:"sine",a:0.02,d:2,},{w:"sine",v:6,t:2,d:0.04,g:1,}],
+      [{w:"sine",v:0.7,a:0.03,d:0.4,s:0.4,},{w:"sine",v:4,t:2,f:0.2,d:0.4,g:1,}],
+      [{w:"sine",v:0.7,a:0.02,d:0.4,s:0.6,},{w:"sine",v:3,t:2,d:0.05,s:0.1,g:1,}],
+      [{w:"sine",v:0.4,a:0.06,d:0.3,s:0.3,},{w:"sine",v:7,t:2,d:0.2,s:0.2,g:1,}],
+      [{w:"sine",a:0.02,d:0.3,s:0.3,},{w:"sawtooth",v:3,t:2,d:0.3,g:1,}],
+      [{w:"sine",a:0.02,d:2,s:0.1,},{w:"sawtooth",v:8,t:2,f:1,d:0.5,g:1,}],
+      [{w:"sine",v:0.7,a:0.03,d:0.5,s:0.3,},{w:"sine",v:0.003,t:0,f:4,d:0.1,s:0.002,g:1,}],
+      [{w:"sine",v:0.7,a:0.02,d:2,},{w:"sine",v:1,t:2,f:1,d:0.02,g:1,}],
+      /* 81-88 : SynthLead */
+      [{w:"square",v:0.3,d:1,s:0.5,},{w:"square",v:1,f:0.2,d:1,s:0.5,g:1,}],
+      [{w:"sawtooth",d:2,s:0.5,},{w:"square",v:2,f:0.1,s:0.5,g:1,}],
+      [{w:"triangle",a:0.05,d:2,s:0.6,},{w:"sine",v:4,t:2,g:1,}],
+      [{w:"triangle",a:0.01,d:2,s:0.3,},{w:"sine",v:22,t:2,f:1,d:0.03,s:0.2,g:1,}],
+      [{w:"sawtooth",v:0.4,d:1,s:0.5,},{w:"sine",v:11,t:11,a:0.2,d:0.05,s:0.3,g:1,}],
+      [{w:"sine",v:0.4,a:0.06,d:1,s:0.5,},{w:"sine",v:7,f:1,d:1,s:0.2,g:1,}],
+      [{w:"sawtooth",v:0.4,a:0.02,d:0.2,s:0.7,r:0.08,},{w:"sawtooth",v:0.3,t:0.75,f:2,a:0.02,d:0.2,s:0.5,r:0.08,}],
+      [{w:"triangle",v:0.3,a:0.01,d:11,},{w:"square",v:4,t:0.5,d:0.7,s:0.5,g:1,}],
+      /* 89-96 : SynthPad */
+      [{w:"triangle",a:0.02,d:0.3,s:0.3,r:0.3,},{w:"square",v:3,t:4,f:1,a:0.02,d:0.1,s:1,g:1,}],
+      [{w:"triangle",a:0.05,d:1,s:0.7,r:0.3,},{w:"sawtooth",v:3,t:4,f:1,d:0.3,s:1,g:1,}],
+      [{w:"square",v:0.3,a:0.03,d:0.5,s:0.3,r:0.1,},{w:"square",v:4,f:1,a:0.03,d:0.1,g:1,}],
+      [{w:"triangle",a:0.08,d:1,s:0.3,r:0.1,},{w:"square",v:3,f:1,d:0.3,s:0.3,g:1,}],
+      [{w:"sine",a:0.05,d:1,s:0.3,r:0.1,},{w:"sine",v:0.1,t:2.001,f:1,d:1,s:50,g:1,}],
+      [{w:"triangle",a:0.03,d:0.7,s:0.3,r:0.2,},{w:"sine",v:12,t:7,f:1,d:0.5,s:1.7,g:1,}],
+      [{w:"sine",a:0.05,d:1,s:0.3,r:0.1,},{w:"sawtooth",v:22,t:6,d:0.06,s:0.3,g:1,}],
+      [{w:"triangle",v:0.4,a:0.05,d:11,r:0.3,},{w:"triangle",v:1,d:1,s:8,g:1,}],
+      /* 97-104 : FX */
+      [{w:"sawtooth",v:0.3,d:4,s:0.8,r:0.1,},{w:"square",v:1,t:2,f:8,a:1,d:1,s:1,r:0.1,g:1,}],
+      [{w:"triangle",v:0.4,d:1,s:0.5,},{w:"triangle",v:11,f:1,a:1,d:0.3,s:1,g:1,}],
+      [{w:"sine",v:0.3,d:1,s:0.3,},{w:"square",v:22,t:11,d:0.5,s:0.1,g:1,}],
+      [{w:"sawtooth",v:0.3,a:0.04,d:1,s:0.8,r:0.1,},{w:"square",v:1,t:0.5,d:1,s:2,g:1,}],
+      [{w:"triangle",v:0.4,d:1,s:0.3,},{w:"sine",v:22,t:6,d:0.6,s:0.05,g:1,}],
+      [{w:"sine",v:0.6,a:0.1,d:0.05,s:0.4,},{w:"sine",v:5,t:5,f:1,d:0.05,s:0.3,g:1,}],
+      [{w:"sine",a:0.1,d:0.05,s:0.4,},{w:"sine",v:5,t:5,f:1,d:0.05,s:0.3,g:1,}],
+      [{w:"square",v:0.3,a:0.1,d:0.1,s:0.4,},{w:"square",v:1,f:1,d:0.3,s:0.1,g:1,}],
+      /* 105-112 : Ethnic */
+      [{w:"sawtooth",v:0.3,d:0.5,r:0.5,},{w:"sawtooth",v:11,t:5,d:0.05,g:1,}],
+      [{w:"square",v:0.3,d:0.2,r:0.2,},{w:"square",v:7,t:3,d:0.05,b:1,g:1,}],
+      [{w:"triangle",d:0.2,r:0.2,},{w:"square",v:9,t:3,d:0.1,r:0.1,b:1,g:1,}],
+      [{w:"triangle",d:0.3,r:0.3,},{w:"square",v:6,t:3,d:1,r:1,g:1,}],
+      [{w:"triangle",v:0.4,d:0.2,r:0.2,},{w:"square",v:22,t:12,d:0.1,r:0.1,g:1,}],
+      [{w:"sine",v:0.25,a:0.02,d:0.05,s:0.8,},{w:"square",v:1,t:2,d:0.03,s:11,g:1,}],
+      [{w:"sine",v:0.3,a:0.05,d:11,},{w:"square",v:7,t:3,f:1,s:0.7,g:1,}],
+      [{w:"square",v:0.3,a:0.05,d:0.1,s:0.8,},{w:"square",v:4,d:0.1,s:1.1,g:1,}],
+      /* 113-120 : Percussive */
+      [{w:"sine",v:0.4,d:0.3,r:0.3,},{w:"sine",v:7,t:9,d:0.1,r:0.1,g:1,}],
+      [{w:"sine",v:0.7,d:0.1,r:0.1,},{w:"sine",v:22,t:7,d:0.05,g:1,}],
+      [{w:"sine",v:0.6,d:0.15,r:0.15,b:7,},{w:"square",v:11,t:3.2,d:0.1,r:0.1,g:1,}],
+      [{w:"sine",v:0.8,d:0.07,r:0.07,},{w:"square",v:11,t:7,r:0.01,g:1,}],
+      [{w:"sine",v:0.7,t:0.5,d:0.2,r:0.2,p:0.95,},{w:"square",v:14,t:2,g:1,}],
+      [{w:"sine",v:0.7,d:0.1,r:0.1,p:0.9,},{w:"square",v:14,t:2,d:0.005,r:0.005,g:1,}],
+      [{w:"square",d:0.15,r:0.15,p:0.5,},{w:"square",v:4,t:5,d:0.001,r:0.001,g:1,}],
+      [{w:"sine",v:0.2,a:1,d:0.001,s:1,r:0.001,b:3532,p:1.2,},{w:"sawtooth",v:0.1,t:0,f:1111,a:1,d:1,s:1,r:0.07,}],
+      /* 121-128 : SE */
+      [{w:"triangle",t:0,f:1732,d:0.2,r:0.001,b:923,p:1.3,}],
+      [{w:"triangle",v:0.2,a:0.05,h:0.02,d:0.02,r:0.02,b:3266,}],
+      [{w:"sine",v:0.3,a:1,d:1,b:2305,}],
+      [{w:"sine",v:0.3,a:0.01,d:1,s:0.5,},{w:"sawtooth",v:6,t:0,f:12,d:1,s:1,r:0.1,b:14,g:1,}],
+      [{w:"square",v:0.3,t:0.25,d:11,s:1,},{w:"square",v:12,t:0,f:8,d:1,s:1,r:11,g:1,}],
+      [{w:"sine",v:0.4,t:0,f:500,a:1,d:11,s:1,r:0.5,b:1133,},{w:"square",v:2,t:0,f:14,d:1,s:1,r:11,g:1,}],
+      [{w:"triangle",t:0,f:1221,a:0.2,d:11,r:0.5,b:1782,}],
+      [{w:"square",d:0.4,r:0.4,p:0.7,},{w:"sine",v:7,t:1.3,d:1,r:1,b:1224,g:1,}],
     ],
     program0:[
 // 1-8 : Piano
-      {w1:"triangle",v1:.5,d1:.7,               name:"Acoustic Grand Piano"},
-      {w1:"triangle",v1:.5,d1:.7,               name:"Bright Acoustic Piano"},
-      {w1:"triangle",v1:.5,d1:.7,               name:"Electric Grand Piano"},
-      {w1:"triangle",v1:.5,d1:.7,               name:"Honky-tonk Piano"},
-      {w1:"triangle",v1:.5,d1:.7,               name:"Electric Piano 1"},
-      {w1:"triangle",v1:.5,d1:.7,               name:"Electric Piano 2"},
-      {w1:"sawtooth",v1:.3,d1:.7,               name:"Harpsichord"},
-      {w1:"sawtooth",v1:.3,d1:.7,               name:"Clavi"},
-/* 8-16 : Chromatic Perc*/
-      {w1:"sine",v1:.5,d1:.3,r1:.3,             name:"Celesta"},
-      {w1:"triangle",v1:.5,d1:.3,r1:.3,         name:"Glockenspiel"},
-      {w1:"square",v1:.2,d1:.3,r1:.3,           name:"Music Box"},
-      {w1:"square",v1:.2,d1:.3,r1:.3,           name:"Vibraphone"},
-      {w1:"sine",v1:.5,d1:.1,r1:.1,             name:"Marimba"},
-      {w1:"sine",v1:.5,d1:.1,r1:.1,             name:"Xylophone"},
-      {w1:"square",v1:.2,d1:1,r1:1,             name:"Tubular Bells"},
-      {w1:"sawtooth",v1:.3,d1:.7,r1:.7,         name:"Dulcimer"},
+      [{w:"triangle",v:.5,d:.7}],                   [{w:"triangle",v:.5,d:.7}],
+      [{w:"triangle",v:.5,d:.7}],                   [{w:"triangle",v:.5,d:.7}],
+      [{w:"triangle",v:.5,d:.7}],                   [{w:"triangle",v:.5,d:.7}],
+      [{w:"sawtooth",v:.3,d:.7}],                   [{w:"sawtooth",v:.3,d:.7}],
+/* 9-16 : Chromatic Perc*/
+      [{w:"sine",v:.5,d:.3,r:.3}],                  [{w:"triangle",v:.5,d:.3,r:.3}],
+      [{w:"square",v:.2,d:.3,r:.3}],                [{w:"square",v:.2,d:.3,r:.3}],
+      [{w:"sine",v:.5,d:.1,r:.1}],                  [{w:"sine",v:.5,d:.1,r:.1}],
+      [{w:"square",v:.2,d:1,r:1}],                  [{w:"sawtooth",v:.3,d:.7,r:.7}],
 /* 17-24 : Organ */
-      {w1:"sine",v1:0.5,a1:0.01,s1:1,           name:"Drawbar Organ"},
-      {w1:"sine",v1:0.7,d1:0.02,s1:0.7,         name:"Percussive Organ"},
-      {w1:"square",v1:.2,s1:1,                  name:"Rock Organ"},
-      {w1:"triangle",v1:.5,a1:.01,s1:1,         name:"Church Organ"},
-      {w1:"square",v1:.2,a1:.02,s1:1,           name:"Reed Organ"},
-      {w1:"square",v1:0.2,a1:0.02,s1:1,         name:"Accordion"},
-      {w1:"square",v1:0.2,a1:0.02,s1:1,         name:"Harmonica"},
-      {w1:"square",v1:.2,a1:.05,s1:1,           name:"Tango Accordion"},
+      [{w:"sine",v:0.5,a:0.01,s:1}],                [{w:"sine",v:0.7,d:0.02,s:0.7}],
+      [{w:"square",v:.2,s:1}],                      [{w:"triangle",v:.5,a:.01,s:1}],
+      [{w:"square",v:.2,a:.02,s:1}],                [{w:"square",v:0.2,a:0.02,s:1}],
+      [{w:"square",v:0.2,a:0.02,s:1}],              [{w:"square",v:.2,a:.05,s:1}],
 /* 25-32 : Guitar */
-      {w1:"triangle",v1:.5,d1:.5,               name:"Acoustic Guitar (nylon)"},
-      {w1:"square",v1:.2,d1:.6,                 name:"Acoustic Guitar (steel)"},
-      {w1:"square",v1:.2,d1:.6,                 name:"Electric Guitar (jazz)"},
-      {w1:"triangle",v1:.8,d1:.6,               name:"Electric Guitar (clean)"},
-      {w1:"triangle",v1:.4,d1:.05,              name:"Electric Guitar (muted)"},
-      {w1:"square",v1:.2,d1:1,                  name:"Overdriven Guitar"},
-      {w1:"square",v1:.2,d1:1,                  name:"Distortion Guitar"},
-      {w1:"sine",v1:.4,d1:.6,                   name:"Guitar harmonics"},
+      [{w:"triangle",v:.5,d:.5}],                   [{w:"square",v:.2,d:.6}],
+      [{w:"square",v:.2,d:.6}],                     [{w:"triangle",v:.8,d:.6}],
+      [{w:"triangle",v:.4,d:.05}],                  [{w:"square",v:.2,d:1}],
+      [{w:"square",v:.2,d:1}],                      [{w:"sine",v:.4,d:.6}],
 /* 33-40 : Bass */
-      {w1:"triangle",v1:.7,d1:.4,               name:"Acoustic Bass"},
-      {w1:"triangle",v1:.7,d1:.7,               name:"Electric Bass (finger)"},
-      {w1:"triangle",v1:.7,d1:.7,               name:"Electric Bass (pick)"},
-      {w1:"triangle",v1:.7,d1:.7,               name:"Fretless Bass"},
-      {w1:"square",v1:.3,d1:.2,                 name:"Slap Bass 1"},
-      {w1:"square",v1:.3,d1:.2,                 name:"Slap Bass 2"},
-      {w1:"square",v1:.3,d1:.1,s1:.2,           name:"Synth Bass 1"},
-      {w1:"sawtooth",v1:.4,d1:.1,s1:.2,         name:"Synth Bass 2"},
+      [{w:"triangle",v:.7,d:.4}],                   [{w:"triangle",v:.7,d:.7}],
+      [{w:"triangle",v:.7,d:.7}],                   [{w:"triangle",v:.7,d:.7}],
+      [{w:"square",v:.3,d:.2}],                     [{w:"square",v:.3,d:.2}],
+      [{w:"square",v:.3,d:.1,s:.2}],                [{w:"sawtooth",v:.4,d:.1,s:.2}],
 /* 41-48 : Strings */
-      {w1:"sawtooth",v1:.2,a1:.02,s1:1,         name:"Violin"},
-      {w1:"sawtooth",v1:.2,a1:.02,s1:1,         name:"Viola"},
-      {w1:"sawtooth",v1:.2,a1:.02,s1:1,         name:"Cello"},
-      {w1:"sawtooth",v1:.2,a1:.02,s1:1,         name:"Contrabass"},
-      {w1:"sawtooth",v1:.2,a1:.02,s1:1,         name:"Tremolo Strings"},
-      {w1:"sawtooth",v1:.3,d1:.1,               name:"Pizzicato Strings"},
-      {w1:"sawtooth",v1:.3,d1:.5,r1:.5,         name:"Orchestral Harp"},
-      {w1:"triangle",v1:.6,d1:.1,r1:.1,h1:0.03,p1:0.8,      name:"Timpani"},
+      [{w:"sawtooth",v:.2,a:.02,s:1}],              [{w:"sawtooth",v:.2,a:.02,s:1}],
+      [{w:"sawtooth",v:.2,a:.02,s:1}],              [{w:"sawtooth",v:.2,a:.02,s:1}],
+      [{w:"sawtooth",v:.2,a:.02,s:1}],              [{w:"sawtooth",v:.3,d:.1}],
+      [{w:"sawtooth",v:.3,d:.5,r:.5}],              [{w:"triangle",v:.6,d:.1,r:.1,h:0.03,p:0.8}],
 /* 49-56 : Ensamble */
-      {w1:"sawtooth",v1:.2,a1:.02,s1:1,         name:"String Ensemble 1"},
-      {w1:"sawtooth",v1:.2,a1:.02,s1:1,         name:"String Ensemble 2"},
-      {w1:"sawtooth",v1:.2,a1:.02,s1:1,         name:"SynthStrings 1"},
-      {w1:"sawtooth",v1:.2,a1:.02,s1:1,         name:"SynthStrings 2"},
-      {w1:"triangle",v1:.3,a1:.03,s1:1,         name:"Choir Aahs"},
-      {w1:"sine",v1:.3,a1:.03,s1:1,             name:"Voice Oohs"},
-      {w1:"triangle",v1:.3,a1:.05,s1:1,         name:"Synth Voice"},
-      {w1:"sawtooth",v1:.5,a1:.01,d1:.1,        name:"Orchestra Hit"},
+      [{w:"sawtooth",v:.2,a:.02,s:1}],              [{w:"sawtooth",v:.2,a:.02,s:1}],
+      [{w:"sawtooth",v:.2,a:.02,s:1}],              [{w:"sawtooth",v:.2,a:.02,s:1}],
+      [{w:"triangle",v:.3,a:.03,s:1}],              [{w:"sine",v:.3,a:.03,s:1}],
+      [{w:"triangle",v:.3,a:.05,s:1}],              [{w:"sawtooth",v:.5,a:.01,d:.1}],
 /* 57-64 : Brass */
-      {w1:"square",v1:.3,a1:.1,d1:.2,s1:.6,     name:"Trumpet"},
-      {w1:"square",v1:.3,a1:.1,d1:.2,s1:.6,     name:"Trombone"},
-      {w1:"square",v1:.3,a1:.1,d1:.2,s1:.6,     name:"Tuba"},
-      {w1:"square",v1:0.2,a1:0.1,d1:0.01,s1:1,  name:"Muted Trumpet"},
-      {w1:"square",v1:.3,a1:.05,s1:1,           name:"French Horn"},
-      {w1:"square",v1:.3,s1:.7,                 name:"Brass Section"},
-      {w1:"square",v1:.3,s1:.7,                 name:"SynthBrass 1"},
-      {w1:"square",v1:.3,s1:.7,                 name:"SynthBrass 2"},
+      [{w:"square",v:.3,a:.1,d:.2,s:.6}],           [{w:"square",v:.3,a:.1,d:.2,s:.6}],
+      [{w:"square",v:.3,a:.1,d:.2,s:.6}],           [{w:"square",v:0.2,a:0.1,d:0.01,s:1}],
+      [{w:"square",v:.3,a:.05,s:1}],                [{w:"square",v:.3,s:.7}],
+      [{w:"square",v:.3,s:.7}],                     [{w:"square",v:.3,s:.7}],
 /* 65-72 : Reed */
-      {w1:"square",v1:.3,a1:.02,d1:2,           name:"Soprano Sax"},
-      {w1:"square",v1:.3,a1:.02,d1:2,           name:"Alto Sax"},
-      {w1:"square",v1:.3,a1:.03,d1:2,           name:"Tenor Sax"},
-      {w1:"square",v1:.3,a1:.04,d1:2,           name:"Baritone Sax"},
-      {w1:"square",v1:.3,a1:.02,d1:2,           name:"Oboe"},
-      {w1:"square",v1:.3,a1:.05,d1:2,           name:"English Horn"},
-      {w1:"square",v1:.3,a1:.03,d1:2,           name:"Bassoon"},
-      {w1:"square",v1:.3,a1:.03,d1:2,           name:"Clarinet"},
+      [{w:"square",v:.3,a:.02,d:2}],                [{w:"square",v:.3,a:.02,d:2}],
+      [{w:"square",v:.3,a:.03,d:2}],                [{w:"square",v:.3,a:.04,d:2}],
+      [{w:"square",v:.3,a:.02,d:2}],                [{w:"square",v:.3,a:.05,d:2}],
+      [{w:"square",v:.3,a:.03,d:2}],                [{w:"square",v:.3,a:.03,d:2}],
 /* 73-80 : Pipe */
-      {w1:"sine",v1:.7,a1:.02,d1:2,             name:"Piccolo"},
-      {w1:"sine",v1:.7,a1:.02,d1:2,             name:"Flute"},
-      {w1:"sine",v1:.7,a1:.02,d1:2,             name:"Recorder"},
-      {w1:"sine",v1:.7,a1:.02,d1:2,             name:"Pan Flute"},
-      {w1:"sine",v1:.7,a1:.02,d1:2,             name:"Blown Bottle"},
-      {w1:"sine",v1:.7,a1:.02,d1:2,             name:"Shakuhachi"},
-      {w1:"sine",v1:.7,a1:.02,d1:2,             name:"Whistle"},
-      {w1:"sine",v1:.7,a1:.02,d1:2,             name:"Ocarina"},
+      [{w:"sine",v:.7,a:.02,d:2}],                  [{w:"sine",v:.7,a:.02,d:2}],
+      [{w:"sine",v:.7,a:.02,d:2}],                  [{w:"sine",v:.7,a:.02,d:2}],
+      [{w:"sine",v:.7,a:.02,d:2}],                  [{w:"sine",v:.7,a:.02,d:2}],
+      [{w:"sine",v:.7,a:.02,d:2}],                  [{w:"sine",v:.7,a:.02,d:2}],
 /* 81-88 : SynthLead */
-      {w1:"square",v1:.3,s1:.7,                 name:"Lead 1 (square)"},
-      {w1:"sawtooth",v1:.4,s1:.7,               name:"Lead 2 (sawtooth)"},
-      {w1:"triangle",v1:.5,s1:.7,               name:"Lead 3 (calliope)"},
-      {w1:"sawtooth",v1:.4,s1:.7,               name:"Lead 4 (chiff)"},
-      {w1:"sawtooth",v1:.4,d1:12,               name:"Lead 5 (charang)"},
-      {w1:"sine",v1:.4,a1:.06,d1:12,            name:"Lead 6 (voice)"},
-      {w1:"sawtooth",v1:.4,d1:12,               name:"Lead 7 (fifths)"},
-      {w1:"sawtooth",v1:.4,d1:12,               name:"Lead 8 (bass + lead)"},
+      [{w:"square",v:.3,s:.7}],                     [{w:"sawtooth",v:.4,s:.7}],
+      [{w:"triangle",v:.5,s:.7}],                   [{w:"sawtooth",v:.4,s:.7}],
+      [{w:"sawtooth",v:.4,d:12}],                   [{w:"sine",v:.4,a:.06,d:12}],
+      [{w:"sawtooth",v:.4,d:12}],                   [{w:"sawtooth",v:.4,d:12}],
 /* 89-96 : SynthPad */
-      {w1:"sawtooth",v1:.3,d1:12,               name:"Pad 1 (new age)"},
-      {w1:"triangle",v1:.5,d1:12,               name:"Pad 2 (warm)"},
-      {w1:"square",v1:.3,d1:12,                 name:"Pad 3 (polysynth)"},
-      {w1:"triangle",v1:.5,a1:.08,d1:11,        name:"Pad 4 (choir)"},
-      {w1:"sawtooth",v1:.5,a1:.05,d1:11,        name:"Pad 5 (bowed)"},
-      {w1:"sawtooth",v1:.5,d1:11,               name:"Pad 6 (metallic)"},
-      {w1:"triangle",v1:.5,d1:11,               name:"Pad 7 (halo)"},
-      {w1:"triangle",v1:.5,d1:11,               name:"Pad 8 (sweep)"},
+      [{w:"sawtooth",v:.3,d:12}],                   [{w:"triangle",v:.5,d:12}],
+      [{w:"square",v:.3,d:12}],                     [{w:"triangle",v:.5,a:.08,d:11}],
+      [{w:"sawtooth",v:.5,a:.05,d:11}],             [{w:"sawtooth",v:.5,d:11}],
+      [{w:"triangle",v:.5,d:11}],                   [{w:"triangle",v:.5,d:11}],
 /* 97-104 : FX */
-      {w1:"triangle",v1:.5,d1:11,                                         name:"FX 1 (rain)"},
-      {w1:"triangle",v1:.5,d1:11,                                         name:"FX 2 (soundtrack)"},
-      {w1:"square",v1:.3,d1:11,                                           name:"FX 3 (crystal)"},
-      {w1:"sawtooth",v1:0.5,a1:0.04,d1:11,                                name:"FX 4 (atmosphere)"},
-      {w1:"sawtooth",v1:.5,d1:11,                                         name:"FX 5 (brightness)"},
-      {w1:"triangle",v1:.5,a1:.8,d1:11,                                   name:"FX 6 (goblins)"},
-      {w1:"triangle",v1:.5,d1:11,                                         name:"FX 7 (echoes)"},
-      {w1:"square",v1:.3,d1:11,                                           name:"FX 8 (sci-fi)"},
+      [{w:"triangle",v:.5,d:11}],                   [{w:"triangle",v:.5,d:11}],
+      [{w:"square",v:.3,d:11}],                     [{w:"sawtooth",v:0.5,a:0.04,d:11}],
+      [{w:"sawtooth",v:.5,d:11}],                   [{w:"triangle",v:.5,a:.8,d:11}],
+      [{w:"triangle",v:.5,d:11}],                   [{w:"square",v:.3,d:11}],
 /* 105-112 : Ethnic */
-      {w1:"sawtooth",v1:.3,d1:1,r1:1,                                     name:"Sitar"},
-      {w1:"sawtooth",v1:.5,d1:.3,                                         name:"Banjo"},
-      {w1:"sawtooth",v1:.5,d1:.3,r1:.3,                                   name:"Shamisen"},
-      {w1:"sawtooth",v1:.5,d1:.3,r1:.3,                                   name:"Koto"},
-      {w1:"square",v1:.3,d1:.2,r1:.2,                                     name:"Kalimba"},
-      {w1:"square",v1:.3,a1:.02,d1:2,                                     name:"Bag pipe"},
-      {w1:"sawtooth",v1:.2,a1:.02,d1:.7,                                  name:"Fiddle"},
-      {w1:"triangle",v1:.5,d1:1,                                          name:"Shanai"},
+      [{w:"sawtooth",v:.3,d:1,r:1}],                [{w:"sawtooth",v:.5,d:.3}],
+      [{w:"sawtooth",v:.5,d:.3,r:.3}],              [{w:"sawtooth",v:.5,d:.3,r:.3}],
+      [{w:"square",v:.3,d:.2,r:.2}],                [{w:"square",v:.3,a:.02,d:2}],
+      [{w:"sawtooth",v:.2,a:.02,d:.7}],             [{w:"triangle",v:.5,d:1}],
 /* 113-120 : Percussive */
-      {w1:"sawtooth",v1:.3,d1:.3,r1:.3,                                   name:"Tinkle Bell"},
-      {w1:"sine",v1:.8,d1:.1,r1:.1,                                       name:"Agogo"},
-      {w1:"square",v1:.2,d1:.1,r1:.1,b1:7,p1:1.05,                        name:"Steel Drums"},
-      {w1:"sine",v1:.8,d1:.05,r1:.05,                                     name:"Woodblock"},
-      {w1:"triangle",v1:0.5,d1:0.1,r1:0.1,b1:0,p1:0.96,                   name:"Taiko Drum"},
-      {w1:"triangle",v1:0.5,d1:0.1,r1:0.1,b1:0,p1:0.97,                   name:"Melodic Tom"},
-      {w1:"square",v1:.3,d1:.1,r1:.1,p1:.1,                               name:"Synth Drum"},
-      {w1:"square",v1:0.3,a1:1,d1:0.01,r1:0.01,b1:3532,p1:1.2,            name:"Reverse Cymbal"},
+      [{w:"sawtooth",v:.3,d:.3,r:.3}],              [{w:"sine",v:.8,d:.1,r:.1}],
+      [{w:"square",v:.2,d:.1,r:.1,b:7,p:1.05}],     [{w:"sine",v:.8,d:.05,r:.05}],
+      [{w:"triangle",v:0.5,d:0.1,r:0.1,b:0,p:0.96}],[{w:"triangle",v:0.5,d:0.1,r:0.1,b:0,p:0.97}],
+      [{w:"square",v:.3,d:.1,r:.1,p:.1}],           [{w:"square",v:0.3,a:1,d:0.01,r:0.01,b:3532,p:1.2}],
 /* 121-128 : SE */
-      {w1:"triangle",v1:0.5,d1:0.03,t1:0,f1:1332,r1:0.001,b1:823,p1:1.1,  name:"Guitar Fret Noise"},
-      {w1:"triangle",v1:0.2,b1:3266,d1:0.02,a1:0.05,h1:0.02,r1:0.02,      name:"Breath Noise"},
-      {w1:"sine",v1:0.3,a1:1,b1:2305,d1:1,                                name:"Seashore"},
-      {w1:"sine",v1:0.3,a1:0.8,b1:942,d1:1,t1:0,f1:1832,                  name:"Bird Tweet"},
-      {w1:"triangle",v1:0.5,d1:0.5,t1:0,f1:864,b1:778,                    name:"Telephone Ring"},
-      {w1:"sine",v1:0.4,d1:11,t1:0,f1:500,b1:590,                         name:"Helicopter"},
-      {w1:"triangle",v1:0.5,a1:0.2,b1:1782,d1:11,t1:0,f1:1221,            name:"Applause"},
-      {w1:"triangle",v1:0.5,b1:2200,d1:0.4,r1:0.4,                        name:"Gunshot"},
+      [{w:"triangle",v:0.5,d:0.03,t:0,f:1332,r:0.001,b:823,p:1.1}],
+      [{w:"triangle",v:0.2,b:3266,d:0.02,a:0.05,h:0.02,r:0.02}],
+      [{w:"sine",v:0.3,a:1,b:2305,d:1}],
+      [{w:"sine",v:0.3,a:0.8,b:942,d:1,t:0,f:1832}],
+      [{w:"triangle",v:0.5,d:0.5,t:0,f:864,b:778}],
+      [{w:"sine",v:0.4,d:11,t:0,f:500,b:590}],
+      [{w:"triangle",v:0.5,a:0.2,b:1782,d:11,t:0,f:1221}],
+      [{w:"triangle",v:0.5,b:2200,d:0.4,r:0.4}],
     ],
     drummap0:[
-      {w1:"triangle",f1:150,v1:0.8,d1:0.1,p1:0.1,h1:0.02,r1:0.01,b1:0,        name:"Acoustic Bass Drum"},
-      {w1:"triangle",f1:110,v1:1,d1:.1,h1:.02,p1:.1,b1:1,                     name:"Bass Drum 1"},
-      {w1:"triangle",f1:392,v1:0.5,d1:0.01,p1:0,b1:2343,t1:0,r1:0.05,         name:"Side Stick"},
-      {w1:"triangle",f1:322,v1:0.5,d1:0.05,p1:0.2,b1:1200,t1:0,r1:0.05,       name:"Acoustic Snare"},
-      {w1:"triangle",f1:244,v1:0.7,d1:0.03,b1:2231,t1:0,r1:0.03,              name:"Hand Clap"},
-      {w1:"square",f1:310,v1:.7,d1:.02,p1:.1,b1:20,                           name:"Electric Snare"},
-      {w1:"triangle",f1:150,v1:.9,d1:.1,h1:.02,p1:.1,b1:10,                   name:"Low Floor Tom"},
-      {w1:"square",f1:1250,v1:0.2,d1:0.01,b1:8423,r1:0.01,                    name:"Closed Hi Hat"},
-      {w1:"triangle",f1:210,v1:.9,d1:.1,h1:.02,p1:.1,b1:11,                   name:"High Floor Tom"},
-      {w1:"square",f1:250,v1:0.2,d1:0.03,b1:8423,r1:0.03,                     name:"Pedal Hi-Hat"},
-      {w1:"triangle",f1:260,v1:.9,d1:.1,h1:.001,p1:.1,b1:10,                  name:"Low Tom"},
-      {w1:"square",f1:1250,v1:0.2,d1:0.05,b1:8423,r1:0.01,h1:0.02,            name:"Open Hi-Hat"},
-      {w1:"triangle",f1:320,v1:.9,d1:.1,h1:.001,p1:.1,b1:10,                  name:"Low-Mid Tom"},
-      {w1:"triangle",f1:360,v1:.9,d1:.1,h1:.001,p1:.1,b1:10,                  name:"Hi-Mid Tom"},
-      {w1:"square",f1:150,v1:0.2,d1:0.1,b1:2823,r1:0.01,h1:0.05,t1:0,p1:0.1,  name:"Crash Cymbal 1"},
-      {w1:"triangle",f1:400,v1:.9,d1:.1,h1:.001,p1:.1,b1:10,                  name:"High Tom"},
-      {w1:"square",f1:150,v1:0.2,d1:0.1,b1:2823,r1:0.01,h1:0.05,t1:0,p1:0.1,  name:"Ride Cymbal 1"},
-      {w1:"square",f1:150,v1:0.2,d1:0.1,b1:2823,r1:0.01,h1:0.05,t1:0,p1:0.1,  name:"Chinese Cymbal"},
-      {w1:"triangle",f1:900,v1:.3,d1:.14,p1:.9,b1:4000,                       name:"Ride Bell"},
-      {w1:"square",f1:800,v1:0.2,d1:0.05,p1:0.9,b1:700,                       name:"Tambourine"},
-      {w1:"square",f1:1200,v1:0.3,d1:0.12,p1:0.9,b1:3322,s1:0,                name:"Splash Cymbal"},
-      {w1:"sine",f1:600,v1:.4,d1:.06,                                         name:"Cowbell"},
-      {w1:"square",f1:150,v1:0.2,d1:0.1,b1:2823,r1:0.01,h1:0.05,t1:0,p1:0.1,  name:"Crash Cymbal 2"},
-      {w1:"square",f1:800,v1:0.3,d1:0.2,p1:0.9,b1:844,t1:0,                   name:"Vibraslap"},
-      {w1:"triangle",f1:500,v1:.3,d1:.14,p1:.9,b1:4000,                       name:"Ride Cymbal 2"},
-      {w1:"sine",f1:200,v1:.5,d1:.06,                                         name:"Hi Bongo"},
-      {w1:"sine",f1:150,v1:.5,d1:.06,                                         name:"Low Bongo"},
-      {w1:"sine",f1:300,v1:.5,d1:.01,                                         name:"Mute Hi Conga"},
-      {w1:"sine",f1:300,v1:.5,d1:.06,                                         name:"Open Hi Conga"},
-      {w1:"sine",f1:250,v1:.5,d1:.06,                                         name:"Low Conga"},
-      {w1:"square",f1:300,v1:.3,d1:.06,p1:.8,b1:23,                           name:"High Timbale"},
-      {w1:"square",f1:260,v1:.3,d1:.06,p1:.8,b1:43,                           name:"Low Timbale"},
-      {w1:"sine",f1:850,v1:.5,d1:.07,                                         name:"High Agogo"},
-      {w1:"sine",f1:790,v1:.5,d1:.07,                                         name:"Low Agogo"},
-      {w1:"sine",f1:920,v1:.3,a1:.05,d1:.01,b1:1700,                          name:"Cabasa"},
-      {w1:"sawtooth",f1:1120,v1:.3,a1:.05,d1:.01,b1:2700,                     name:"Maracas"},
-      {w1:"square",f1:1800,v1:0.3,d1:0.01,p1:0.9,b1:820,t1:0,h1:0.03,         name:"Short Whistle"},
-      {w1:"square",f1:1800,v1:0.3,d1:0.01,p1:0.9,b1:820,t1:0,h1:0.13,         name:"Long Whistle"},
-      {w1:"sine",f1:920,v1:.3,a1:.02,d1:.01,b1:1700,                          name:"Short Guiro"},
-      {w1:"sine",f1:920,v1:.3,a1:.02,d1:.04,b1:1700,                          name:"Long Guiro"},
-      {w1:"square",f1:1450,v1:.3,d1:.01,b1:2400,                              name:"Claves"},
-      {w1:"sine",f1:650,v1:.5,d1:.01,                                         name:"Hi Wood Block"},
-      {w1:"sine",f1:550,v1:.5,d1:.01,                                         name:"Low Wood Block"},
-      {w1:"square",f1:550,v1:.3,d1:.01,b1:300,                                name:"Mute Cuica"},
-      {w1:"square",f1:550,v1:0.3,d1:0.01,b1:300,t1:0,h1:0.06,r1:0.01,p1:0.7,  name:"Open Cuica"},
-      {w1:"sine",f1:1600,v1:.3,d1:.01,                                        name:"Mute Triangle"},
-      {w1:"sine",f1:1600,v1:.3,d1:.1,                                         name:"Open Triangle"},
+//35
+      [{w:"triangle",f:150,v:0.8,d:0.1,p:0.1,h:0.02,r:0.01,b:0}],
+      [{w:"triangle",f:110,v:1,d:.1,h:.02,p:.1,b:1}],
+      [{w:"triangle",f:392,v:0.5,d:0.01,p:0,b:2343,t:0,r:0.05}],
+      [{w:"triangle",f:322,v:0.5,d:0.05,p:0.2,b:1200,t:0,r:0.05}],
+      [{w:"triangle",f:244,v:0.7,d:0.03,b:2231,t:0,r:0.03}],
+      [{w:"square",f:310,v:.7,d:.02,p:.1,b:20}],
+      [{w:"triangle",f:150,v:.9,d:.1,h:.02,p:.1,b:10}],
+      [{w:"square",f:1250,v:0.2,d:0.01,b:8423,r:0.01}],
+      [{w:"triangle",f:210,v:.9,d:.1,h:.02,p:.1,b:11}],
+      [{w:"square",f:250,v:0.2,d:0.03,b:8423,r:0.03}],
+      [{w:"triangle",f:260,v:.9,d:.1,h:.001,p:.1,b:10}],
+      [{w:"square",f:1250,v:0.2,d:0.05,b:8423,r:0.01,h:0.02}],
+      [{w:"triangle",f:320,v:.9,d:.1,h:.001,p:.1,b:10}],
+      [{w:"triangle",f:360,v:.9,d:.1,h:.001,p:.1,b:10}],
+      [{w:"square",f:150,v:0.2,d:0.1,b:2823,r:0.01,h:0.05,t:0,p:0.1}],
+      [{w:"triangle",f:400,v:.9,d:.1,h:.001,p:.1,b:10}],
+      [{w:"square",f:150,v:0.2,d:0.1,b:2823,r:0.01,h:0.05,t:0,p:0.1}],
+      [{w:"square",f:150,v:0.2,d:0.1,b:2823,r:0.01,h:0.05,t:0,p:0.1}],
+      [{w:"triangle",f:900,v:.3,d:.14,p:.9,b:4000}],
+      [{w:"square",f:800,v:0.2,d:0.05,p:0.9,b:700}],
+      [{w:"square",f:1200,v:0.3,d:0.12,p:0.9,b:3322,s:0}],
+      [{w:"sine",f:600,v:.4,d:.06}],
+      [{w:"square",f:150,v:0.2,d:0.1,b:2823,r:0.01,h:0.05,t:0,p:0.1}],
+      [{w:"square",f:800,v:0.3,d:0.2,p:0.9,b:844,t:0}],
+      [{w:"triangle",f:500,v:.3,d:.14,p:.9,b:4000}],
+      [{w:"sine",f:200,v:.5,d:.06}],
+      [{w:"sine",f:150,v:.5,d:.06}],
+      [{w:"sine",f:300,v:.5,d:.01}],
+      [{w:"sine",f:300,v:.5,d:.06}],
+      [{w:"sine",f:250,v:.5,d:.06}],
+      [{w:"square",f:300,v:.3,d:.06,p:.8,b:23}],
+      [{w:"square",f:260,v:.3,d:.06,p:.8,b:43}],
+      [{w:"sine",f:850,v:.5,d:.07}],
+      [{w:"sine",f:790,v:.5,d:.07}],
+      [{w:"sine",f:920,v:.3,a:.05,d:.01,b:1700}],
+      [{w:"sawtooth",f:1120,v:.3,a:.05,d:.01,b:2700}],
+      [{w:"square",f:1800,v:0.3,d:0.01,p:0.9,b:820,t:0,h:0.03}],
+      [{w:"square",f:1800,v:0.3,d:0.01,p:0.9,b:820,t:0,h:0.13}],
+      [{w:"sine",f:920,v:.3,a:.02,d:.01,b:1700}],
+      [{w:"sine",f:920,v:.3,a:.02,d:.04,b:1700}],
+      [{w:"square",f:1450,v:.3,d:.01,b:2400}],
+      [{w:"sine",f:650,v:.5,d:.01}],
+      [{w:"sine",f:550,v:.5,d:.01}],
+      [{w:"square",f:550,v:.3,d:.01,b:300}],
+      [{w:"square",f:550,v:0.3,d:0.01,b:300,t:0,h:0.06,r:0.01,p:0.7}],
+      [{w:"sine",f:1600,v:.3,d:.01}],
+      [{w:"sine",f:1600,v:.3,d:.1}],
 
     ],
     ready:function(){
@@ -364,7 +454,7 @@
             this.ctx.fillRect(0,0,256,64);
             if(this.song){
               this.ctx.fillStyle="#036";
-              this.ctx.fillRect(180,10,50,50);
+              this.ctx.fillRect(180,10,50,45);
               this.ctx.fillStyle="#fff";
               if(this.playing){
                 this.ctx.fillRect(190,22,10,20);
@@ -389,8 +479,14 @@
                   this.send(e.m,this.playTime);
                 ++this.playIndex;
                 if(this.playIndex>=this.song.ev.length){
-                  this.playing=0;
-                  break;
+                  if(this.loop){
+                    e=this.song.ev[this.playIndex=0];
+                    this.playTick=e.t;
+                  }
+                  else{
+                    this.playing=0;
+                    break;
+                  }
                 }
                 else{
                   e=this.song.ev[this.playIndex];
@@ -435,7 +531,14 @@
         e.stopPropagation();
         e.preventDefault();
       },
+      getTimbreName:function(m,n){
+        if(m==0)
+          return this.program[n].name;
+        else
+          return this.drummap[n-35].name;
+      },
       loadMIDIUrl:function(url){
+        console.log("loadMIDIUrl");
         var xhr=new XMLHttpRequest();
         xhr.open("GET",url,true);
         xhr.responseType="arraybuffer";
@@ -447,12 +550,20 @@
         };
         xhr.send();
       },
-      stopMIDI:function(){
-        this.playing=0;
-        for(var i=0;i<16;++i)
+      reset:function(){
+        for(var i=0;i<16;++i){
           this.send([0xb0+i,120,0],0);
+          this.send([0xb0+i,121,0],0);
+        }
+      },
+      stopMIDI:function(){
+        console.log("stopMIDI");
+        this.playing=0;
+        this.reset();
       },
       playMIDI:function(){
+        console.log("playMIDI");
+        this.reset();
         this.playTick=0;
         this.playIndex=0;
         this.playTime=this.actx.currentTime+.1;
@@ -460,6 +571,7 @@
         this.playing=1;
       },
       loadMIDI:function(data){
+        console.log("loadMIDI");
         function Get2(s, i) {
           return (s[i]<<8) + s[i+1];
         }
@@ -521,6 +633,7 @@
           }
           return 0;
         }
+        this.stopMIDI();
         var s=new Uint8Array(data);
         var datalen = 0, datastart = 0, runst = 0x90;
         var idx = 0;
@@ -533,7 +646,7 @@
         var tickmax=0;
         var tb = Get2(s, 12)*4;
         idx = (len + 8);
-        this.song={title:"",copyright:"",text:"",tempo:120,timebase:tb,ev:[]};
+        this.song={copyright:"",text:"",tempo:120,timebase:tb,ev:[]};
         for(tr=0;tr<numtrk;++tr){
           hd=s.slice(idx, idx+4);
           len=Get4(s, idx+4);
@@ -559,99 +672,72 @@
       },
       setQuality:function(){
         var i,j,p;
-        var def={ag:0,w1:"sine",t1:1,f1:0,v1:0.5,a1:0,h1:0.01,d1:0.01,s1:0,r1:0.05,p1:1,b1:0, w2:"",t2:1,f2:0,v2:1,d2:1,s2:0,r2:0.05,p2:1,b2:0};
-        function filldefparam(w){
-          for(p in def){
-            if(!w.hasOwnProperty(p))
-              w[p]=def[p];
+        var defp={g:0,w:"sine",t:1,f:0,v:0.5,a:0,h:0.01,d:0.01,s:0,r:0.05,p:1,b:0};
+        function filldef(p){
+          for(var n=0;n<p.length;++n){
+            for(var k in defp){
+              if(!p[n].hasOwnProperty(k) || typeof(p[n][k])=="undefined"){
+                p[n][k]=defp[k];
+              }
+            }
           }
-        }
-        for(i=0;i<128;++i){
-          this.program[i]={};
-          this.program[i].name=this.program0[i].name;
-          this.program[i].w=this.program0[i];
-        }
-        for(i=0;i<this.drummap0.length;++i){
-          this.drummap[i]={};
-          this.drummap[i].name=this.drummap0[i].name;
-          this.drummap[i].w=this.drummap0[i];
-        }
-        if(this.quality){
-          for(i=0;i<this.program1.length;++i){
-            for(j=0;j<this.program1[i][0].length;++j)
-              this.program[this.program1[i][0][j]-1].w=this.program1[i][1];
-          }
-          for(i=0;i<this.drummap1.length;++i)
-            this.drummap[this.drummap1[i][0]-35].w=this.drummap1[i][1];
         }
         for(i=0;i<128;++i)
-          filldefparam(this.program[i].w);
+          this.program[i].p=this.program0[i];
+        for(i=0;i<this.drummap0.length;++i)
+          this.drummap[i].p=this.drummap0[i];
+        if(this.quality){
+          for(i=0;i<this.program1.length;++i)
+            this.program[i].p=this.program1[i];
+        }
+        for(i=0;i<128;++i)
+          filldef(this.program[i].p);
         for(i=0;i<this.drummap.length;++i)
-          filldefparam(this.drummap[i].w);
+          filldef(this.drummap[i].p);
       },
-      note:function(t,ch,n,v,w){  /* note trigger */
-        var o1=actx.createOscillator();
-        var g1=actx.createGain();
-        var f=440*Math.pow(2,(n-69)/12)*w.t1+w.f1;
-        o1.type=w.w1;
-        o1.detune.value=this.bend[ch];
-        o1.frequency.value=f;
-        g1.gain.value=0;
-        o1.connect(g1);
-        g1.connect(this.chvol[ch]);
-        o1.start(t);
-        if(w.w2){
-          var o2=actx.createOscillator();
-          var g2=actx.createGain();
-          var v2=f*w.v2;
-          var s2=f*w.s2;
-          o2.type=w.w2;
-          o2.detune.value=this.bend[ch];
-          o2.connect(g2);
-          if(w.ag){
-            g2.connect(this.chvol[ch]);
-            v2=w.v2; s2=w.s2;
+      note:function(t,ch,n,v,p){  /* note trigger */
+        var o=[],g=[],vp=[],r=[];
+        var f=440*Math.pow(2,(n-69)/12);
+        var out,sc;
+        for(var i=0;i<p.length;++i){
+          pn=p[i];
+          r[i]=pn.r;
+          if(pn.g==0){
+            out=this.chvol[ch];
+            sc=v/127;
+          }
+          var dt=t+pn.a+pn.h;
+          o[i]=actx.createOscillator();
+          g[i]=actx.createGain();
+          o[i].type=pn.w;
+          o[i].detune.value=this.bend[ch];
+          o[i].frequency.value=(f=f*pn.t+pn.f);
+          o[i].connect(g[i]); g[i].connect(out);
+          if(pn.a){
+            g[i].gain.setValueAtTime(0,t);
+            g[i].gain.linearRampToValueAtTime(vp[i]=sc*pn.v,t+pn.a);
           }
           else
-            g2.connect(o1.frequency);
-          g2.gain.setValueAtTime(v2,t);
-          if(w.s2!=1 && w.d2!=0)
-            g2.gain.setTargetAtTime(s2,t,w.d2);
-          o2.frequency.value=f*w.t2+w.f2;
-          if(w.b2){
-            var g4=actx.createGain();
-            o2.connect(g4);
-            g4.gain.setValueAtTime(w.b2,t);
-            g4.connect(o2.frequency);
+            g[i].gain.setValueAtTime(vp[i]=sc*pn.v,t);
+          out=o[i].frequency;
+          sc=f;
+          o[i].start(t);
+          g[i].gain.setTargetAtTime(pn.s*vp[i],dt,pn.d);
+          if(pn.b){
+            var g3=actx.createGain();
+            o[i].connect(g3);
+            g3.gain.setValueAtTime(pn.b,t);
+            g3.connect(o[i].frequency);
           }
-          o2.start(t);
+          if(pn.p!=1)
+            o[i].frequency.setTargetAtTime(f*pn.p,dt,pn.d);
+          if(n<0){
+            var t2=dt+pn.d*10;
+            o[i].stop(t2);
+          }
         }
-        var v1=v/127*w.v1;
-        var v2=v/127*w.v2;
-        if(w.a1){
-          g1.gain.setValueAtTime(0,t);
-          g1.gain.linearRampToValueAtTime(v1,t+w.a1);
-        }
-        else
-          g1.gain.setValueAtTime(v1,t);
-        var dt=t+w.a1+w.h1;
-        g1.gain.setTargetAtTime(w.v1*w.s1,dt,w.d1);
-        if(w.b1){
-          var g3=actx.createGain();
-          o1.connect(g3);
-          g3.gain.setValueAtTime(w.b1,t);
-          g3.connect(o1.frequency);
-        }
-        if(w.p1!=1)
-          o1.frequency.setTargetAtTime(f*w.p1,dt,w.d1);
         if(n>=0)
-          this.notetab.push({t:t,e:99999,ch:ch,n:n,o:o1,o2:o2,g:g1,g2:g2,r1:w.r1,r2:w.r2,t2:t+w.a1,v:v1,v2:v2});
-        else{
-          var t2=dt+w.d1*10;
-          o1.stop(t2);
-          if(o2)
-            o2.stop(t2);
-        }
+          this.notetab.push({t:t,e:99999,ch:ch,n:n,o:o,g:g,t2:t,v:vp,r:r});
       },
       resetAllController(ch){
         this.bend[ch]=0; this.vol[ch]=100; this.ex[ch]=64;
@@ -706,10 +792,10 @@
           case 123:  /* all notes off */
             for(var i=this.notetab.length-1;i>=0;--i){
               var nt=this.notetab[i];
-              nt.g.gain.setTargetAtTime(0,t,0.05);
-              nt.o.stop(t+0.5);
-              if(nt.o2)
-                nt.o2.stop(t+0.5);
+              for(var i=nt.g.length-1;i>=0;--i)
+                nt.g[i].gain.setTargetAtTime(0,t,0.05);
+              for(var i=nt.o.length-1;i>=0;--i)
+                nt.o[i].stop(t+0.5);
               nt.e=t+0.5;
               this.notetab.splice(i,1);
             }
@@ -732,9 +818,8 @@
           for(var i=this.notetab.length-1;i>=0;--i){
             var nt=this.notetab[i];
             if(nt.ch==ch){
-              nt.o.detune.setValueAtTime(this.bend[ch],t);
-              if(nt.o2)
-                nt.o2.detune.setValueAtTime(this.bend[ch],t);
+              for(var k=nt.o.length-1;k>=0;--k)
+                nt.o[k].detune.setValueAtTime(this.bend[ch],t);
             }
           }
           break;
@@ -746,13 +831,11 @@
             console.log("NOTEON("+ch+")="+n+","+v+","+t);
           if(ch==9){
             if(n>=35&&n<=81){
-              var w=this.drummap[n-35].w;
-              this.note(t,ch,-1,v,w);
+              this.note(t,ch,-1,v,this.drummap[n-35].p);
             }
             return;
           }
-          var w=this.program[this.pg[ch]].w;
-          this.note(t,ch,n,v,w);
+          this.note(t,ch,n,v,this.program[this.pg[ch]].p);
           break;
         case 0x80:  /* note off */
           if(this.debug)
@@ -760,31 +843,22 @@
           for(var i=this.notetab.length-1;i>=0;--i){
             var nt=this.notetab[i];
             if(t>nt.e){
-              nt.o.stop(nt.e);
-              if(nt.o2)
-                nt.o2.stop(nt.e);
+              for(var k=nt.o.length-1;k>=0;--k)
+                nt.o[k].stop(nt.e);
               this.notetab.splice(i,1);
             }
             else if(t>=nt.t && nt.ch==ch && nt.n==n && !nt.f){
-              nt.g.gain.cancelScheduledValues(t);
-              if(t<=nt.t2){
-                if(t==nt.t2)
-                  nt.g.gain.setValueAtTime(nt.v,t);
-                else
-                  nt.g.gain.setValueAtTime(nt.v*(t-nt.t)/(nt.t2-nt.t),t);
-              }
-              nt.g.gain.setTargetAtTime(0,t,nt.r1);
-              if(nt.g2){
-                nt.g2.gain.cancelScheduledValues(t);
+              for(var k=nt.g.length-1;k>=0;--k){
+                nt.g[k].gain.cancelScheduledValues(t);
                 if(t<=nt.t2){
                   if(t==nt.t2)
-                    nt.g2.gain.setValueAtTime(nt.v2,t);
+                    nt.g[k].gain.setValueAtTime(nt.v[k],t);
                   else
-                    nt.g2.gain.setValueAtTime(nt.v2*(t-nt.t)/(nt.t2-nt.t),t);
+                    nt.g[k].gain.setValueAtTime(nt.v[k]*(t-nt.t)/(nt.t2-nt.t),t);
                 }
-                nt.g2.gain.setTargetAtTime(0,t,nt.r1);
+                nt.g[k].gain.setTargetAtTime(0,t,nt.r[k]);
               }
-              nt.e=t+nt.r1*10;
+              nt.e=t+nt.r[0]*10;
               nt.f=1;
             }
           }

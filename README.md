@@ -34,6 +34,23 @@ Install Polymer and webaudio-tinysynth
 
 *  place webaudio-pianoroll element
   - `<webaudio-tinysynth></webaudio-tinysynth>`
+  - Note that the polymer module may not be ready immediately after window.onload especially the webcomponents is polyfilled (Firefox / Edge).
+  It may cause failure of calling setAudioContext() in window.onload() function.
+
+```
+  // in my test code, setAudioContext() is invoked after check :
+  synth=document.getElementById("tinysynth");
+  timerid=setInterval(function(){
+    console.log("Initialize checking.");
+    if(synth.setAudioContext){
+      synth.setAudioContext(actx);
+      clearInterval(timerid);
+      console.log("Initialized");
+    }
+  },200);
+```
+
+
 
 ## Attributes
 
@@ -45,6 +62,7 @@ Install Polymer and webaudio-tinysynth
 |**reverbLev**|Number | 0.5      | reverb level       |
 |**quality**  |Number | 1        | 0: 1osc/note chiptune like<br/> 1: 2osc/note FM based|
 |**src**      |String |null      | .mid file url      |
+|**loop**     |Number | 0        | loop playMIDI      |
 
 * attributes values can be modified from javascript if needed.
 
@@ -69,6 +87,9 @@ If the destinationNode is specified, all sounds are send to destinationNode. Not
 
 **stopMIDI()**
 > stop playing MIDI data.
+
+**getTimbreName(m,n)**
+> get name of specified timer. m=0:normal channel voice,n=prog#. or m=1:drum track,n=note#
 
 ## MIDI implimentation chart
 
