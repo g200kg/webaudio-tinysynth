@@ -25,11 +25,6 @@ function Init(){
   kb=document.getElementById("kb");
   kb.addEventListener("change",KeyIn);
   var sh=document.getElementById("shot");
-  for(var i=0;i<128;++i){
-    var o=document.createElement("option");
-    o.innerHTML=(i+1)+" : "+synth.getTimbreName(0,i);
-    document.getElementById("prog").appendChild(o);
-  }
   sh.addEventListener("mousedown",function(){
     synth.send([0x90+curMidi,curNote,100],0);
   });
@@ -41,6 +36,11 @@ function Init(){
     if(synth.setAudioContext){
       synth.setAudioContext(actx);
       clearInterval(timerid);
+      for(var i=0;i<128;++i){
+        var o=document.createElement("option");
+        o.innerHTML=(i+1)+" : "+synth.getTimbreName(0,i);
+        document.getElementById("prog").appendChild(o);
+      }
       ProgChange(0);
       console.log("Initialized");
     }
