@@ -538,7 +538,9 @@
           return this.drummap[n-35].name;
       },
       loadMIDIUrl:function(url){
-        console.log("loadMIDIUrl");
+        console.log("loadMIDIUrl:"+url);
+        if(!url)
+          return;
         var xhr=new XMLHttpRequest();
         xhr.open("GET",url,true);
         xhr.responseType="arraybuffer";
