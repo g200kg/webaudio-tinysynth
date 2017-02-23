@@ -35,7 +35,7 @@
       width:      {type:String, value:"256px", observer:"layout"},
       height:     {type:String, value:"64px", observer:"layout"},
       masterVol:  {type:Number, value:1, observer:"setMasterVol"},
-      reverbLev:  {type:Number, value:0.5, observer:"setReverbLev"},
+      reverbLev:  {type:Number, value:0.2, observer:"setReverbLev"},
       quality:    {type:Number, value:0, observer:"setQuality"},
       send:        {type:Function, value:this.send},
       setAudioContext:  {type:Function, value:this.setAudioContext},
@@ -208,8 +208,8 @@
       [{w:"triangle",v:0.3,a:0.03,s:1,},{w:"sine",v:3,t:5,f:1,d:1,s:1,g:1,}],
       [{w:"sine",v:0.4,a:0.03,s:0.9,},{w:"sine",v:1,t:2,f:3,d:0.03,s:0.2,g:1,}],
       [{w:"triangle",v:0.6,a:0.05,s:0.5,},{w:"sine",v:1,f:0.8,d:0.2,s:0.2,g:1,}],
-//      [{w:"square",a:0.01,d:0.2,r:0.005,},{w:"sawtooth",v:0.3,t:1.5,f:1,d:0.2,r:0.1,}],
-      [{w:"sawtooth",v:.2,d:.2,s:0},{w:"sawtooth",t:2,f:1,v:.2,d:.2,s:0,c:-1}],
+      [{w:"square",a:0.01,d:0.2,r:0.005,},{w:"sawtooth",v:0.3,t:1.5,f:1,d:0.2,r:0.1,}],
+//      [{w:"sawtooth",v:.2,d:.2,s:0},{w:"sawtooth",t:2,f:1,v:.2,d:.2,s:0,c:-1}],
       /* 57-64 : Brass */
       [{w:"square",v:0.3,a:0.01,d:1,s:0.6,r:0.04,},{w:"sine",v:1,d:0.1,s:4,g:1,}],
       [{w:"square",v:0.3,a:0.02,d:1,s:0.5,r:0.08,},{w:"sine",v:1,d:0.1,s:4,g:1,}],
@@ -700,7 +700,6 @@
           filldef(this.drummap[i].p);
       },
       note:function(t,ch,n,v,p){  /* note trigger */
-        console.log(p)
         var o=[],g=[],vp=[],r=[];
         var f=440*Math.pow(2,(n-69)/12);
         var i,out,sc;
@@ -733,7 +732,7 @@
           g[i].gain.setTargetAtTime(pn.s*vp[i],dt,pn.d);
           if(pn.b){
             var g3=this.actx.createGain();
-            o[pn.c-1].connect(g3);
+            o[i].connect(g3);
             g3.gain.setValueAtTime(pn.b,t);
             g3.connect(o[i].frequency);
           }
@@ -881,13 +880,15 @@
           this.dest=actx.destination;
         this.conv=this.actx.createConvolver();
         this.rev=this.actx.createGain();
+        this.comp=this.actx.createDynamicsCompressor();
         this.rev.gain.value=this.reverbLev;
         this.out=this.actx.createGain();
         this.out.gain.value=.3;
         this.out.connect(this.conv);
-        this.out.connect(this.dest);
+        this.out.connect(this.comp);
         this.conv.connect(this.rev);
-        this.rev.connect(this.dest);
+        this.rev.connect(this.comp);
+        this.comp.connect(this.dest);
         var blen=this.actx.sampleRate*.5|0;
         this.convBuf=this.actx.createBuffer(1,blen,this.actx.sampleRate);
         var d=this.convBuf.getChannelData(0);
@@ -905,6 +906,7 @@
           this.ana=this.actx.createAnalyser();
           this.out.connect(this.ana);
         }
+        this.setReverbLev();
       },
       redraw:function(){
       }
