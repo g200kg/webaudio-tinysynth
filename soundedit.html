@@ -60,7 +60,6 @@ function Init(){
 }
 function MidiIn(e){
   if(synth){
-    synth.send(e.data,0);
     switch(e.data[0]&0xf0){
     case 0x90:
       kb.setNote(e.data[2]?1:0,e.data[1]);
@@ -68,6 +67,8 @@ function MidiIn(e){
     case 0x80:
       kb.setNote(0,e.data[1]);
     }
+    e.data[1]=e.data[1]+curOct*12;
+    synth.send(e.data,0);
   }
 }
 function SelectMidi(n){
@@ -263,7 +264,6 @@ function Edit(){
 }
 function Sustain(b){
   synth.send([0xb0+curMidi,64,b?127:0],actx.currentTime);
-  console.log(b);
 }
 window.onload=()=>{
   Init();
@@ -310,7 +310,7 @@ Ch : <select onchange="ChChange(this)"><option>Ch1</option><option>Ch2</option><
 Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
 </select>
 <hr/>
-<webaudio-tinysynth id="tinysynth" quality="1" loop="1"></webaudio-tinysynth>
+<webaudio-tinysynth id="tinysynth" quality="1" loop="1" disableDrop="1" masterVol="0.2"></webaudio-tinysynth>
 <table>
 <tr>
   <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" onchange="Ctrl()"></webaudio-knob></td>

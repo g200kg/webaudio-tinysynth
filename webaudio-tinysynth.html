@@ -32,6 +32,7 @@
   Polymer({
     is:"webaudio-tinysynth",
     properties:{
+      disableDrop:{type:Number, value:0, observer:"setDisableDrop"},
       width:      {type:String, value:"256px", observer:"layout"},
       height:     {type:String, value:"64px", observer:"layout"},
       masterVol:  {type:Number, value:1, observer:"setMasterVol"},
@@ -503,6 +504,9 @@
         this.canvas.addEventListener("drop",this.drop.bind(this),false);
         this.canvas.addEventListener("click",this.click.bind(this),false);
       },
+      setDisableDrop:function(){
+        console.log("setDisableDrop:"+this.disableDrop)
+      },
       setMasterVol:function(){
         if(this.out)
           this.out.gain.value=this.masterVol;
@@ -524,11 +528,13 @@
       },
       drop:function(e){
         var f = e.dataTransfer.files;
-        var reader = new FileReader();
-        reader.onload=(e)=>{
-          this.loadMIDI(reader.result);
+        if(this.disableDrop==0){
+          var reader = new FileReader();
+          reader.onload=(e)=>{
+            this.loadMIDI(reader.result);
+          }
+          reader.readAsArrayBuffer(f[0]);
         }
-        reader.readAsArrayBuffer(f[0]);
         e.stopPropagation();
         e.preventDefault();
       },
@@ -576,15 +582,9 @@
       },
       loadMIDI:function(data){
         console.log("loadMIDI");
-        function Get2(s, i) {
-          return (s[i]<<8) + s[i+1];
-        }
-        function Get3(s, i) {
-          return (s[i]<<16) + (s[i+1]<<8) + s[i+2];
-        }
-        function Get4(s, i) {
-          return (s[i]<<24) + (s[i+1]<<16) + (s[i+2]<<8) + s[i+3];
-        }
+        function Get2(s, i) { return (s[i]<<8) + s[i+1]; }
+        function Get3(s, i) { return (s[i]<<16) + (s[i+1]<<8) + s[i+2]; }
+        function Get4(s, i) { return (s[i]<<24) + (s[i+1]<<16) + (s[i+2]<<8) + s[i+3]; }
         function GetStr(s, i, len) {
           return String.fromCharCode.apply(null,s.slice(i,i+len));
         }
@@ -721,9 +721,8 @@
           o[i].detune.value=this.bend[ch];
           o[i].frequency.value=(f=f*pn.t+pn.f);
           o[i].connect(g[i]); g[i].connect(out);
-          if(pn.k){
+          if(pn.k)
             vp[i]=sc*pn.v*Math.pow(2,(n-60)/12*pn.k);
-          }
           else
             vp[i]=sc*pn.v;
           if(pn.a){
@@ -797,49 +796,47 @@
         var i;
         var ch=msg[0]&0xf;
         var cmd=msg[0]&~0xf;
-        var n=msg[1],v=msg[2];
         if(cmd<0x80||cmd>=0x100)
           return;
-        if(cmd==0x90 && v==0)
+        if(cmd==0x90 && msg[2]==0)
           cmd=0x80;
         if(!t){
+          t=0;
           if(this.actx)
             t=this.actx.currentTime;
-          else
-            t=0;
         }
         switch(cmd){
         case 0xb0:  /* ctl change */
           if(this.debug)
-            console.log("CTL("+ch+")="+n+","+v);
-          switch(n){
+            console.log("CTL("+ch+")="+msg[1]+","+msg[2]);
+          switch(msg[1]){
           case 7: /* ch vol */
-            this.chvol[ch].gain.setValueAtTime((this.vol[ch]=v)*this.ex[ch]*3/16384,t);
+            this.chvol[ch].gain.setValueAtTime((this.vol[ch]=msg[2])*this.ex[ch]*3/16384,t);
             break;
           case 11: /* expression */
-            this.chvol[ch].gain.setValueAtTime(this.vol[ch]*(this.ex[ch]=v)*3/16384,t);
+            this.chvol[ch].gain.setValueAtTime(this.vol[ch]*(this.ex[ch]=msg[2])*3/16384,t);
             break;
           case 64:
-            this.sustainState(ch,v,t);
+            this.sustainState(ch,msg[2],t);
             break;
           case 98:  /* nrpn lsb */
           case 99:  /* nrpn msb */
             this.rpnidx[ch]=0x3fff;
             break;
           case 100: /* rpn lsb */
-            this.rpnidx[ch]=(this.rpnidx[ch]&0x380)|v;
+            this.rpnidx[ch]=(this.rpnidx[ch]&0x380)|msg[2];
             break;
           case 101: /* rpn msb */
-            this.rpnidx[ch]=(this.rpnidx[ch]&0x7f)|(v<<7);
+            this.rpnidx[ch]=(this.rpnidx[ch]&0x7f)|(msg[2]<<7);
             break;
           case 6:  /* data entry msb */
             if(this.rpnidx[ch]==0){
-              this.brange[ch]=(v<<7)+(this.brange[ch]&0x7f);
+              this.brange[ch]=(msg[2]<<7)+(this.brange[ch]&0x7f);
             }
             break;
           case 38:  /* data entry lsb */
             if(this.rpnidx[ch]==0){
-              this.brange[ch]=(this.brange[ch]&0x380)|v;
+              this.brange[ch]=(this.brange[ch]&0x380)|msg[2];
               if(this.debug)
                 console.log("BRANGE("+ch+")="+(this.brange[ch]>>7)+","+(this.brange[ch]&0x7f));
             }
@@ -867,13 +864,13 @@
           }
           break;
         case 0xc0:  /* prg change */
-          this.pg[ch]=n;
+          this.pg[ch]=msg[1];
           if(this.debug)
-            console.log("PRG:"+ch+","+(n+1));
+            console.log("PRG:"+ch+","+(msg[1]+1));
           break;
         case 0xe0:  /* pitch bend */
           var br=this.brange[ch]*100/127;
-          this.bend[ch]=(n+(v<<7)-8192)*br/8192;
+          this.bend[ch]=(msg[1]+(msg[2]<<7)-8192)*br/8192;
           for(var i=this.notetab.length-1;i>=0;--i){
             var nt=this.notetab[i];
             if(nt.ch==ch){
@@ -887,18 +884,18 @@
           this.ctx.globalCompositeOperation="lighter";
           this.ctx.fillRect(240,62-ch*4,10,3);
           if(this.debug)
-            console.log("NOTEON("+ch+")="+n+","+v+","+t);
+            console.log("NOTEON("+ch+")="+msg[1]+","+msg[2]+","+t);
           if(ch==9){
-            if(n>=35&&n<=81){
-              this.note(t,ch,-1,v,this.drummap[n-35].p);
+            if(msg[1]>=35&&msg[1]<=81){
+              this.note(t,ch,-1,msg[2],this.drummap[msg[1]-35].p);
             }
             return;
           }
-          this.note(t,ch,n,v,this.program[this.pg[ch]].p);
+          this.note(t,ch,msg[1],msg[2],this.program[this.pg[ch]].p);
           break;
         case 0x80:  /* note off */
           if(this.debug)
-            console.log("NOTEOFF("+ch+")="+n+","+v+","+t);
+            console.log("NOTEOFF("+ch+")="+msg[1]+","+msg[2]+","+t);
           for(var i=this.notetab.length-1;i>=0;--i){
             var nt=this.notetab[i];
             if(t>nt.e){
@@ -906,7 +903,7 @@
                 nt.o[k].stop(nt.e);
               this.notetab.splice(i,1);
             }
-            else if(t>=nt.t && nt.ch==ch && nt.n==n && nt.f==0){
+            else if(t>=nt.t && nt.ch==ch && nt.n==msg[1] && nt.f==0){
               nt.f=1;
               if(this.sustain[ch]<64)
                 this.releaseNote(nt,t);
