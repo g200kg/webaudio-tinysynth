@@ -107,6 +107,7 @@ If the destinationNode is specified, all sounds are send to destinationNode. Not
 |**6 / 38**|Yes|Data Entry|
 |**7**|Yes|Channel Volume|
 |**11**|Yes|Expression|
+|**64**|Yes|Sustain|
 |**100/101**|Yes|RPN Index|
 ||||
 |**Channel Mode Message**|||

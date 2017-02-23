@@ -28,7 +28,9 @@ var curProg=0;
 var curOct=0;
 var curNote=60;
 var curMidi=0;
+var midiPort=[];
 function Init(){
+  InitMidi();
   actx=new AudioContext();
   synth=document.getElementById("tinysynth");
   kb=document.getElementById("kb");
@@ -55,6 +57,47 @@ function Init(){
     }
   },200);
 }
+function MidiIn(e){
+  if(synth){
+    synth.send(e.data,0);
+    switch(e.data[0]&0xf0){
+    case 0x90:
+      kb.setNote(e.data[2]?1:0,e.data[1]);
+      break;
+    case 0x80:
+      kb.setNote(0,e.data[1]);
+    }
+  }
+}
+function SelectMidi(n){
+  console.log(midiPort[n])
+  for(var i=0;i<midiPort.length;++i){
+    if(i==n)
+      midiPort[n].addEventListener("midimessage",MidiIn)
+    else
+      midiPort[n].removeEventListener("midimessage",MidiIn);
+    }
+}
+function InitMidi(){
+  if(navigator.requestMIDIAccess){
+    navigator.requestMIDIAccess().then(
+      function(access){
+        console.log("MIDI ready.");
+        var it=access.inputs.values();
+        for(var i=it.next();!i.done;i=it.next()){
+          console.log(i.value)
+          var e=document.createElement("option");
+          e.innerHTML=i.value.name;
+          document.getElementById("midiport").appendChild(e);
+          midiPort.push(i.value);
+        }
+        SelectMidi(0);
+      },
+      function(){
+        console.log("MIDI is not available.");
+      }
+  );}
+};
 function Ctrl(){
   if(typeof(synth)!="undefined"){
     synth.masterVol=document.getElementById("vol").value;
@@ -216,8 +259,24 @@ function Edit(){
   }
   ViewDef(prog);
 }
+function Sustain(b){
+  synth.send([0xb0+curMidi,64,b?127:0],actx.currentTime);
+  console.log(b);
+}
 window.onload=()=>{
   Init();
+  document.addEventListener("keydown",function(e){
+    if(e.keyCode==16){
+      document.getElementById("sus").checked=true;
+      Sustain(true);
+    }
+  });
+  document.addEventListener("keyup",function(e){
+    if(e.keyCode==16){
+      document.getElementById("sus").checked=false;
+      Sustain(false);
+    }
+  })
 }
 
 </script>
@@ -228,19 +287,22 @@ window.onload=()=>{
 Repository : <a href="https://github.com/g200kg/webaudio-tinysynth">https://github.com/g200kg/webaudio-tinysynth</a>
 <ul>
   <li>webaudio-tinysynth is a Polymer module. written in JavaScript</li>
-  <li>playable with mouse or qwerty-keyboard.</li>
+  <li>Playable with mouse or qwerty-keyboard.</li>
+  <li>Play by MIDI keyboard also available via WebMIDI API(Chrome).</li>
   <li>GM like timbre map. Ch10 is drum track.</li>
   <li>Quality setting switches two timbre set. light-weighted 1osc or FMbased 2osc</li>
-  <li>built-in MIDI sequencer is also available. drag &amp; drop .mid file to TinySynth</li>
+  <li>Built-in MIDI sequencer is also available. drag &amp; drop .mid file to TinySynth</li>
 </ul>
 <hr/>
+MIDI Keyboard : <select id="midiport" onchange="SelectMidi(this.selectedIndex)"></select>
+<br/>
 Oct : <label><input type="radio" name="oct" onclick="OctChange(-2)"/> -2</label>
 <label><input type="radio" name="oct" onclick="OctChange(-1)"/> -1</label>
 <label><input type="radio" name="oct" onclick="OctChange(0)" checked/> 0</label>
 <label><input type="radio" name="oct" onclick="OctChange(1)"/> +1</label>
 <label><input type="radio" name="oct" onclick="OctChange(2)"/> +2</label>
 <br/>
-<webaudio-keyboard id="kb" keys="73" min="35" width="800" tabindex="1"></webaudio-keyboard>
+<div style="display:inline-block">Sustain<br/>(shift)<br/><input id="sus" type="checkbox" onchange="Sustain(this.checked)"/></div> <webaudio-keyboard id="kb" keys="73" min="35" width="800" tabindex="1"></webaudio-keyboard>
 <br/>
 Ch : <select onchange="ChChange(this)"><option>Ch1</option><option>Ch2</option><option>Ch3</option><option>Ch4</option><option>Ch5</option><option>Ch6</option><option>Ch7</option><option>Ch8</option><option>Ch9</option><option>Drum (Ch10)</option></select>
 Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
