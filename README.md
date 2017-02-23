@@ -89,7 +89,7 @@ If the destinationNode is specified, all sounds are send to destinationNode. Not
 > stop playing MIDI data.
 
 **getTimbreName(m,n)**
-> get name of specified timer. m=0:normal channel voice,n=prog#. or m=1:drum track,n=note#
+> get name of specified timbre. m=0:normal channel voice,n=prog#. or m=1:drum track,n=note#
 
 ## MIDI implimentation chart
 

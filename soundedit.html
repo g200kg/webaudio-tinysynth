@@ -106,10 +106,12 @@ function ViewParam(pg){
     document.getElementById("t2").value=pg.p[1].t;
     document.getElementById("f2").value=pg.p[1].f;
     document.getElementById("a2").value=pg.p[1].a;
+    document.getElementById("h2").value=pg.p[1].h;
     document.getElementById("d2").value=pg.p[1].d;
     document.getElementById("s2").value=pg.p[1].s;
     document.getElementById("r2").value=pg.p[1].r;
     document.getElementById("b2").value=pg.p[1].b;
+    document.getElementById("c2").value=pg.p[1].c;
     document.getElementById("p2").value=pg.p[1].p;
   }
   else{
@@ -119,10 +121,12 @@ function ViewParam(pg){
     document.getElementById("t2").value="";
     document.getElementById("f2").value="";
     document.getElementById("a2").value="";
+    document.getElementById("h2").value="";
     document.getElementById("d2").value="";
     document.getElementById("s2").value="";
     document.getElementById("r2").value="";
     document.getElementById("b2").value="";
+    document.getElementById("c2").value="";
     document.getElementById("p2").value="";
   }
   ViewDef(pg);
@@ -190,11 +194,13 @@ function Edit(){
     prog.p[1].t=GetVal("t2");
     prog.p[1].f=GetVal("f2");
     prog.p[1].a=GetVal("a2");
+    prog.p[1].a=GetVal("h2");
     prog.p[1].d=GetVal("d2");
     prog.p[1].s=GetVal("s2");
     prog.p[1].r=GetVal("r2");
     prog.p[1].b=GetVal("b2");
     prog.p[1].p=GetVal("p2");
+    prog.p[1].c=GetVal("c2");
   }
   ViewDef(prog);
 }
@@ -253,7 +259,7 @@ Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><o
   <td><input id="b1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="p1"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
-  <tr><td>G1</td><td>W2</td><td>V2</td><td>T2</td><td>F2</td><td>A2</td><td>D2</td><td>S2</td><td>R2</td><td>B2</td><td>P2</td></tr>
+  <tr><td>G1</td><td>W2</td><td>V2</td><td>T2</td><td>F2</td><td>A2</td><td>H2</td><td>D2</td><td>S2</td><td>R2</td><td>B2</td><td>C2</td><td>P2</td></tr>
   <tr>
   <td><input id="g2" oninput="Edit()" value="0" size="4"/></td>
   <td><select id="w2" onchange="Edit()"><option value=""></option><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
@@ -261,10 +267,12 @@ Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><o
   <td><input id="t2"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="f2"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="a2"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="h2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="d2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="s2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="r2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="b2"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="c2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="p2"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
 </table>
