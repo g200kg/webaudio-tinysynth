@@ -802,8 +802,12 @@
           return;
         if(cmd==0x90 && v==0)
           cmd=0x80;
-        if(!t)
-          t=this.actx.currentTime;
+        if(!t){
+          if(this.actx)
+            t=this.actx.currentTime;
+          else
+            t=0;
+        }
         switch(cmd){
         case 0xb0:  /* ctl change */
           if(this.debug)

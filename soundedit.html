@@ -29,6 +29,7 @@ var curOct=0;
 var curNote=60;
 var curMidi=0;
 var midiPort=[];
+var currentPort=-1;
 function Init(){
   InitMidi();
   actx=new AudioContext();
@@ -70,13 +71,14 @@ function MidiIn(e){
   }
 }
 function SelectMidi(n){
-  console.log(midiPort[n])
-  for(var i=0;i<midiPort.length;++i){
-    if(i==n)
-      midiPort[n].addEventListener("midimessage",MidiIn)
-    else
-      midiPort[n].removeEventListener("midimessage",MidiIn);
-    }
+  console.log("Select Port:"+n+":"+(n>=0?midiPort[n].name:"none"));
+  document.getElementById("midiport").selectedIndex=n+1;
+  if(currentPort>=0)
+    midiPort[currentPort].removeEventListener("midimessage",MidiIn);
+  currentPort=n;
+  if(currentPort>=0){
+    midiPort[currentPort].addEventListener("midimessage",MidiIn);
+  }
 }
 function InitMidi(){
   if(navigator.requestMIDIAccess){
@@ -294,7 +296,7 @@ Repository : <a href="https://github.com/g200kg/webaudio-tinysynth">https://gith
   <li>Built-in MIDI sequencer is also available. drag &amp; drop .mid file to TinySynth</li>
 </ul>
 <hr/>
-MIDI Keyboard : <select id="midiport" onchange="SelectMidi(this.selectedIndex)"></select>
+MIDI Keyboard : <select id="midiport" onchange="SelectMidi(this.selectedIndex-1)"><option>--</option></select>
 <br/>
 Oct : <label><input type="radio" name="oct" onclick="OctChange(-2)"/> -2</label>
 <label><input type="radio" name="oct" onclick="OctChange(-1)"/> -1</label>
