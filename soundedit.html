@@ -14,9 +14,18 @@
 td{
   text-align: center;
 }
+label{
+  display:inline-block;
+  background:#ddf;
+  border:1px solid #66e;
+  width:70px;
+  text-align: center;
+  margin:4px 1px;
+}
 </style>
 <script>
 var curProg=0;
+var curOct=0;
 var curNote=60;
 var curMidi=0;
 function Init(){
@@ -53,27 +62,24 @@ function Ctrl(){
   }
 }
 function KeyIn(e){
-  curNote=e.note[1];
+  curNote=e.note[1]+curOct*12;
   document.getElementById("shot").innerHTML=curNote;
   if(e.note[0])
-    synth.send([0x90+curMidi,e.note[1],100]);
+    synth.send([0x90+curMidi,curNote,100]);
   else
-    synth.send([0x80+curMidi,e.note[1],0]);
+    synth.send([0x80+curMidi,curNote,0]);
   if(curMidi==9){
-    var w=synth.drummap[e.note[1]-35];
+    var w=synth.drummap[curNote-35];
     ViewParam(w);
   }
 }
 function ChChange(e){
-  if(e.selectedIndex)
-    curMidi=9;
-  else
-    curMidi=0;
+  curMidi=e.selectedIndex;
 }
 function ViewDef(pg){
   var s=JSON.stringify(pg.p);
   s=s.replace(/}/g,",}").replace(/\"([a-z])\"/g,"$1");
-  var ss=["g:0,","t:1,","f:0,","v:0.5,","a:0,","h:0.01,","d:0.01,","s:0,","r:0.05,","p:1,","b:0,"];
+  var ss=["g:0,","t:1,","f:0,","v:0.5,","a:0,","h:0.01,","d:0.01,","s:0,","r:0.05,","p:1,","b:0,","c:2","k:0"];
   for(p=0;p<ss.length;++p){
     s=s.replace(ss[p],",");
     s=s.replace(ss[p],",");
@@ -113,6 +119,7 @@ function ViewParam(pg){
     document.getElementById("b2").value=pg.p[1].b;
     document.getElementById("c2").value=pg.p[1].c;
     document.getElementById("p2").value=pg.p[1].p;
+    document.getElementById("k2").value=pg.p[1].k;
   }
   else{
     document.getElementById("g2").value="";
@@ -128,8 +135,12 @@ function ViewParam(pg){
     document.getElementById("b2").value="";
     document.getElementById("c2").value="";
     document.getElementById("p2").value="";
+    document.getElementById("k2").value="";
   }
   ViewDef(pg);
+}
+function OctChange(o){
+  curOct=o;
 }
 function ProgChange(p){
   if(synth){
@@ -201,6 +212,7 @@ function Edit(){
     prog.p[1].b=GetVal("b2");
     prog.p[1].p=GetVal("p2");
     prog.p[1].c=GetVal("c2");
+    prog.p[1].k=GetVal("k2");
   }
   ViewDef(prog);
 }
@@ -222,9 +234,15 @@ Repository : <a href="https://github.com/g200kg/webaudio-tinysynth">https://gith
   <li>built-in MIDI sequencer is also available. drag &amp; drop .mid file to TinySynth</li>
 </ul>
 <hr/>
+Oct : <label><input type="radio" name="oct" onclick="OctChange(-2)"/> -2</label>
+<label><input type="radio" name="oct" onclick="OctChange(-1)"/> -1</label>
+<label><input type="radio" name="oct" onclick="OctChange(0)" checked/> 0</label>
+<label><input type="radio" name="oct" onclick="OctChange(1)"/> +1</label>
+<label><input type="radio" name="oct" onclick="OctChange(2)"/> +2</label>
+<br/>
 <webaudio-keyboard id="kb" keys="73" min="35" width="800" tabindex="1"></webaudio-keyboard>
 <br/>
-Ch : <select onchange="ChChange(this)"><option>Ch1</option><option>Drum (Ch10)</option></select>
+Ch : <select onchange="ChChange(this)"><option>Ch1</option><option>Ch2</option><option>Ch3</option><option>Ch4</option><option>Ch5</option><option>Ch6</option><option>Ch7</option><option>Ch8</option><option>Ch9</option><option>Drum (Ch10)</option></select>
 Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
 </select>
 <hr/>
@@ -259,7 +277,7 @@ Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><o
   <td><input id="b1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="p1"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
-  <tr><td>G1</td><td>W2</td><td>V2</td><td>T2</td><td>F2</td><td>A2</td><td>H2</td><td>D2</td><td>S2</td><td>R2</td><td>B2</td><td>C2</td><td>P2</td></tr>
+  <tr><td>G1</td><td>W2</td><td>V2</td><td>T2</td><td>F2</td><td>A2</td><td>H2</td><td>D2</td><td>S2</td><td>R2</td><td>B2</td><td>C2</td><td>P2</td><td>K2</td></tr>
   <tr>
   <td><input id="g2" oninput="Edit()" value="0" size="4"/></td>
   <td><select id="w2" onchange="Edit()"><option value=""></option><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
@@ -274,6 +292,7 @@ Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><o
   <td><input id="b2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="c2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="p2"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="k2"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
 </table>
 <br/>
