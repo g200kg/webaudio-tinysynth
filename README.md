@@ -54,15 +54,15 @@ Install Polymer and webaudio-tinysynth
 
 ## Attributes
 
-|Attribute    |Options|Default   |Description         |
-|-------------|-------|----------|--------------------|
-|**width**    |String |"256px"   | width of element   |
-|**height**   |String |"64px"    | height of element  |
-|**masterVol**|Number | 1.0      | master volume      |
-|**reverbLev**|Number | 0.5      | reverb level       |
-|**quality**  |Number | 1        | 0: 1osc/note chiptune like<br/> 1: 2osc/note FM based|
-|**src**      |String |null      | .mid file url      |
-|**loop**     |Number | 0        | loop playMIDI      |
+|Attribute      |Options|Default   |Description            |
+|---------------|-------|----------|-----------------------|
+|**width**      |String |"256px"   | width of element      |
+|**height**     |String |"64px"    | height of element     |
+|**masterVol**  |Number | 1.0      | master volume         |
+|**reverbLev**  |Number | 0.3      | reverb level          |
+|**quality**    |Number | 1        | 0: 1osc/note chiptune like<br/> 1: 2osc/note FM based|
+|**src**        |String |null      | .mid file url         |
+|**loop**       |Number | 0        | loop playMIDI         |
 
 * attributes values can be modified from javascript if needed.
 
