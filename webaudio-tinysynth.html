@@ -782,9 +782,8 @@
         if(v<64){
           for(var i=this.notetab.length-1;i>=0;--i){
             var nt=this.notetab[i];
-            if(t>=nt.t && nt.ch==ch && nt.f==1){
+            if(t>=nt.t && nt.ch==ch && nt.f==1)
               this.releaseNote(nt,t);
-            }
           }
         }
       },

@@ -108,31 +108,32 @@ timerid=setInterval(function(){
 
 ## MIDI implimentation chart
 
-|                       |Recognized|Description                     |
-|-----------------------|----------|--------------------------------|
-|**Basic Channel**      | Yes      | 1-16. ch10 = drum track        |
-|**NoteOn / NoteOff**   | Yes      | note# 0-127 / velocity 0-127   |
-|**Polyphonic Pressure**| No       |                                |
-|**Control Change**     | Yes      | see bellow                     |
-|**Program Change**     | Yes      | program 0-127                  |
-|**Channel Pressure**   | No       |                                |
-|**Pitch Bend**         | Yes      | -8192 - +8191                               |
-||||
-|**Control Number**|||
-|**6 / 38**|Yes|Data Entry|
-|**7**|Yes|Channel Volume|
-|**11**|Yes|Expression|
-|**64**|Yes|Sustain|
-|**100/101**|Yes|RPN Index|
-||||
-|**Channel Mode Message**|||
-|**120**| Yes | all sound off|
-|**121**| Yes | reset all controller|
-|**123**| Yes | all note off|
-||||
-|**RPN**|||
-|**0**|Bend Range||
-|||||
+|                        |Recognized|Description                     |
+|------------------------|----------|--------------------------------|
+|**Basic Channel**       | Yes      | 1-16. ch10 = drum track        |
+|**NoteOn / NoteOff**    | Yes      | note# 0-127 / velocity 0-127   |
+|**Polyphonic Pressure** | No       |                                |
+|**Control Change**      | Yes      | see bellow                     |
+|**Program Change**      | Yes      | program 0-127                  |
+|**Channel Pressure**    | No       |                                |
+|**Pitch Bend**          | Yes      | -8192 - +8191                  |
+|------------------------|----------|--------------------------------|
+|**Control Number**      |          |                                |
+|**1**                   | Yes      | Modulation                     |
+|**6 / 38**              | Yes      | Data Entry                     |
+|**7**                   | Yes      | Channel Volume                 |
+|**11**                  | Yes      | Expression                     |
+|**64**                  | Yes      | Sustain                        |
+|**100/101**             | Yes      | RPN Index                      |
+|------------------------|----------|--------------------------------|
+|**Channel Mode Message**|          |                                |
+|**120**                 | Yes      | all sound off                  |
+|**121**                 | Yes      | reset all controller           |
+|**123**                 | Yes      | all note off                   |
+|------------------------|----------|--------------------------------|
+|**RPN**                 |          |                                |
+|**0**                   | Yes      | Bend Range                     |
+|------------------------|----------|--------------------------------|
 
 ## License
 

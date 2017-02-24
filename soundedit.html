@@ -312,6 +312,7 @@ Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
 <tr>
   <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" onchange="Ctrl()"></webaudio-knob></td>
   <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="rev" value="0.31" onchange="Ctrl()"></webaudio-knob></td>
+  <td><input type="checkbox" onchange="synth.loop=this.checked"/>Loop</td>
 </tr>
 <tr><td>Vol</td><td>Reverb</td></tr>
 </table>
