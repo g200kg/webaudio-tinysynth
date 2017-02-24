@@ -45,18 +45,19 @@ Install Polymer and webaudio-tinysynth
 
 ## Attributes
 
-|Attribute      |Options|Default   |Description            |
-|---------------|-------|----------|-----------------------|
-|**width**      |String |"256px"   | width of element      |
-|**height**     |String |"64px"    | height of element     |
-|**masterVol**  |Number | 1.0      | master volume         |
-|**reverbLev**  |Number | 0.3      | reverb level          |
-|**quality**    |Number | 1        | 0: 1osc/note chiptune like<br/> 1: 2osc/note FM based|
-|**src**        |String |null      | .mid file url         |
-|**loop**       |Number | 0        | loop playMIDI         |
-|**disableDrop**|Number | 0        | disable MIDI file drop|
-|**graph**      |Number | 1        | enable waveform graph |
-|**internalContext**|Number | 1     | Use internal audioContext|
+|Attribute          |Options|Default   |Description               |
+|-------------------|-------|----------|--------------------------|
+|**width**          |String |"256px"   | width of element         |
+|**height**         |String |"64px"    | height of element        |
+|**masterVol**      |Number | 1.0      | master volume            |
+|**reverbLev**      |Number | 0.3      | reverb level             |
+|**quality**        |Number | 1        | 0: 1osc/note chiptune like<br/> 1: 2osc/note FM based|
+|**src**            |String |null      | .mid file url            |
+|**loop**           |Number | 0        | loop playMIDI            |
+|**disableDrop**    |Number | 0        | disable MIDI file drop   |
+|**graph**          |Number | 1        | enable waveform graph    |
+|**internalContext**|Number | 1        | Use internal audioContext|
+|**tsmode**         |Number | 0        | default timestamp mode   |
 
 * In default, necessary audioContext will be created internally. `internalContext="0"` will prevent this and should provide audioContext with `setAudioContext()` function.
 * Note that the webaudio-tinysynth may not be ready yet immediately after 'window.onload'. especially be careful for Firefox/Edge because of webcomponents may be polyfilled. `isReady` flag can be used for confirming the synth is ready.
@@ -86,8 +87,9 @@ timerid=setInterval(function(){
 > midi-message is an array of midi data bytes for one message. For example,  
 > `send([0x90, 60, 100], t)` is for NoteOn ch=1 note#=60 velocity=100.  
 > `t` is a timestamp that this message should be processed.  
-> If timestampmode == 0 or not specified, `t` is a time (sec) in timeline of the in use audioContext.currentTime.  If timestampmode == 1, `t` is a time (msec) in HighResolutionTime (performance.now()) timeline.  
-> In both timestamp mode, this message will be immediately processed if `t`=0.
+> If timestampmode == 0, `t` is a time (sec) in timeline of the in use audioContext.currentTime.  If timestampmode == 1, `t` is a time (msec) in HighResolutionTime (performance.now()) timeline.  
+> In both timestamp mode, this message will be immediately processed if `t`=0 or omitted.
+> If timestampmode is omitted, the mode depends on `tsmode` in Attributes.
 
 **loadMIDI(mididata)**
 > load MIDI data to built-in sequencer. mididata is a arraybuffer of SMF (.mid file contents).
