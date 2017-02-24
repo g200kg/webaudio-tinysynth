@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./bower_components/webcomponentsjs/webcomponents.min.js"></script>
+<link rel="import" href="./bower_components/polymer/polymer.html">
+<link rel="import" href="./bower_components/webaudio-controls/webaudio-controls.html" >
+<link rel="import" href="./webaudio-tinysynth.html" >
+<script>
+function Init(){
+  synth=document.getElementById("tinysynth");
+  kb=document.getElementById("keyboard");
+  kb.addEventListener("change",KeyIn);
+  timerid=setInterval(function(){
+    console.log("Initialize checking.");
+    if(synth.isReady){
+      clearInterval(timerid);
+      console.log("Initialized");
+      for(var i=0;i<128;++i){
+        var o=document.createElement("option");
+        o.innerHTML=(i+1)+" : "+synth.getTimbreName(0,i);
+        document.getElementById("prog").appendChild(o);
+      }
+    }
+  },200);
+}
+function Prog(pg){
+  synth.send([0xc0,pg]);
+}
+function KeyIn(e){
+  synth.send([0x90,e.note[1],e.note[0]?100:0]);
+}
+window.onload=function(){
+  Init();
+}
+
+</script>
+</head>
+<body>
+<h1>TinySynth Simple Test Page</h1>
+<ul>
+  <li>Select timbre with dropdown</li>
+  <li>Playable with mouse or qwerty-keyboard.</li>
+  <li>Drop MIDI-file(.mid) to TinySynth for play.</li>
+</ul>
+Prog : <select id="prog" onchange="Prog(this.selectedIndex)"></select>
+<br/>
+<webaudio-keyboard id="keyboard" min="48"></webaudio-keyboard>
+<br/>
+<webaudio-tinysynth id="tinysynth"></webaudio-tinysynth>
+<hr/>
+Repository : <b><a href="https://github.com/g200kg/webaudio-tinysynth">https://github.com/g200kg/webaudio-tinysynth</a></b>
+</body>
+</html>

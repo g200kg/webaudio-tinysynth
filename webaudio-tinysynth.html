@@ -32,18 +32,17 @@
   Polymer({
     is:"webaudio-tinysynth",
     properties:{
-      disableDrop:{type:Number, value:0, observer:"setDisableDrop"},
       width:      {type:String, value:"256px", observer:"layout"},
       height:     {type:String, value:"64px", observer:"layout"},
-      masterVol:  {type:Number, value:1, observer:"setMasterVol"},
-      reverbLev:  {type:Number, value:0.2, observer:"setReverbLev"},
-      quality:    {type:Number, value:0, observer:"setQuality"},
-      send:        {type:Function, value:this.send},
-      setAudioContext:  {type:Function, value:this.setAudioContext},
-      graph:      {type:Number, value:2},
+      masterVol:  {type:Number, value:0.5, observer:"setMasterVol"},
+      reverbLev:  {type:Number, value:0.3, observer:"setReverbLev"},
+      quality:    {type:Number, value:1, observer:"setQuality"},
+      graph:      {type:Number, value:1},
       debug:      {type:Number, value:0},
       src:        {type:String, value:null, observer:"loadMIDIUrl"},
       loop:       {type:Number, value:0},
+      disabledrop:{type:Number, value:0},
+      internalcontext: {type:Number, value:1},
     },
     layout:function(){
       this.$["wa-canvas"].style.width=this.width;
@@ -438,82 +437,82 @@
       this.ctx=this.canvas.getContext("2d");
       this.ctx.fillStyle="#000";
       this.ctx.fillRect(0,0,256,64);
-      if(this.graph){
-        setInterval(
-          function(){
-            if(this.ana){
-              var g=new Uint8Array(256);
-              this.ana.getByteTimeDomainData(g);
-              this.ctx.globalCompositeOperation="lighter";
-              this.ctx.fillStyle="#0f0";
-              for(var i=0;i<256;++i){
-                var v=g[i];
-                this.ctx.fillRect(i,((v-128)>>1)+32,1,1);
-              }
+      setInterval(
+        function(){
+          if(this.ana){
+            var g=new Uint8Array(256);
+            this.ana.getByteTimeDomainData(g);
+            this.ctx.globalCompositeOperation="lighter";
+            this.ctx.fillStyle="#0f0";
+            for(var i=0;i<256;++i){
+              var v=g[i];
+              this.ctx.fillRect(i,((v-128)>>1)+32,1,1);
             }
-            this.ctx.globalCompositeOperation="source-over";
-            this.ctx.fillStyle="rgba(0,0,0,0.05)";
-            this.ctx.fillRect(0,0,256,64);
-            if(this.song){
-              this.ctx.fillStyle="#036";
-              this.ctx.fillRect(180,10,50,45);
-              this.ctx.fillStyle="#fff";
-              if(this.playing){
-                this.ctx.fillRect(190,22,10,20);
-                this.ctx.fillRect(210,22,10,20);
-              }
-              else{
-                this.ctx.beginPath();
-                this.ctx.moveTo(220,32);
-                this.ctx.lineTo(200,42);
-                this.ctx.lineTo(200,22);
-                this.ctx.fill();
-              }
+          }
+          this.ctx.globalCompositeOperation="source-over";
+          this.ctx.fillStyle="rgba(0,0,0,0.05)";
+          this.ctx.fillRect(0,0,256,64);
+          if(this.song){
+            this.ctx.fillStyle="#036";
+            this.ctx.fillRect(180,10,50,45);
+            this.ctx.fillStyle="#fff";
+            if(this.playing){
+              this.ctx.fillRect(190,22,10,20);
+              this.ctx.fillRect(210,22,10,20);
             }
-            if(this.playing && this.song.ev.length>0){
-              var e=this.song.ev[this.playIndex];
-              while(this.actx.currentTime+1>this.playTime){
-                if(e.m[0]==0xff51){
-                  this.song.tempo=e.m[1];
-                  this.tick2Time=4*60/this.song.tempo/this.song.timebase;
-                }
-                else
-                  this.send(e.m,this.playTime);
-                ++this.playIndex;
-                if(this.playIndex>=this.song.ev.length){
-                  if(this.loop){
-                    e=this.song.ev[this.playIndex=0];
-                    this.playTick=e.t;
-                  }
-                  else{
-                    this.playing=0;
-                    break;
-                  }
-                }
-                else{
-                  e=this.song.ev[this.playIndex];
-                  this.playTime+=(e.t-this.playTick)*this.tick2Time;
+            else{
+              this.ctx.beginPath();
+              this.ctx.moveTo(220,32);
+              this.ctx.lineTo(200,42);
+              this.ctx.lineTo(200,22);
+              this.ctx.fill();
+            }
+          }
+          if(this.playing && this.song.ev.length>0){
+            var e=this.song.ev[this.playIndex];
+            while(this.actx.currentTime+1>this.playTime){
+              if(e.m[0]==0xff51){
+                this.song.tempo=e.m[1];
+                this.tick2Time=4*60/this.song.tempo/this.song.timebase;
+              }
+              else
+                this.send(e.m,this.playTime);
+              ++this.playIndex;
+              if(this.playIndex>=this.song.ev.length){
+                if(this.loop){
+                  e=this.song.ev[this.playIndex=0];
                   this.playTick=e.t;
                 }
+                else{
+                  this.playing=0;
+                  break;
+                }
+              }
+              else{
+                e=this.song.ev[this.playIndex];
+                this.playTime+=(e.t-this.playTick)*this.tick2Time;
+                this.playTick=e.t;
               }
             }
-          }.bind(this)
-          ,60);
-        }
+          }
+        }.bind(this)
+        ,60);
         this.canvas.addEventListener("dragover",this.dragOver.bind(this),false);
-        this.canvas.addEventListener("drop",this.drop.bind(this),false);
+        this.canvas.addEventListener("drop",this.execDrop.bind(this),false);
         this.canvas.addEventListener("click",this.click.bind(this),false);
-      },
-      setDisableDrop:function(){
-        console.log("setDisableDrop:"+this.disableDrop)
+        console.log("internalcontext:"+this.internalcontext)
+        if(this.internalcontext)
+          this.setAudioContext(new AudioContext());
+        this.isReady=1;
       },
       setMasterVol:function(){
         if(this.out)
           this.out.gain.value=this.masterVol;
       },
       setReverbLev:function(){
-        if(this.rev)
-          this.rev.gain.value=this.reverbLev*10;
+        var r=parseFloat(this.reverbLev);
+        if(this.rev&&!isNaN(r))
+          this.rev.gain.value=r*10;
       },
       click:function(e){
         if(this.playing)
@@ -526,9 +525,9 @@
         e.preventDefault();
         e.dataTransfer.dropEffect = "copy";
       },
-      drop:function(e){
+      execDrop:function(e){
         var f = e.dataTransfer.files;
-        if(this.disableDrop==0){
+        if(this.disabledrop==0){
           var reader = new FileReader();
           reader.onload=(e)=>{
             this.loadMIDI(reader.result);
@@ -792,15 +791,17 @@
         this.brange[ch]=2<<7; this.rpnidx[ch]=0x3fff; this.sustain[ch]=0;
         this.chvol[ch].gain.value=this.vol[ch]*this.ex[ch]*3/16384;
       },
-      send:function(msg,t,tr){    /* send midi message */
+      send:function(msg,t,tsmode){    /* send midi message */
         var i;
+        if(tsmode)
+          t=t*.001-this.tsdiff;
         var ch=msg[0]&0xf;
         var cmd=msg[0]&~0xf;
         if(cmd<0x80||cmd>=0x100)
           return;
         if(cmd==0x90 && msg[2]==0)
           cmd=0x80;
-        if(!t){
+        if(!t || t<0){
           t=0;
           if(this.actx)
             t=this.actx.currentTime;
@@ -913,11 +914,12 @@
         }
       },
       setAudioContext:function(actx,dest){
-        var i;
-        this.actx=actx;
+        this.audioContext=this.actx=actx;
         this.dest=dest;
         if(!dest)
           this.dest=actx.destination;
+        this.tsdiff=performance.now()*.001-this.actx.currentTime;
+        console.log("TSDiff:"+this.tsdiff);
         this.conv=this.actx.createConvolver();
         this.rev=this.actx.createGain();
         this.comp=this.actx.createDynamicsCompressor();
@@ -942,7 +944,7 @@
           this.pg[i]=i;
           this.resetAllController(i);
         }
-        if(this.graph>=2){
+        if(this.graph>=1){
           this.ana=this.actx.createAnalyser();
           this.out.connect(this.ana);
         }

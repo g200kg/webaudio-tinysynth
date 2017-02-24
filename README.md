@@ -13,7 +13,10 @@ WebAudio Tiny GM Synthesizer [Polymer]
 
 ## Live Demo
 ![./tinysynth.png](./tinysynth.png)  
-Test Page is here : [https://g200kg.github.io/webaudio-tinysynth/soundedit.html](https://g200kg.github.io/webaudio-tinysynth/soundedit.html)
+
+Test Page is here :  
+ [soundedit.html](https://g200kg.github.io/webaudio-tinysynth/soundedit.html)  (Playable with MIDI keyboard)  
+ [simple.html](https://g200kg.github.io/webaudio-tinysynth/soundedit.html)  (Most simple sample)
 
 ## Usage
 
@@ -34,21 +37,9 @@ Install Polymer and webaudio-tinysynth
 
 *  place webaudio-pianoroll element
   - `<webaudio-tinysynth></webaudio-tinysynth>`
-  - Note that the polymer module may not be ready immediately after window.onload especially the webcomponents is polyfilled (Firefox / Edge).
-  It may cause failure of calling setAudioContext() in window.onload() function.
 
-```
-  // in my test code, setAudioContext() is invoked after check :
-  synth=document.getElementById("tinysynth");
-  timerid=setInterval(function(){
-    console.log("Initialize checking.");
-    if(synth.setAudioContext){
-      synth.setAudioContext(actx);
-      clearInterval(timerid);
-      console.log("Initialized");
-    }
-  },200);
-```
+
+
 
 
 
@@ -63,18 +54,40 @@ Install Polymer and webaudio-tinysynth
 |**quality**    |Number | 1        | 0: 1osc/note chiptune like<br/> 1: 2osc/note FM based|
 |**src**        |String |null      | .mid file url         |
 |**loop**       |Number | 0        | loop playMIDI         |
+|**disableDrop**|Number | 0        | disable MIDI file drop|
+|**graph**      |Number | 1        | enable waveform graph |
+|**internalContext**|Number | 1     | Use internal audioContext|
 
-* attributes values can be modified from javascript if needed.
+* In default, necessary audioContext will be created internally. `internalContext="0"` will prevent this and should provide audioContext with `setAudioContext()` function.
+* Note that the webaudio-tinysynth may not be ready yet immediately after 'window.onload'. especially be careful for Firefox/Edge because of webcomponents may be polyfilled. `isReady` flag can be used for confirming the synth is ready.
+
+```
+// in my test code, access to webaudio-tinysynth is invoked after check :
+synth=document.getElementById("tinysynth");
+timerid=setInterval(function(){
+  console.log("Initialize checking.");
+  if(synth.isReady){
+    clearInterval(timerid);
+    console.log("Initialized");
+    // ... start access to webaudio-tinysynth
+    // ...
+    // ...
+  }
+},200);
+```
 
 ## Functions
 **setAudioContext(audioContext, destinationNode)**  
-> Before sound generation, audioContext should be set.
-If the destinationNode is specified, all sounds are send to destinationNode. Note that the webaudio-tinysynth may not be ready yet immediately after 'window.onload'. especially be careful for Firefox/Edge because of webcomponents may be polyfilled.
+> In default, though audioContext is internally created and used, this function can specify `audioContext` should be used.  
+> All sounds are routed to specified `destinationNode`, or audioContext.destination is used if destinationNode is not specified.  
+> the audioContext in use currently can be accessed with `.audioContext` property of webaudio-tinysynth.
 
-**send([midi message],t)**
-> midi message is a array of midi data bytes. For example,  
-> `send([0x90, 60, 100],t)` for NoteOn note=60 velocity=100.
-> `t` is a timestamp that this message should be processed, in timeline of audioContext.
+**send([midi-message], t, timestampmode)**
+> midi-message is an array of midi data bytes for one message. For example,  
+> `send([0x90, 60, 100], t)` is for NoteOn ch=1 note#=60 velocity=100.  
+> `t` is a timestamp that this message should be processed.  
+> If timestampmode == 0 or not specified, `t` is a time (sec) in timeline of the in use audioContext.currentTime.  If timestampmode == 1, `t` is a time (msec) in HighResolutionTime (performance.now()) timeline.  
+> In both timestamp mode, this message will be immediately processed if `t`=0.
 
 **loadMIDI(mididata)**
 > load MIDI data to built-in sequencer. mididata is a arraybuffer of SMF (.mid file contents).

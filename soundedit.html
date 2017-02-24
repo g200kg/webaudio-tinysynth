@@ -2,11 +2,11 @@
 <html>
 <head>
 <meta charset="utf-8">
-<script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/webaudio-controls/webaudio-controls.html" >
-<link rel="import" href="webaudio-tinysynth.html" >
-<link rel="import" href="webaudio-pianoroll.html" >
+<script src="./bower_components/webcomponentsjs/webcomponents.min.js"></script>
+<link rel="import" href="./bower_components/polymer/polymer.html">
+<link rel="import" href="./bower_components/webaudio-controls/webaudio-controls.html" >
+<link rel="import" href="./webaudio-tinysynth.html" >
+<link rel="import" href="./webaudio-pianoroll.html" >
 <style>
 #soundeditor{
   display:none;
@@ -32,29 +32,26 @@ var midiPort=[];
 var currentPort=-1;
 function Init(){
   InitMidi();
-  actx=new AudioContext();
   synth=document.getElementById("tinysynth");
   kb=document.getElementById("kb");
   kb.addEventListener("change",KeyIn);
   var sh=document.getElementById("shot");
-  sh.addEventListener("mousedown",function(){
-    synth.send([0x90+curMidi,curNote,100],0);
-  });
-  sh.addEventListener("mouseup",function(){
-    synth.send([0x80+curMidi,curNote,100],0);
-  });
-  timerid=setInterval(function(){					/* need to wait initialize for webcomponents polyfill */
+  timerid=setInterval(function(){
     console.log("Initialize checking.");
-    if(synth.setAudioContext){
-      synth.setAudioContext(actx);
+    if(synth.isReady){
       clearInterval(timerid);
+      console.log("Initialized");
+      sh.addEventListener("mousedown",function(){
+        synth.send([0x90+curMidi,curNote,100],0);
+      });
+      sh.addEventListener("mouseup",function(){
+        synth.send([0x80+curMidi,curNote,100],0);
+      });
       for(var i=0;i<128;++i){
         var o=document.createElement("option");
         o.innerHTML=(i+1)+" : "+synth.getTimbreName(0,i);
         document.getElementById("prog").appendChild(o);
       }
-      ProgChange(0);
-      console.log("Initialized");
     }
   },200);
 }
@@ -263,7 +260,7 @@ function Edit(){
   ViewDef(prog);
 }
 function Sustain(b){
-  synth.send([0xb0+curMidi,64,b?127:0],actx.currentTime);
+  synth.send([0xb0+curMidi,64,b?127:0],0);
 }
 window.onload=()=>{
   Init();
@@ -310,11 +307,10 @@ Ch : <select onchange="ChChange(this)"><option>Ch1</option><option>Ch2</option><
 Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
 </select>
 <hr/>
-<webaudio-tinysynth id="tinysynth" quality="1" loop="1" disableDrop="1" masterVol="0.2"></webaudio-tinysynth>
 <table>
 <tr>
   <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" onchange="Ctrl()"></webaudio-knob></td>
-  <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="rev" value="0.3" onchange="Ctrl()"></webaudio-knob></td>
+  <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="rev" value="0.31" onchange="Ctrl()"></webaudio-knob></td>
 </tr>
 <tr><td>Vol</td><td>Reverb</td></tr>
 </table>
