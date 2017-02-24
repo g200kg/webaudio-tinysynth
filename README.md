@@ -122,6 +122,7 @@ timerid=setInterval(function(){
 |**1**                   | Yes      | Modulation                     |
 |**6 / 38**              | Yes      | Data Entry                     |
 |**7**                   | Yes      | Channel Volume                 |
+|**10**                  | Yes      | Pan                            |
 |**11**                  | Yes      | Expression                     |
 |**64**                  | Yes      | Sustain                        |
 |**100/101**             | Yes      | RPN Index                      |
