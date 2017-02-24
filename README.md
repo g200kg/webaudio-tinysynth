@@ -16,7 +16,7 @@ WebAudio Tiny GM Synthesizer [Polymer]
 
 Test Page is here :  
  [soundedit.html](https://g200kg.github.io/webaudio-tinysynth/soundedit.html)  (Playable with MIDI keyboard)  
- [simple.html](https://g200kg.github.io/webaudio-tinysynth/soundedit.html)  (Most simple sample)
+ [simple.html](https://g200kg.github.io/webaudio-tinysynth/simple.html)  (Most simple sample)
 
 ## Usage
 
