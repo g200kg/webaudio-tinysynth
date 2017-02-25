@@ -224,12 +224,13 @@ function Edit(){
     prog=synth.drummap[curNote-35];
   else
     prog=synth.program[curProg];
-  if(prog.p.length<2 && document.getElementById("w2").selectedIndex){
-    prog.p[1]={g:0,t:1,f:0,v:0.5,a:0,h:0.01,d:0.01,s:0,r:0.05,p:1,b:0,};
-    ViewParam(prog);
+  if(prog.p.length<2 && document.getElementById("w2").value!=""){
+    prog.p[1]={};//w:document.getElementById("w2").value,g:0,t:1,f:0,v:0.5,a:0,h:0.01,d:0.01,s:0,r:0.05,p:1,b:0,c:0,k:0};
+//    ViewParam(prog);
   }
-  if(prog.p.length>=2 && !document.getElementById("w2").selectedIndex)
+  if(prog.p.length>=2 && document.getElementById("w2").value==""){
     prog.p.length=1;
+  }
   prog.p[0].g=GetVal("g1");
   prog.p[0].w=document.getElementById("w1").value;
   prog.p[0].v=GetVal("v1");
@@ -249,7 +250,7 @@ function Edit(){
     prog.p[1].t=GetVal("t2");
     prog.p[1].f=GetVal("f2");
     prog.p[1].a=GetVal("a2");
-    prog.p[1].a=GetVal("h2");
+    prog.p[1].h=GetVal("h2");
     prog.p[1].d=GetVal("d2");
     prog.p[1].s=GetVal("s2");
     prog.p[1].r=GetVal("r2");
@@ -283,8 +284,10 @@ window.onload=()=>{
 </head>
 <body>
 <h1>TinySynth Test Page</h1>
-<b>webaudio-tinysynth</b> is a small GM like mapped synthesizer.<br/>
+<b>webaudio-tinysynth</b> is a small synthesizer written in JavaScript with GM like timbre map.<br/>
+All timbres are generated with the combination of OscillatorNode algolithmically without any PCM sampels.<br/><br/>
 Repository : <a href="https://github.com/g200kg/webaudio-tinysynth">https://github.com/g200kg/webaudio-tinysynth</a>
+
 <ul>
   <li>webaudio-tinysynth is a Polymer module. written in JavaScript</li>
   <li>Playable with mouse or qwerty-keyboard.</li>
@@ -308,12 +311,12 @@ Ch : <select onchange="ChChange(this)"><option>Ch1</option><option>Ch2</option><
 Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
 </select>
 <hr/>
-<webaudio-tinysynth id="tinysynth" quality="1" loop="1" disableDrop="0" masterVol="0.2"></webaudio-tinysynth>
+<webaudio-tinysynth id="tinysynth" quality="1" loop="1" disableDrop="0" masterVol="0.2" perfmon="1"></webaudio-tinysynth>
 <table>
 <tr>
   <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" onchange="Ctrl()"></webaudio-knob></td>
-  <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="rev" value="0.31" onchange="Ctrl()"></webaudio-knob></td>
-  <td><input type="checkbox" onchange="synth.loop=this.checked"/>Loop</td>
+  <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="rev" value="0.2" onchange="Ctrl()"></webaudio-knob></td>
+  <td><input type="checkbox" onchange="synth.loop=this.checked" checked/>Loop</td>
 </tr>
 <tr><td>Vol</td><td>Reverb</td></tr>
 </table>
@@ -328,7 +331,8 @@ Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><o
   <tr><td>G1</td><td>W1</td><td>V1</td><td>T1</td><td>F1</td><td>A1</td><td>H1</td><td>D1</td><td>S1</td><td>R1</td><td>B1</td><td>P1</td></tr>
   <tr>
   <td><input id="g1" oninput="Edit()" value="0" size="4"/></td>
-  <td><select id="w1" onchange="Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
+  <td><input id="w1" oninput="Edit()" value="" size="4" style="width:45px"/>
+  <select id="w1s" style="width:20px" onchange="document.getElementById('w1').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
   <td><input id="v1"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="t1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="f1"  oninput="Edit()" value="0" size="4"/></td>
@@ -343,7 +347,8 @@ Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><o
   <tr><td>G1</td><td>W2</td><td>V2</td><td>T2</td><td>F2</td><td>A2</td><td>H2</td><td>D2</td><td>S2</td><td>R2</td><td>B2</td><td>C2</td><td>P2</td><td>K2</td></tr>
   <tr>
   <td><input id="g2" oninput="Edit()" value="0" size="4"/></td>
-  <td><select id="w2" onchange="Edit()"><option value=""></option><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
+  <td><input id="w2" oninput="Edit()" value="" size="4" style="width:45px"/>
+  <select id="w2s" style="width:20px" onchange="document.getElementById('w2').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
   <td><input id="v2"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="t2"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="f2"  oninput="Edit()" value="0.5" size="4"/></td>
