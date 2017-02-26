@@ -131,59 +131,88 @@ function ViewDef(pg){
   for(p=0;p<ss.length;++p){
     s=s.replace(ss[p],",");
     s=s.replace(ss[p],",");
+    s=s.replace(ss[p],",");
   }
+  s=s.replace(/{,/g,"{");
   s=s.replace(/,+/g,",");
   document.getElementById("patch").value=s;
 }
 
+function EnableRow(){
+  oscs=document.getElementById("oscs").selectedIndex+1;
+  for(var i=2;;++i){
+    var o=document.getElementById("osc"+i)
+    if(!o)
+      break;
+    o=o.firstChild;
+    while(o=o.nextSibling){
+      if(o.firstChild)
+        o.firstChild.disabled=(oscs>=i)?false:true;
+    }
+  }
+}
+function Edit(){
+  var prog;
+  if(curMidi==9)
+    prog=synth.drummap[curNote-35];
+  else
+    prog=synth.program[curProg];
+  var oscs=document.getElementById("oscs").selectedIndex+1;
+  EnableRow();
+  if(prog.p.length>oscs)
+    prog.p.length=oscs;
+  if(prog.p.length<oscs)
+    for(var i=oscs-prog.p.length;i>=0;--i)
+      prog.p.push({g:0,w:"sine",v:0,t:0,f:0,a:0,h:0,d:1,s:0,r:1,b:0,c:0,p:1,k:0});
+  for(var i=0;i<oscs;++i){
+    prog.p[i].g=GetVal("g"+(i+1));
+    prog.p[i].w=document.getElementById("w"+(i+1)).value;
+    prog.p[i].v=GetVal("v"+(i+1));
+    prog.p[i].t=GetVal("t"+(i+1));
+    prog.p[i].f=GetVal("f"+(i+1));
+    prog.p[i].a=GetVal("a"+(i+1));
+    prog.p[i].h=GetVal("h"+(i+1));
+    prog.p[i].d=GetVal("d"+(i+1));
+    prog.p[i].s=GetVal("s"+(i+1));
+    prog.p[i].r=GetVal("r"+(i+1));
+    prog.p[i].b=GetVal("b"+(i+1));
+    prog.p[i].c=GetVal("c"+(i+1));
+    prog.p[i].p=GetVal("p"+(i+1));
+    prog.p[i].k=GetVal("k"+(i+1));
+  }
+  ViewDef(prog);
+}
 function ViewParam(pg){
   if(!pg)
     return;
-  document.getElementById("name").innerHTML=pg.name+" : ";
-  document.getElementById("g1").value=pg.p[0].g;
-  document.getElementById("w1").value=pg.p[0].w;
-  document.getElementById("v1").value=pg.p[0].v;
-  document.getElementById("t1").value=pg.p[0].t;
-  document.getElementById("f1").value=pg.p[0].f;
-  document.getElementById("a1").value=pg.p[0].a;
-  document.getElementById("h1").value=pg.p[0].h;
-  document.getElementById("d1").value=pg.p[0].d;
-  document.getElementById("s1").value=pg.p[0].s;
-  document.getElementById("r1").value=pg.p[0].r;
-  document.getElementById("b1").value=pg.p[0].b;
-  document.getElementById("p1").value=pg.p[0].p;
-
-  if(pg.p.length>=2 && pg.p[1].w!=""){
-    document.getElementById("g2").value=pg.p[1].g;
-    document.getElementById("w2").value=pg.p[1].w;
-    document.getElementById("v2").value=pg.p[1].v;
-    document.getElementById("t2").value=pg.p[1].t;
-    document.getElementById("f2").value=pg.p[1].f;
-    document.getElementById("a2").value=pg.p[1].a;
-    document.getElementById("h2").value=pg.p[1].h;
-    document.getElementById("d2").value=pg.p[1].d;
-    document.getElementById("s2").value=pg.p[1].s;
-    document.getElementById("r2").value=pg.p[1].r;
-    document.getElementById("b2").value=pg.p[1].b;
-    document.getElementById("c2").value=pg.p[1].c;
-    document.getElementById("p2").value=pg.p[1].p;
-    document.getElementById("k2").value=pg.p[1].k;
+  var oscs=pg.p.length;
+  document.getElementById("oscs").selectedIndex=oscs-1;
+  var o=document.getElementById("osc2").firstChild;
+  while(o=o.nextSibling){
+    if(o.firstChild)
+      o.firstChild.disabled=(oscs>=2)?false:true;
   }
-  else{
-    document.getElementById("g2").value="";
-    document.getElementById("w2").value="";
-    document.getElementById("v2").value="";
-    document.getElementById("t2").value="";
-    document.getElementById("f2").value="";
-    document.getElementById("a2").value="";
-    document.getElementById("h2").value="";
-    document.getElementById("d2").value="";
-    document.getElementById("s2").value="";
-    document.getElementById("r2").value="";
-    document.getElementById("b2").value="";
-    document.getElementById("c2").value="";
-    document.getElementById("p2").value="";
-    document.getElementById("k2").value="";
+  o=document.getElementById("osc3").firstChild;
+  while(o=o.nextSibling){
+    if(o.firstChild)
+      o.firstChild.disabled=(oscs>=3)?false:true;
+  }
+  document.getElementById("name").innerHTML=pg.name+" : ";
+  for(var i=0;i<oscs;++i){
+    document.getElementById("g"+(i+1)).value=pg.p[i].g;
+    document.getElementById("w"+(i+1)).value=pg.p[i].w;
+    document.getElementById("v"+(i+1)).value=pg.p[i].v;
+    document.getElementById("t"+(i+1)).value=pg.p[i].t;
+    document.getElementById("f"+(i+1)).value=pg.p[i].f;
+    document.getElementById("a"+(i+1)).value=pg.p[i].a;
+    document.getElementById("h"+(i+1)).value=pg.p[i].h;
+    document.getElementById("d"+(i+1)).value=pg.p[i].d;
+    document.getElementById("s"+(i+1)).value=pg.p[i].s;
+    document.getElementById("r"+(i+1)).value=pg.p[i].r;
+    document.getElementById("b"+(i+1)).value=pg.p[i].b;
+    document.getElementById("c"+(i+1)).value=pg.p[i].c;
+    document.getElementById("p"+(i+1)).value=pg.p[i].p;
+    document.getElementById("k"+(i+1)).value=pg.p[i].k;
   }
   ViewDef(pg);
 }
@@ -222,49 +251,6 @@ function OpenEditor(){
   else
     e.style.display="block";
 }
-function Edit(){
-  var prog;
-  if(curMidi==9)
-    prog=synth.drummap[curNote-35];
-  else
-    prog=synth.program[curProg];
-  if(prog.p.length<2 && document.getElementById("w2").value!=""){
-    prog.p[1]={};//w:document.getElementById("w2").value,g:0,t:1,f:0,v:0.5,a:0,h:0.01,d:0.01,s:0,r:0.05,p:1,b:0,c:0,k:0};
-//    ViewParam(prog);
-  }
-  if(prog.p.length>=2 && document.getElementById("w2").value==""){
-    prog.p.length=1;
-  }
-  prog.p[0].g=GetVal("g1");
-  prog.p[0].w=document.getElementById("w1").value;
-  prog.p[0].v=GetVal("v1");
-  prog.p[0].t=GetVal("t1");
-  prog.p[0].f=GetVal("f1");
-  prog.p[0].a=GetVal("a1");
-  prog.p[0].h=GetVal("h1");
-  prog.p[0].d=GetVal("d1");
-  prog.p[0].s=GetVal("s1");
-  prog.p[0].r=GetVal("r1");
-  prog.p[0].b=GetVal("b1");
-  prog.p[0].p=GetVal("p1");
-  if(prog.p.length>=2 && prog.p[1].w!=""){
-    prog.p[1].w=document.getElementById("w2").value;
-    prog.p[1].g=GetVal("g2");
-    prog.p[1].v=GetVal("v2");
-    prog.p[1].t=GetVal("t2");
-    prog.p[1].f=GetVal("f2");
-    prog.p[1].a=GetVal("a2");
-    prog.p[1].h=GetVal("h2");
-    prog.p[1].d=GetVal("d2");
-    prog.p[1].s=GetVal("s2");
-    prog.p[1].r=GetVal("r2");
-    prog.p[1].b=GetVal("b2");
-    prog.p[1].p=GetVal("p2");
-    prog.p[1].c=GetVal("c2");
-    prog.p[1].k=GetVal("k2");
-  }
-  ViewDef(prog);
-}
 function Sustain(b){
   synth.send([0xb0+curMidi,64,b?127:0],0);
 }
@@ -297,7 +283,7 @@ Repository : <a href="https://github.com/g200kg/webaudio-tinysynth">https://gith
   <li>Playable with mouse or qwerty-keyboard.</li>
   <li>Play by MIDI keyboard also available via WebMIDI API(Chrome).</li>
   <li>GM like timbre map. Ch10 is drum track.</li>
-  <li>Quality setting switches two timbre set. light-weighted 1osc or FMbased 2osc</li>
+  <li>Quality setting switches two timbre set. light-weighted 1 osc or FMbased 2 osc (more osc in some timbre).</li>
   <li>Built-in MIDI sequencer is also available. drag &amp; drop .mid file to TinySynth</li>
 </ul>
 <hr/>
@@ -329,11 +315,14 @@ Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><o
 <br/>
 <button onclick="synth.loadMIDIUrl('./websequencerdemo.mid')">Load Demo MIDI</button>
 <hr/>
+<br/>
 <button onclick="OpenEditor()">Sound Editor</button> <span id="name"></span><button id="shot"></button><br/>
 <div id="soundeditor">
+<br/>
+Number of Oscillator :<select id="oscs" onchange="Edit()"><option>1</option><option>2</option><option>3</option><option>4</option></select>
 <table>
-  <tr><td>G1</td><td>W1</td><td>V1</td><td>T1</td><td>F1</td><td>A1</td><td>H1</td><td>D1</td><td>S1</td><td>R1</td><td>B1</td><td>P1</td></tr>
-  <tr>
+  <tr id="desc1"><td>G</td><td>W</td><td>V</td><td>T</td><td>F</td><td>A</td><td>H</td><td>D</td><td>S</td><td>R</td><td>B</td><td>C</td><td>P</td><td>K</td></tr>
+  <tr id="osc1">
   <td><input id="g1" oninput="Edit()" value="0" size="4"/></td>
   <td><input id="w1" oninput="Edit()" value="" size="4" style="width:45px"/>
   <select id="w1s" style="width:20px" onchange="document.getElementById('w1').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
@@ -346,10 +335,11 @@ Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><o
   <td><input id="s1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="r1"  oninput="Edit()" value="0.1" size="4"/></td>
   <td><input id="b1"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="c1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="p1"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="k1"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
-  <tr><td>G1</td><td>W2</td><td>V2</td><td>T2</td><td>F2</td><td>A2</td><td>H2</td><td>D2</td><td>S2</td><td>R2</td><td>B2</td><td>C2</td><td>P2</td><td>K2</td></tr>
-  <tr>
+  <tr id="osc2">
   <td><input id="g2" oninput="Edit()" value="0" size="4"/></td>
   <td><input id="w2" oninput="Edit()" value="" size="4" style="width:45px"/>
   <select id="w2s" style="width:20px" onchange="document.getElementById('w2').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
@@ -366,6 +356,41 @@ Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><o
   <td><input id="p2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="k2"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
+</tr>
+<tr id="osc3">
+<td><input id="g3" oninput="Edit()" value="0" size="4"/></td>
+<td><input id="w3" oninput="Edit()" value="" size="4" style="width:45px"/>
+<select id="w3s" style="width:20px" value="sine" onchange="document.getElementById('w3').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
+<td><input id="v3"  oninput="Edit()" value="0.5" size="4"/></td>
+<td><input id="t3"  oninput="Edit()" value="0.5" size="4"/></td>
+<td><input id="f3"  oninput="Edit()" value="0.5" size="4"/></td>
+<td><input id="a3"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="h3"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="d3"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="s3"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="r3"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="b3"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="c3"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="p3"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="k3"  oninput="Edit()" value="0" size="4"/></td>
+</tr>
+<tr id="osc4">
+<td><input id="g4" oninput="Edit()" value="0" size="4"/></td>
+<td><input id="w4" oninput="Edit()" value="" size="4" style="width:45px"/>
+<select id="w4s" style="width:20px" value="sine" onchange="document.getElementById('w4').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
+<td><input id="v4"  oninput="Edit()" value="0.5" size="4"/></td>
+<td><input id="t4"  oninput="Edit()" value="0.5" size="4"/></td>
+<td><input id="f4"  oninput="Edit()" value="0.5" size="4"/></td>
+<td><input id="a4"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="h4"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="d4"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="s4"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="r4"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="b4"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="c4"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="p4"  oninput="Edit()" value="0" size="4"/></td>
+<td><input id="k4"  oninput="Edit()" value="0" size="4"/></td>
+</tr>
 </table>
 <br/>
 <input id="patch" size="80"/>

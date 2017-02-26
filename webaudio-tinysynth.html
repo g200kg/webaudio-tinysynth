@@ -154,9 +154,9 @@
       [{w:"sine",d:0.7,r:0.1,},{w:"triangle",v:4,f:2,d:0.5,s:0.5,g:1,k:-1}],
       [{w:"sine",d:0.7,b:2,v:0.2,},{w:"triangle",v:4,t:3,f:2,d:0.3,g:1,k:-1,a:0.01,s:0.5,}],
       [{w:"sine",v:0.35,d:0.7,b:2,},{w:"sine",v:3,t:7,f:1,d:1,s:1,g:1,k:-.7}],
-      [{w:"sine",v:0.4,d:0.7,b:2,},{w:"sine",v:11,t:7,f:1,d:0.5,s:1,g:1,k:-.7}],
-      [{w:"sawtooth",v:0.4,d:2,},{w:"sine",v:8,f:0.1,d:2,s:1,r:2,g:1,}],
-      [{w:"triangle",v:0.4,d:1.5,},{w:"square",v:6,f:0.1,d:1.5,s:0.5,r:2,g:1,}],
+      [{w:"sine",v:0.35,d:0.7,b:2,},{w:"sine",v:11,t:7,f:1,d:0.5,s:1,g:1,k:-.7}],
+      [{w:"sawtooth",v:0.34,d:2,},{w:"sine",v:8,f:0.1,d:2,s:1,r:2,g:1,}],
+      [{w:"triangle",v:0.34,d:1.5,},{w:"square",v:6,f:0.1,d:1.5,s:0.5,r:2,g:1,}],
       /* 9-16 : Chromatic Perc*/
       [{w:"sine",d:0.3,r:0.3,},{w:"sine",v:7,t:11,d:0.03,g:1,}],
       [{w:"sine",d:0.3,r:0.3,},{w:"sine",v:11,t:6,d:0.2,s:0.4,g:1,}],
@@ -168,7 +168,7 @@
       [{w:"triangle",v:0.2,d:0.5,r:0.2,},{w:"sine",v:6,t:2.5,d:0.2,s:0.1,r:0.2,g:1,}],
       /* 17-24 : Organ */
       [{w:"w9999",v:0.3,s:0.9,},{w:"w9999",v:0.3,t:2,f:2,s:0.9,}],//[{w:"sine",v:0.3,s:0.9,},{w:"sine",v:0.3,t:4,f:2,s:0.9,}],
-      [{w:"w9999",v:0.3,s:0.9,},{w:"sine",v:2,t:2,f:2,s:0.1,g:1,h:0,r:0.01,}],//[{w:"w9999",v:0.3,s:0.9,},{w:"w9999",v:0.3,t:2,f:2,s:0.9,}],//[{w:"sine",v:0.3,d:0.05,s:0.9,},{w:"sine",v:6,t:5,f:1.5,d:0.001,s:0.1,g:1,}],
+      [{w:"w9999",v:0.2,s:1,},{w:"sine",v:11,t:6,f:2,s:0.1,g:1,h:0.006,r:0.002,d:0.002,},{w:"w9999",v:0.2,t:2,f:1,h:0,s:1,}],
       [{w:"w9999",v:0.27,d:0.1,s:0.9,},{w:"w9999",v:0.3,t:4,f:2,s:0.5,}],//[{w:"triangle",v:0.3,d:11,},{w:"triangle",v:15,t:3,f:1.5,s:0.2,g:1,}],
       [{w:"w9999",v:0.3,a:0.04,s:0.9,},{w:"w9999",v:0.2,t:8,f:2,a:0.04,s:0.9,}],//[{w:"sine",v:0.3,a:0.02,s:0.9,},{w:"sine",v:5,t:5,f:1.5,a:0.02,s:0.9,g:1,}],
       [{w:"sine",v:0.2,a:0.02,d:0.05,s:1,},{w:"sine",v:6,t:3,f:1,a:0.02,d:0.05,s:1,g:1,}],
@@ -210,7 +210,7 @@
       [{w:"triangle",v:0.3,a:0.03,s:1,},{w:"sine",v:3,t:5,f:1,d:1,s:1,g:1,}],
       [{w:"sine",v:0.4,a:0.03,s:0.9,},{w:"sine",v:1,t:2,f:3,d:0.03,s:0.2,g:1,}],
       [{w:"triangle",v:0.6,a:0.05,s:0.5,},{w:"sine",v:1,f:0.8,d:0.2,s:0.2,g:1,}],
-      [{w:"square",v:0.2,a:0.01,d:0.2,r:0.005,},{w:"sawtooth",v:0.3,t:1.5,f:1,d:0.2,r:0.1,a:0.01,b:2222,}],
+      [{w:"square",v:0.15,a:0.01,d:0.2,r:0.2,t:0.5,c:0,h:0.03,},{w:"square",v:4,f:0.5,d:0.2,r:11,a:0.01,g:1,c:0,h:0.02,},{w:"square",v:0.15,t:4,f:1,a:0.02,d:0.15,r:0.15,c:0,h:0.03,},{g:3,w:"square",v:4,f:-0.5,a:0.01,h:0.02,d:0.15,s:0,r:11,b:0,c:0,p:1,k:0,}],
       /* 57-64 : Brass */
       [{w:"square",v:0.2,a:0.01,d:1,s:0.6,r:0.04,},{w:"sine",v:1,d:0.1,s:4,g:1,}],
       [{w:"square",v:0.2,a:0.02,d:1,s:0.5,r:0.08,},{w:"sine",v:1,d:0.1,s:4,g:1,}],
@@ -240,29 +240,28 @@
       [{w:"sine",v:0.7,a:0.02,d:2,},{w:"sine",v:1,t:2,f:1,d:0.02,g:1,}],
       /* 81-88 : SynthLead */
       [{w:"square",v:0.3,d:1,s:0.5,},{w:"square",v:1,f:0.2,d:1,s:0.5,g:1,}],
-      [{w:"sawtooth",d:2,s:0.5,},{w:"square",v:2,f:0.1,s:0.5,g:1,}],
-      [{w:"triangle",a:0.05,d:2,s:0.6,},{w:"sine",v:4,t:2,g:1,}],
-      [{w:"triangle",a:0.01,d:2,s:0.3,},{w:"sine",v:22,t:2,f:1,d:0.03,s:0.2,g:1,}],
-      [{w:"sawtooth",v:0.4,d:1,s:0.5,},{w:"sine",v:11,t:11,a:0.2,d:0.05,s:0.3,g:1,}],
-      [{w:"sine",v:0.4,a:0.06,d:1,s:0.5,},{w:"sine",v:7,f:1,d:1,s:0.2,g:1,}],
-      [{w:"sawtooth",v:0.4,a:0.02,d:0.2,s:0.7,r:0.08,},{w:"sawtooth",v:0.3,t:0.75,f:2,a:0.02,d:0.2,s:0.5,r:0.08,}],
+      [{w:"sawtooth",v:0.3,d:2,s:0.5,},{w:"square",v:2,f:0.1,s:0.5,g:1,}],
+      [{w:"triangle",v:0.5,a:0.05,d:2,s:0.6,},{w:"sine",v:4,t:2,g:1,}],
+      [{w:"triangle",v:0.3,a:0.01,d:2,s:0.3,},{w:"sine",v:22,t:2,f:1,d:0.03,s:0.2,g:1,}],
+      [{w:"sawtooth",v:0.3,d:1,s:0.5,},{w:"sine",v:11,t:11,a:0.2,d:0.05,s:0.3,g:1,}],
+      [{w:"sine",v:0.3,a:0.06,d:1,s:0.5,},{w:"sine",v:7,f:1,d:1,s:0.2,g:1,}],
+      [{w:"sawtooth",v:0.3,a:0.02,d:0.2,s:0.7,r:0.08,},{w:"sawtooth",v:0.3,t:0.75,f:2,a:0.02,d:0.2,s:0.5,r:0.08,}],
       [{w:"triangle",v:0.3,a:0.01,d:0.7,s:0.5,},{w:"square",v:5,t:0.5,d:0.7,s:0.5,g:1,}],
       /* 89-96 : SynthPad */
-      [{w:"triangle",a:0.02,d:0.3,s:0.3,r:0.3,},{w:"square",v:3,t:4,f:1,a:0.02,d:0.1,s:1,g:1,}],
-      [{w:"triangle",a:0.05,d:1,s:0.7,r:0.3,},{w:"sawtooth",v:3,t:4,f:1,d:0.3,s:1,g:1,}],
+      [{w:"triangle",v:0.3,a:0.02,d:0.3,s:0.3,r:0.3,},{w:"square",v:3,t:4,f:1,a:0.02,d:0.1,s:1,g:1,}],
+      [{w:"triangle",v:0.3,a:0.05,d:1,s:0.7,r:0.3,},{w:"sawtooth",v:3,t:4,f:1,d:0.3,s:1,g:1,}],
       [{w:"square",v:0.3,a:0.03,d:0.5,s:0.3,r:0.1,},{w:"square",v:4,f:1,a:0.03,d:0.1,g:1,}],
-      [{w:"triangle",a:0.08,d:1,s:0.3,r:0.1,},{w:"square",v:3,f:1,d:0.3,s:0.3,g:1,}],
-      [{w:"sine",a:0.05,d:1,s:0.3,r:0.1,},{w:"sine",v:0.1,t:2.001,f:1,d:1,s:50,g:1,}],
-      [{w:"triangle",a:0.03,d:0.7,s:0.3,r:0.2,},{w:"sine",v:12,t:7,f:1,d:0.5,s:1.7,g:1,}],
-      [{w:"sine",a:0.05,d:1,s:0.3,r:0.1,},{w:"sawtooth",v:22,t:6,d:0.06,s:0.3,g:1,}],
-      [{w:"triangle",v:0.4,a:0.05,d:11,r:0.3,},{w:"triangle",v:1,d:1,s:8,g:1,}],
+      [{w:"triangle",v:0.3,a:0.08,d:1,s:0.3,r:0.1,},{w:"square",v:3,f:1,d:0.3,s:0.3,g:1,}],
+      [{w:"sine",v:0.3,a:0.05,d:1,s:0.3,r:0.1,},{w:"sine",v:0.1,t:2.001,f:1,d:1,s:50,g:1,}],
+      [{w:"triangle",v:0.3,a:0.03,d:0.7,s:0.3,r:0.2,},{w:"sine",v:12,t:7,f:1,d:0.5,s:1.7,g:1,}],
+      [{w:"sine",v:0.3,a:0.05,d:1,s:0.3,r:0.1,},{w:"sawtooth",v:22,t:6,d:0.06,s:0.3,g:1,}],
+      [{w:"triangle",v:0.3,a:0.05,d:11,r:0.3,},{w:"triangle",v:1,d:1,s:8,g:1,}],
       /* 97-104 : FX */
       [{w:"sawtooth",v:0.3,d:4,s:0.8,r:0.1,},{w:"square",v:1,t:2,f:8,a:1,d:1,s:1,r:0.1,g:1,}],
-//            [{w:"square",v:0.2,d:0.2,s:1,t:0.8,p:1.25,c:2,},{w:"sawtooth",v:0.2,f:0.5,a:0.01,d:0.2,s:1,t:2.4,p:1.25,b:442,c:1,}],
-      [{w:"triangle",v:0.4,d:1,s:0.5,},{w:"triangle",v:11,f:1,a:1,d:0.3,s:1,g:1,}],
+      [{w:"triangle",v:0.3,d:1,s:0.5,},{w:"triangle",v:11,f:1,a:1,d:0.3,s:1,g:1,}],
       [{w:"sine",v:0.3,d:1,s:0.3,},{w:"square",v:22,t:11,d:0.5,s:0.1,g:1,}],
       [{w:"sawtooth",v:0.3,a:0.04,d:1,s:0.8,r:0.1,},{w:"square",v:1,t:0.5,d:1,s:2,g:1,}],
-      [{w:"triangle",v:0.4,d:1,s:0.3,},{w:"sine",v:22,t:6,d:0.6,s:0.05,g:1,}],
+      [{w:"triangle",v:0.3,d:1,s:0.3,},{w:"sine",v:22,t:6,d:0.6,s:0.05,g:1,}],
       [{w:"sine",v:0.6,a:0.1,d:0.05,s:0.4,},{w:"sine",v:5,t:5,f:1,d:0.05,s:0.3,g:1,}],
       [{w:"sine",a:0.1,d:0.05,s:0.4,},{w:"sine",v:5,t:5,f:1,d:0.05,s:0.3,g:1,}],
       [{w:"square",v:0.3,a:0.1,d:0.1,s:0.4,},{w:"square",v:1,f:1,d:0.3,s:0.1,g:1,}],
@@ -384,28 +383,28 @@
 /*35*/  [{w:"triangle",t:0,f:66,v:2,d:0.02,h:0.03,p:0.9,r:0.02,},{w:"square",g:1,t:10.1,v:22,r:0.002,c:0,h:0,p:0,d:0.002,}],//[{w:"triangle",t:0,f:73,v:1.5,d:0.02,h:0.02,p:0.3,r:0.02,},{w:"triangle",g:1,t:0,f:622,v:16,r:0.01,c:0,h:0,p:0.5,}],
         [{w:"triangle",t:0,f:66,v:2,d:0.02,h:0.03,p:0.9,r:0.02,},{w:"square",g:1,t:10.1,v:22,r:0.002,c:0,h:0,p:0,d:0.002,}],//[{w:"triangle",t:0,f:73,v:1.5,d:0.02,h:0.02,p:0.3,r:0.02,},{w:"triangle",g:1,t:0,f:622,v:16,r:0.01,c:0,h:0,p:0.5,}],
         [{w:"square",f:222,p:0,b:4222,t:0,r:0.01,h:0,}],
-        [{w:"triangle",f:141,v:1,d:0.06,p:0.8,t:0,r:0.06,h:0,},{w:"sine",g:1,t:0,f:266,v:8,d:0.03,r:0.03,p:0.8,b:2311,c:0,}],
-        [{w:"square",f:111,v:0.3,b:1200,t:0,r:0.01,h:0.03,}],
-/*40*/  [{w:"triangle",f:232,v:1,d:0.03,p:0.7,t:0,r:0.03,},{w:"square",g:1,t:0,f:1121,v:7,d:0.02,r:0.02,b:2551,c:0,}],
-        null,
+        [{w:"sine",f:191,v:0.5,d:0.03,p:0.9,t:0,r:0.03,h:0.03,},{w:"square",v:0.6,t:0,f:722,h:0.015,r:0.01,b:3323,c:0,p:0,}],//[{w:"triangle",f:141,v:1,d:0.06,p:0.8,t:0,r:0.06,h:0,},{w:"sine",g:1,t:0,f:266,v:8,d:0.03,r:0.03,p:0.8,b:2311,c:0,}],
+        [{w:"square",f:1150,v:0.34,t:0,r:0.03,h:0.025,d:0.03,p:0.98,},{g:1,w:"sine",t:0,f:231,h:0.05,d:0.1,s:1,r:0.1,b:1253,c:0,}],//[{w:"square",f:111,v:0.3,b:1200,t:0,r:0.01,h:0.03,}],
+/*40*/  [{w:"triangle",f:232,v:1,d:0.06,p:0.7,t:0,r:0.06,},{w:"square",g:1,t:0,f:1121,v:12,r:0.01,b:2551,c:0,h:0.015,}],
+        [{w:"triangle",f:200,v:0.9,d:0.12,h:0.02,p:0.5,t:0,r:0.12,},{g:1,w:"square",v:5,t:3,h:0.015,d:0.005,r:0.005,b:2551,c:0,}],
         null,//[{w:"square",v:.4,f:622,b:1142,r:0.01,t:0,h:0.005,}],
-        null,
-        [{w:"square",v:0.4,f:622,b:1142,r:0.02,t:0,h:0.005,d:0.02,}],
-/*45*/  null,
+        [{w:"triangle",f:200,v:0.9,d:0.12,h:0.02,p:0.5,t:0,r:0.12,},{g:1,w:"square",v:5,t:3,h:0.015,d:0.005,r:0.005,b:2551,c:0,}],
+        [{w:"square",v:0.4,f:622,b:1142,r:0.03,t:0,h:0.005,d:0.03,}],
+/*45*/  [{w:"triangle",f:250,v:0.9,d:0.12,h:0.02,p:0.5,t:0,r:0.12,},{g:1,w:"square",v:5,t:3,h:0.015,d:0.005,r:0.005,b:2551,c:0,}],
         [{w:"square",v:0.4,f:622,t:0,h:0,d:0.05,},{w:"square",g:1,v:4,h:0,d:0.5,r:1,b:1142,c:0,}],
-        null,
-        null,
-        [{w:"sine",f:1500,v:0.3,d:0.15,r:0.15,h:0.05,t:0,p:0.6,},{w:"sine",g:1,t:1.2,v:1,d:0.1,s:1,r:0.1,p:2,b:2231,c:0,}],
-/*50*/  null,
-        null,
+        [{w:"triangle",f:320,v:0.9,d:0.12,h:0.02,p:0.5,t:0,r:0.12,},{g:1,w:"square",v:5,t:3,h:0.015,d:0.005,r:0.005,b:2551,c:0,}],
+        [{w:"triangle",f:360,v:0.9,d:0.12,h:0.02,p:0.5,t:0,r:0.12,},{g:1,w:"square",v:5,t:3,h:0.015,d:0.005,r:0.005,b:2551,c:0,}],
+        [{w:"square",f:720,v:0.3,d:0.22,r:0.22,h:0.05,t:0,p:1.2,b:650,},{w:"square",g:1,t:1.75,v:3.8,d:0.22,s:1.2,r:0.22,b:1551,c:0,h:0.05,}],
+/*50*/  [{w:"triangle",f:420,v:0.9,d:0.12,h:0.02,p:0.5,t:0,r:0.12,},{g:1,w:"square",v:5,t:3,h:0.015,d:0.005,r:0.005,b:2551,c:0,}],
+        [{w:"sine",f:1651,v:0.15,d:0.4,r:0.4,h:0,t:0,c:0,},{w:"sawtooth",g:1,t:1.21,v:7.2,d:0.1,r:11,c:0,h:1,},{g:1,w:"square",v:3.1,t:1.52,r:0.01,b:55,c:0,}],
         [{w:"sine",f:1600,v:0.3,d:0.17,r:0.17,h:0.05,t:0,p:1.5,},{w:"sine",g:1,t:1.7,v:2,d:0.3,s:1,r:0.3,p:2,b:1800,c:0,}],
-        null,
+        [{w:"sine",f:1651,v:0.15,d:0.2,r:0.2,h:0,t:0,c:0,},{w:"sawtooth",g:1,t:1.21,v:7.2,d:0.1,r:11,c:0,h:1,},{g:1,w:"square",v:3.1,t:1.52,d:0.002,r:0.002,b:1222,c:0,}],
         null,
 /*55*/  [{w:"sine",f:2100,v:0.3,d:0.12,r:0.12,h:0.05,t:0,},{w:"sine",g:1,v:1,d:0.1,s:1,r:0.1,p:1.2,b:2121,c:0,}],
         null,
         [{w:"sine",f:1700,v:0.3,d:0.15,r:0.15,h:0.05,t:0,p:0.7,},{w:"sine",g:1,t:1.2,v:1,d:0.1,s:1,r:0.1,p:2,b:2231,c:0,}],
         null,
-        null,
+        [{w:"sine",f:1651,v:0.15,d:0.4,r:0.4,h:0,t:0,c:0,},{w:"sawtooth",g:1,t:1.21,v:7.2,d:0.1,r:11,c:0,h:1,},{g:1,w:"square",v:3.1,t:1.52,r:0.01,b:55,c:0,}],
 /*60*/  null,
         null,
         null,
@@ -741,74 +740,66 @@
         this.song.ev.sort(function(x,y){return x.t-y.t});
       },
       setQuality:function(){
-        var i,j,p;
+        var i,k,n,p;
         var defp={g:0,w:"sine",t:1,f:0,v:0.5,a:0,h:0.01,d:0.01,s:0,r:0.05,p:1,b:0,c:2,k:0};
         function filldef(p){
-          for(var n=0;n<p.length;++n){
-            for(var k in defp){
-              if(!p[n].hasOwnProperty(k) || typeof(p[n][k])=="undefined"){
+          for(n=0;n<p.length;++n){
+            for(k in defp){
+              if(!p[n].hasOwnProperty(k) || typeof(p[n][k])=="undefined")
                 p[n][k]=defp[k];
-              }
             }
           }
+          return p;
         }
         for(i=0;i<128;++i)
-          this.program[i].p=this.program0[i];
+          this.program[i].p=filldef(this.program0[i]);
         for(i=0;i<this.drummap0.length;++i)
-          this.drummap[i].p=this.drummap0[i];
+          this.drummap[i].p=filldef(this.drummap0[i]);
         if(this.quality){
           for(i=0;i<this.program1.length;++i)
-            this.program[i].p=this.program1[i];
+            this.program[i].p=filldef(this.program1[i]);
           for(i=0;i<this.drummap.length;++i){
-            if(this.drummap1[i]){
-              this.drummap[i].p=this.drummap1[i];
-            }
+            if(this.drummap1[i])
+              this.drummap[i].p=filldef(this.drummap1[i]);
           }
         }
-        for(i=0;i<128;++i)
-          filldef(this.program[i].p);
-        for(i=0;i<this.drummap.length;++i)
-          filldef(this.drummap[i].p);
       },
       note:function(t,ch,n,v,p){  /* note trigger */
-        var o=[],g=[],vp=[],r=[];
+        var o=[],g=[],vp=[],fp=[],r=[];
         var f=440*Math.pow(2,(n-69)/12);
         var i,out,sc;
         for(i=0;i<p.length;++i){
           o[i]=this.actx.createOscillator();
           g[i]=this.actx.createGain();
-        }
-        for(i=0;i<p.length;++i){
           pn=p[i];
-          r[i]=pn.r;
-          if(pn.g==0){
-            out=this.chvol[ch];
-            sc=v*v/16384;
-          }
-          else
-            out=o[i-1].frequency;
           var dt=t+pn.a+pn.h;
+          r[i]=pn.r;
+          if(pn.g==0)
+            out=this.chvol[ch], sc=v*v/16384, fp[i]=f*pn.t+pn.f;
+          else if(pn.g>0)
+            out=o[pn.g-1].frequency, sc=fp[pn.g-1], fp[i]=fp[pn.g-1]*pn.t+pn.f;
+          else
+            out=g[-pn.g-1].gain, sc=1, fp[i]=fp[-pn.g-1]*pn.t+pn.f;
           if(pn.w[0]=="w")
             o[i].setPeriodicWave(this.wave[pn.w]);
           else
             o[i].type=pn.w;
           this.chmod[ch].connect(o[i].detune);
           o[i].detune.value=this.bend[ch];
-          o[i].frequency.value=(f=f*pn.t+pn.f);
+//          o[i].frequency.setValueAtTime(fp[i],t);
+          o[i].frequency.value=fp[i];
           o[i].connect(g[i]); g[i].connect(out);
+          vp[i]=sc*pn.v;
           if(pn.k)
-            vp[i]=sc*pn.v*Math.pow(2,(n-60)/12*pn.k);
-          else
-            vp[i]=sc*pn.v;
+            vp[i]*=Math.pow(2,(n-60)/12*pn.k);
           if(pn.a){
+            g[i].gain.value=0;
             g[i].gain.setValueAtTime(0,t);
             g[i].gain.linearRampToValueAtTime(vp[i],t+pn.a);
           }
           else
             g[i].gain.setValueAtTime(vp[i],t);
-          sc=f;
-          o[i].start(t);
-          g[i].gain.setTargetAtTime(pn.s*vp[i],dt,pn.d);
+          this.setParamTarget(g[i].gain,pn.s*vp[i],dt,pn.d);
           if(pn.b){
             var g3=this.actx.createGain();
             o[i].connect(g3);
@@ -816,7 +807,8 @@
             g3.connect(o[i].frequency);
           }
           if(pn.p!=1)
-            o[i].frequency.setTargetAtTime(f*pn.p,dt,pn.d);
+            this.setParamTarget(o[i].frequency,fp[i]*pn.p,dt,pn.d);
+          o[i].start(t);
           if(ch==9){
             var t2=dt+pn.d*10;
             o[i].stop(t2);
@@ -824,6 +816,12 @@
         }
         if(ch!=9)
           this.notetab.push({t:t,e:99999,ch:ch,n:n,o:o,g:g,t2:t,v:vp,r:r,f:0});
+      },
+      setParamTarget(p,v,t,d){
+        if(d!=0)
+          p.setTargetAtTime(v,t,d);
+        else
+          p.setValueAtTime(v,t);
       },
       releaseAllNote(){
         t=this.actx.currentTime+.1;
@@ -846,7 +844,7 @@
             else
               nt.g[k].gain.setValueAtTime(nt.v[k]*(t-nt.t)/(nt.t2-nt.t),t);
           }
-          nt.g[k].gain.setTargetAtTime(0,t,nt.r[k]);
+          this.setParamTarget(nt.g[k].gain,0,t,nt.r[k]);
         }
         nt.e=t+nt.r[0]*10;
         nt.f=1;
@@ -887,8 +885,8 @@
         }
         switch(cmd){
         case 0xb0:  /* ctl change */
-          if(this.debug)
-            console.log("CTL("+ch+")="+msg[1]+","+msg[2]);
+//          if(this.debug)
+//            console.log("CTL("+ch+")="+msg[1]+","+msg[2]);
           switch(msg[1]){
           case 1: /* modulation */
             this.chmod[ch].gain.setValueAtTime(msg[2]*100/127,t);
@@ -904,11 +902,10 @@
             this.ex[ch]=msg[2]*msg[2]/(127*127);
             this.chvol[ch].gain.setValueAtTime(this.vol[ch]*this.ex[ch],t);
             break;
-          case 64:
+          case 64: /* sustain */
             this.sustainState(ch,msg[2],t);
             break;
-          case 98:  /* nrpn lsb */
-          case 99:  /* nrpn msb */
+          case 98:  case 98: /* nrpn lsb/msb */
             this.rpnidx[ch]=0x3fff;
             break;
           case 100: /* rpn lsb */
@@ -927,7 +924,7 @@
             break;
           case 120:  /* all sound off */
           case 123:  /* all notes off */
-          case 124: case 125: case 126: case 127:
+          case 124: case 125: case 126: case 127: /* omni off/on mon/poly */
             for(var i=this.notetab.length-1;i>=0;--i){
               var nt=this.notetab[i];
               for(var i=nt.g.length-1;i>=0;--i){
@@ -949,8 +946,9 @@
           break;
         case 0xc0:  /* prg change */
           this.pg[ch]=msg[1];
-          if(this.debug)
+          if(this.debug){
             console.log("PRG:"+ch+","+(msg[1]+1));
+          }
           break;
         case 0xe0:  /* pitch bend */
           var br=this.brange[ch]*100/127;
@@ -967,8 +965,10 @@
           this.ctx.fillStyle="#f00";
           this.ctx.globalCompositeOperation="lighter";
           this.ctx.fillRect(240,62-ch*4,10,3);
-          if(this.debug)
-            console.log("NOTEON("+ch+")="+msg[1]+","+msg[2]+","+t);
+          if(this.debug){
+//            if(ch==12)
+//            console.log("NOTEON("+ch+")="+msg[1]+","+msg[2]+","+t);
+          }
           if(ch==9){
             if(msg[1]>=35&&msg[1]<=81){
               this.note(t,ch,msg[1],msg[2],this.drummap[msg[1]-35].p);
@@ -978,13 +978,15 @@
           this.note(t,ch,msg[1],msg[2],this.program[this.pg[ch]].p);
           break;
         case 0x80:  /* note off */
-          if(this.debug)
-            console.log("NOTEOFF("+ch+")="+msg[1]+","+msg[2]+","+t);
+          if(this.debug){
+//            if(ch==12)
+//            console.log("NOTEOFF("+ch+")="+msg[1]+","+msg[2]+","+t);
+          }
           for(var i=this.notetab.length-1;i>=0;--i){
             var nt=this.notetab[i];
             if(t>nt.e){
               for(var k=nt.o.length-1;k>=0;--k){
-                this.chmod[nt.ch].disconnect(nt.o[k].detune);
+//                this.chmod[nt.ch].disconnect(nt.o[k].detune);
                 nt.o[k].stop(nt.e);
               }
               this.notetab.splice(i,1);
@@ -999,12 +1001,19 @@
         }
       },
       createWave:function(p){
-        var imag=new Float32Array(p.length);
-        var real=new Float32Array(p.length);
-        for(var i=1;i<p.length;++i)
-          imag[i]=p[i];
-        this.wave[p]=this.actx.createPeriodicWave(real,imag);
-        console.log(this.wave[p]);
+        for(var i=0;i<p.length;++i){
+          var p2=p[i];
+          for(var j=0;p2&&j<p2.length;++j){
+            var w=p2[j].w;
+            if(w[0]=="w" && !this.wave[w]){
+              var imag=new Float32Array(w.length);
+              var real=new Float32Array(w.length);
+              for(var i=1;i<w.length;++i)
+                imag[i]=w[i];
+              this.wave[w]=this.actx.createPeriodicWave(real,imag);
+            }
+          }
+        }
       },
       setAudioContext:function(actx,dest){
         this.audioContext=this.actx=actx;
@@ -1037,7 +1046,10 @@
         this.conv.buffer=this.convBuf;
         this.chvol=[]; this.chmod=[]; this.chpan=[];
         this.wave={};
-        this.createWave("w9999");
+        this.createWave(this.program0);
+        this.createWave(this.program1);
+        this.createWave(this.drummap0);
+        this.createWave(this.drummap1);
         this.lfo=this.actx.createOscillator();
         this.lfo.frequency.value=5;
         this.lfo.start();
