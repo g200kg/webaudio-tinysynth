@@ -1,34 +1,5 @@
-<dom-module id="webaudio-tinysynth">
-  <template>
-  <canvas id="wa-canvas" width="256" height="64" touch-action="none" tabindex="0"></canvas>
-  <div id="wa-logo">TinySynth</div>
-  <style>
-  :host {
-    user-select: none;
-    display: inline-block;
-    position:relative;
-    padding:0;
-    margin:0;
-  }
-  #wa-canvas {
-    display:block;
-    margin:0;
-    border:2px solid #666;
-    width:256px;
-    height:32px;
-  }
-  #wa-logo{
-    position:absolute;
-    top:5px;
-    left:5px;
-    color:#fff;
-    font-size:8px;
-    background:rgba(0,0,0,0.5);
-  }
-  </style>
-  </template>
-  <script>
-  Polymer(
+function WebAudioTinySynth(){
+    this.sy=
     /* webaudio-tynysynth core object */
   {
     is:"webaudio-tinysynth",
@@ -1074,6 +1045,21 @@
   }
 /* webaudio-tinysynth coreobject */
 
-  );
-  </script>
-</dom-module>
+    ;
+    this.setQuality=function(q){this.sy.setQuality(q);};
+    this.setReverbLev=function(v){this.sy.setReverbLev(v);};
+    this.setMasterVol=function(v){this.sy.setMasterVol(v);};
+    this.setLoop=function(v){this.sy.setLoop(v);};
+    this.getTimbreName=function(m,n){return this.sy.getTimbreName(m,n);};
+    this.send=function(m,t,tsmode){this.sy.send(m,t,tsmode);};
+    this.loadMIDIUrl=function(url){this.sy.loadMIDIUrl(url);};
+    this.loadMIDI=function(ar){this.sy.loadMIDI(ar);};
+    this.playMIDI=function(){this.sy.playMIDI();};
+    this.stopMIDI=function(){this.sy.stopMIDI();};
+    this.getPlayStatus=function(){return this.sy.getPlayStatus();};
+    for(var k in this.sy.properties) {
+      this.sy[k]=this.sy.properties[k].value;
+    }
+    this.setQuality(1);
+    this.sy.ready();
+}

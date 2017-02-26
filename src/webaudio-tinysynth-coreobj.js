@@ -1,35 +1,4 @@
-<dom-module id="webaudio-tinysynth">
-  <template>
-  <canvas id="wa-canvas" width="256" height="64" touch-action="none" tabindex="0"></canvas>
-  <div id="wa-logo">TinySynth</div>
-  <style>
-  :host {
-    user-select: none;
-    display: inline-block;
-    position:relative;
-    padding:0;
-    margin:0;
-  }
-  #wa-canvas {
-    display:block;
-    margin:0;
-    border:2px solid #666;
-    width:256px;
-    height:32px;
-  }
-  #wa-logo{
-    position:absolute;
-    top:5px;
-    left:5px;
-    color:#fff;
-    font-size:8px;
-    background:rgba(0,0,0,0.5);
-  }
-  </style>
-  </template>
-  <script>
-  Polymer(
-    /* webaudio-tynysynth core object */
+/* webaudio-tynysynth core object */
   {
     is:"webaudio-tinysynth",
     properties:{
@@ -1073,7 +1042,3 @@
     },
   }
 /* webaudio-tinysynth coreobject */
-
-  );
-  </script>
-</dom-module>

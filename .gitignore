@@ -7,6 +7,8 @@ Desktop.ini
 
 # Download Test file
 test/
+tmp/
+node_modules/
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/

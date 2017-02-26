@@ -1,0 +1,27 @@
+{
+  "name": "webaudio-tinysynth",
+  "version": "1.0.0",
+  "description": "WebAudio Tiny GM Synthesizer [Polymer]",
+  "main": "webaudio-tinysynth.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/g200kg/webaudio-tinysynth.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/g200kg/webaudio-tinysynth/issues"
+  },
+  "homepage": "https://github.com/g200kg/webaudio-tinysynth#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-uglify": "^2.1.0",
+    "grunt-contrib-watch": "^1.0.0"
+  }
+}

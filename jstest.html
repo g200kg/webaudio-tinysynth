@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+<script src="webaudio-tinysynth.js"></script>
+<script>
+
+var synth=new WebAudioTinySynth();
+
+function loadMidiUrl(){
+  synth.loadMIDIUrl('./sample1.mid');
+}
+function loadMidi(files){
+  var reader = new FileReader();
+  reader.onload=(e)=>{
+    synth.loadMIDI(reader.result);
+  }
+  reader.readAsArrayBuffer(files[0]);
+}
+function playMidi(){
+  synth.playMIDI();
+}
+function stopMidi(){
+  synth.stopMIDI();
+}
+function SetProgram(p){
+  synth.send([0xc0,p]);
+}
+function Init(){
+  for(var i=0;i<128;++i){
+    var o=document.createElement("option");
+    o.innerHTML=synth.getTimbreName(0,i);
+    document.getElementById("prog").appendChild(o);
+  }
+  setInterval(function(){
+    var st=synth.getPlayStatus();
+    document.getElementById("status").innerHTML="Play:"+st.play+"  Pos:"+st.curTick+"/"+st.maxTick;
+  },100);
+}
+
+window.onload=Init;
+
+
+</script>
+</head>
+<body>
+<h1>webaudio-tinysynth : js version test</h1>
+This is a simple sample of webaudio-tinysynth (JavaScript library version) page.
+<hr/>
+Load Sample MIDI from URL : <button onclick="loadMidiUrl()">Load (./websequencerdemo.mid)</button><br/>
+Load MIDI file from local : <input type="file" onchange="loadMidi(this.files)"/><br/>
+<button onclick="playMidi()">Play</button>
+<button onclick="stopMidi()">Stop</button>
+<div id="status"></div>
+<br/><br/>
+Loop : <input type="checkbox" onchange="synth.setLoop(this.checked)"/><br/>
+MasterVol<br/>
+<input type="range" value="50" min="0" max="100" oninput="synth.setMasterVol(this.value/100)"/><br/>
+ReverbLev<br/>
+<input type="range" value="50" min="0" max="100" oninput="synth.setReverbLev(this.value/100)"/><br/>
+
+<br/><br/>
+Quality : <select onchange="synth.setQuality(this.selectedIndex)"><option>Quality=0</option><option selected>Quality=1</option></select>
+<br/>
+Timbre : <select id="prog" onchange="SetProgram(this.selectedIndex)"></select>
+<br/>
+<br/>
+Play by keys :<br/>
+  <button onmousedown="synth.send([0x90,60,100])" onmouseup="synth.send([0x80,60,0])">C</button>
+  <button onmousedown="synth.send([0x90,62,100])" onmouseup="synth.send([0x80,62,0])">D</button>
+  <button onmousedown="synth.send([0x90,64,100])" onmouseup="synth.send([0x80,64,0])">E</button>
+  <button onmousedown="synth.send([0x90,65,100])" onmouseup="synth.send([0x80,65,0])">F</button>
+  <button onmousedown="synth.send([0x90,67,100])" onmouseup="synth.send([0x80,67,0])">G</button>
+  <button onmousedown="synth.send([0x90,69,100])" onmouseup="synth.send([0x80,69,0])">A</button>
+  <button onmousedown="synth.send([0x90,71,100])" onmouseup="synth.send([0x80,71,0])">B</button>
+  <button onmousedown="synth.send([0x90,72,100])" onmouseup="synth.send([0x80,72,0])">C</button>
+</body>
+</html>
