@@ -583,7 +583,7 @@
         var reader = new FileReader();
         reader.onload=function(e){
           this.loadMIDI(reader.result);
-        };
+        }.bind(this);
         reader.readAsArrayBuffer(f[0]);
       }
       e.stopPropagation();

@@ -115,6 +115,9 @@ timerid=setInterval(function(){
 **setReverbLev(lev)**
 > Reverb Level setting. default=0.3.
 
+**setLoop(f)**
+> if non zero, MIDI play is looped.
+
 **send([midi-message], t, timestampmode)**
 > midi-message is an array of midi data bytes for one message. For example,  
 > `send([0x90, 60, 100], t)` is for NoteOn ch=1 note#=60 velocity=100.  
