@@ -909,6 +909,7 @@ function WebAudioTinySynth(){
         case 120:  /* all sound off */
         case 123:  /* all notes off */
         case 124: case 125: case 126: case 127: /* omni off/on mon/poly */
+          t=this.actx.currentTime;
           for(var i=this.notetab.length-1;i>=0;--i){
             var nt=this.notetab[i];
             for(var i=nt.g.length-1;i>=0;--i){
@@ -916,8 +917,8 @@ function WebAudioTinySynth(){
               nt.g[i].gain.setTargetAtTime(0,t,0.05);
             }
             for(var i=nt.o.length-1;i>=0;--i)
-              nt.o[i].stop(t+0.5);
-            nt.e=t+0.5;
+              nt.o[i].stop(t+0.1);
+            nt.e=t+0.1;
             this.notetab.splice(i,1);
           }
           break;
