@@ -761,10 +761,8 @@
         r[i]=pn.r;
         if(pn.g==0)
           out=this.chvol[ch], sc=v*v/16384, fp[i]=f*pn.t+pn.f;
-        else if(pn.g>0)
-          out=o[pn.g-1].frequency, sc=fp[pn.g-1], fp[i]=fp[pn.g-1]*pn.t+pn.f;
         else
-          out=g[-pn.g-1].gain, sc=1, fp[i]=fp[-pn.g-1]*pn.t+pn.f;
+          out=o[pn.g-1].frequency, sc=fp[pn.g-1], fp[i]=fp[pn.g-1]*pn.t+pn.f;
         if(pn.w[0]=="w")
           o[i].setPeriodicWave(this.wave[pn.w]);
         else
@@ -793,13 +791,8 @@
         if(pn.p!=1)
           this.setParamTarget(o[i].frequency,fp[i]*pn.p,dt,pn.d);
         o[i].start(t);
-        if(ch==9){
-          var t2=dt+pn.d*10;
-          o[i].stop(t2);
-        }
       }
-      if(ch!=9)
-        this.notetab.push({t:t,e:99999,ch:ch,n:n,o:o,g:g,t2:t,v:vp,r:r,f:0});
+      this.notetab.push({t:t,e:ch==9?t+p[0].d*10:99999,ch:ch,n:n,o:o,g:g,t2:t,v:vp,r:r,f:ch==9?1:0});
     },
     setParamTarget:function(p,v,t,d){
       if(d!=0)
@@ -910,15 +903,21 @@
           t=this.actx.currentTime;
           for(var i=this.notetab.length-1;i>=0;--i){
             var nt=this.notetab[i];
-            for(var i=nt.g.length-1;i>=0;--i){
-              nt.g[i].gain.cancelScheduledValues(t);
-              nt.g[i].gain.setTargetAtTime(0,t,0.05);
+            for(var j=nt.g.length-1;j>=0;--j){
+              nt.g[j].gain.cancelScheduledValues(0);
+              nt.g[j].gain.setValueAtTime(0,t);
             }
-            for(var i=nt.o.length-1;i>=0;--i)
-              nt.o[i].stop(t+0.1);
+            for(var j=nt.o.length-1;j>=0;--j){
+              nt.o[j].disconnect();
+              nt.o[j].stop();
+            }
+            for(var j=nt.g.length-1;j>=0;--j)
+              nt.g[j].disconnect();
             nt.e=t+0.1;
             this.notetab.splice(i,1);
           }
+          for(var i=0;i<16;++i)
+            this.chmod[i].disconnect();
           break;
         case 121:  /* reset all controller */
           for(var i=0;i<16;++i)
@@ -956,9 +955,17 @@
       case 0x80:  /* note off */
         for(var i=this.notetab.length-1;i>=0;--i){
           var nt=this.notetab[i];
-          if(t>nt.e){
-            for(var k=nt.o.length-1;k>=0;--k)
-              nt.o[k].stop(nt.e);
+          if(this.actx.currentTime>nt.e){
+            for(var k=nt.o.length-1;k>=0;--k){
+                this.chmod[nt.ch].disconnect(nt.o[k].detune);
+                nt.o[k].disconnect();
+                nt.o[k].frequency.cancelScheduledValues(0);
+                nt.o[k].stop(0);
+            }
+            for(var k=nt.g.length-1;k>=0;--k){
+              nt.g[k].disconnect();
+              nt.g[k].gain.cancelScheduledValues(0);
+            }
             this.notetab.splice(i,1);
           }
           else if(t>=nt.t && nt.ch==ch && nt.n==msg[1] && nt.f==0){
