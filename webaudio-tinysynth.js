@@ -962,7 +962,7 @@ function WebAudioTinySynth(){
           var nt=this.notetab[i];
           if(this.actx.currentTime>nt.e){
             for(var k=nt.o.length-1;k>=0;--k){
-                this.chmod[nt.ch].disconnect(nt.o[k].detune);
+                try{this.chmod[nt.ch].disconnect(nt.o[k].detune);}catch(e){}
                 nt.o[k].disconnect();
                 nt.o[k].frequency.cancelScheduledValues(0);
                 nt.o[k].stop(0);
