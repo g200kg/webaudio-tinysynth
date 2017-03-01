@@ -80,6 +80,7 @@ Test Pages are here :
 |**internalContext**|Number | 1        | Use internal audioContext|
 |**tsmode**         |Number | 0        | default timestamp mode   |
 |**perfmon**        |Number | 0        | performance monitor      |
+|**voices**         |Number | 64       | max voices               |
 
 * In default, necessary audioContext will be created internally. `internalContext="0"` will prevent this and should provide audioContext with `setAudioContext()` function.
 * Note that the webaudio-tinysynth may not be ready yet immediately after 'window.onload'. especially be careful for Firefox/Edge because of webcomponents may be polyfilled. `isReady` flag can be used for confirming the synth is ready.
@@ -120,6 +121,9 @@ timerid=setInterval(function(){
 
 **setLoop(f)**
 > if non zero, MIDI play is looped.
+
+**setVoices(v)**
+> set max voices that simultaneous sounds, default is 64.
 
 **send([midi-message], t, timestampmode)**
 > midi-message is an array of midi data bytes for one message. For example,  
