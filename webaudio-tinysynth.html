@@ -493,8 +493,29 @@
         this.t0=this.t1=this.t2=this.t3=performance.now();
         this.ratio=this.pcnt=0;
       }
+      this.preroll=0.2;
+      this.relcnt=0;
       setInterval(
         function(){
+          if(++this.relcnt>=3){
+            this.relcnt=0;
+            for(var i=this.notetab.length-1;i>=0;--i){
+              var nt=this.notetab[i];
+              if(this.actx.currentTime>nt.e){
+                for(var k=nt.o.length-1;k>=0;--k){
+                    try{this.chmod[nt.ch].disconnect(nt.o[k].detune);}catch(e){}
+                    nt.o[k].disconnect();
+                    nt.o[k].frequency.cancelScheduledValues(0);
+                    nt.o[k].stop(0);
+                }
+                for(var k=nt.g.length-1;k>=0;--k){
+                  nt.g[k].disconnect();
+                  nt.g[k].gain.cancelScheduledValues(0);
+                }
+                this.notetab.splice(i,1);
+              }
+            }
+          }
           this.t0=this.t1;
           this.t1=performance.now();
           if(this.canvas){
@@ -530,7 +551,7 @@
           }
           if(this.playing && this.song.ev.length>0){
             var e=this.song.ev[this.playIndex];
-            while(this.actx.currentTime+1>this.playTime){
+            while(this.actx.currentTime+this.preroll>this.playTime){
               if(e.m[0]==0xff51){
                 this.song.tempo=e.m[1];
                 this.tick2Time=4*60/this.song.tempo/this.song.timebase;
@@ -785,6 +806,13 @@
       var o=[],g=[],vp=[],fp=[],r=[];
       var f=440*Math.pow(2,(n-69)/12);
       var i,out,sc;
+      for(i=this.notetab.length-1;i>=0;--i){
+        var nt=this.notetab[i];
+        if(nt.ch==ch && nt.n==n){
+          nt.e=t;
+          nt.f=1;
+        }
+      }
       for(i=0;i<p.length;++i){
         pn=p[i];
         o[i]=this.actx.createOscillator();
@@ -989,20 +1017,7 @@
       case 0x80:  /* note off */
         for(var i=this.notetab.length-1;i>=0;--i){
           var nt=this.notetab[i];
-          if(this.actx.currentTime>nt.e){
-            for(var k=nt.o.length-1;k>=0;--k){
-                try{this.chmod[nt.ch].disconnect(nt.o[k].detune);}catch(e){}
-                nt.o[k].disconnect();
-                nt.o[k].frequency.cancelScheduledValues(0);
-                nt.o[k].stop(0);
-            }
-            for(var k=nt.g.length-1;k>=0;--k){
-              nt.g[k].disconnect();
-              nt.g[k].gain.cancelScheduledValues(0);
-            }
-            this.notetab.splice(i,1);
-          }
-          else if(t>=nt.t && nt.ch==ch && nt.n==msg[1] && nt.f==0){
+          if(t>=nt.t && nt.ch==ch && nt.n==msg[1] && nt.f==0){
             nt.f=1;
             if(this.sustain[ch]<64)
               this.releaseNote(nt,t);
