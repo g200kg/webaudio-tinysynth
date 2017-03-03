@@ -11,8 +11,13 @@
 #soundeditor{
   display:none;
 }
+button{
+  height:40px;
+}
 td{
   text-align: center;
+  padding:4px;
+  border:1px solid #ccc;
 }
 label{
   display:inline-block;
@@ -287,6 +292,19 @@ Repository : <a href="https://github.com/g200kg/webaudio-tinysynth">https://gith
   <li>Built-in MIDI sequencer is also available. drag &amp; drop .mid file to TinySynth</li>
 </ul>
 <hr/>
+<webaudio-tinysynth id="tinysynth" src="ws.mid" quality="1" loop="1" disableDrop="0" masterVol="0.2" perfmon="1"></webaudio-tinysynth>
+<table>
+<tr>
+  <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" onchange="Ctrl()"></webaudio-knob></td>
+  <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="rev" value="0.2" onchange="Ctrl()"></webaudio-knob></td>
+  <td><input type="checkbox" onchange="synth.loop=this.checked" checked/></td>
+  <td><select onchange="SetQuality(this.selectedIndex)"><option>quality=0</option><option selected>quality=1</option></select>
+</td>
+</tr>
+<tr><td>Vol</td><td>Reverb</td><td>Loop</td><td>Quality</td></tr>
+</table>
+<br/>
+<hr/>
 MIDI Keyboard : <select id="midiport" onchange="SelectMidi(this.selectedIndex-1)"><option>--</option></select>
 <br/>
 Oct : <label><input type="radio" name="oct" onclick="OctChange(-2)"/> -2</label>
@@ -301,19 +319,6 @@ Ch : <select onchange="ChChange(this)"><option>Ch1</option><option>Ch2</option><
 Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
 </select>
 <hr/>
-<webaudio-tinysynth id="tinysynth" quality="1" loop="1" disableDrop="0" masterVol="0.2" perfmon="1"></webaudio-tinysynth>
-<table>
-<tr>
-  <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" onchange="Ctrl()"></webaudio-knob></td>
-  <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="rev" value="0.2" onchange="Ctrl()"></webaudio-knob></td>
-  <td><input type="checkbox" onchange="synth.loop=this.checked" checked/>Loop</td>
-</tr>
-<tr><td>Vol</td><td>Reverb</td></tr>
-</table>
-<hr/>
-Quality : <select onchange="SetQuality(this.selectedIndex)"><option>0</option><option selected>1</option></select>
-<br/>
-<button onclick="synth.loadMIDIUrl('ws.mid')">Load Demo MIDI</button>
 <hr/>
 <br/>
 <button onclick="OpenEditor()">Sound Editor</button> <span id="name"></span><button id="shot"></button><br/>
