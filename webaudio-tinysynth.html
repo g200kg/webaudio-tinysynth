@@ -664,6 +664,11 @@
       this.releaseAllNote();
     },
     playMIDI:function(){
+      var dummy=this.actx.createOscillator();
+      dummy.connect(this.actx.destination);
+      dummy.frequency.value=0;
+      dummy.start(0);
+      dummy.stop(this.actx.currentTime+0.001);
       this.reset();
       if(!this.song)
         return;
