@@ -1021,6 +1021,9 @@ function WebAudioTinySynth(opt){
         imag[i]=w[i];
       this.wave[w]=this.actx.createPeriodicWave(real,imag);
     },
+    getAudioContext:function(){
+      return this.actx;
+    },
     setAudioContext:function(actx,dest){
       this.audioContext=this.actx=actx;
       this.dest=dest;
@@ -1102,6 +1105,7 @@ function WebAudioTinySynth(opt){
     this.playMIDI=function(){this.sy.playMIDI();};
     this.stopMIDI=function(){this.sy.stopMIDI();};
     this.getPlayStatus=function(){return this.sy.getPlayStatus();};
+    this.getAudioContext=function(){return this.sy.getAudioContext();};
     for(var k in this.sy.properties) {
       this.sy[k]=this.sy.properties[k].value;
     }

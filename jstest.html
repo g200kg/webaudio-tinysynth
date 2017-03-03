@@ -36,10 +36,10 @@ function Init(){
   },100);
 }
 function Test(){
-  var o=synth.sy.audioContext.createOscillator();
-  o.connect(synth.sy.audioContext.destination);
+  var o=synth.getAudioContext().createOscillator();
+  o.connect(synth.getAudioContext().destination);
   o.start(0);
-  o.stop(synth.sy.audioContext.currentTime+1);
+  o.stop(synth.getAudioContext().currentTime+1);
   console.log(synth)
 }
 window.onload=Init;

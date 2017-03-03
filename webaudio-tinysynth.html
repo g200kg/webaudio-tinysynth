@@ -1050,6 +1050,9 @@
         imag[i]=w[i];
       this.wave[w]=this.actx.createPeriodicWave(real,imag);
     },
+    getAudioContext:function(){
+      return this.actx;
+    },
     setAudioContext:function(actx,dest){
       this.audioContext=this.actx=actx;
       this.dest=dest;
