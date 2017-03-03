@@ -180,8 +180,6 @@ function Edit(){
     prog.p[i].d=GetVal("d"+(i+1));
     prog.p[i].s=GetVal("s"+(i+1));
     prog.p[i].r=GetVal("r"+(i+1));
-    prog.p[i].b=GetVal("b"+(i+1));
-    prog.p[i].c=GetVal("c"+(i+1));
     prog.p[i].p=GetVal("p"+(i+1));
     prog.p[i].k=GetVal("k"+(i+1));
   }
@@ -214,8 +212,6 @@ function ViewParam(pg){
     document.getElementById("d"+(i+1)).value=pg.p[i].d;
     document.getElementById("s"+(i+1)).value=pg.p[i].s;
     document.getElementById("r"+(i+1)).value=pg.p[i].r;
-    document.getElementById("b"+(i+1)).value=pg.p[i].b;
-    document.getElementById("c"+(i+1)).value=pg.p[i].c;
     document.getElementById("p"+(i+1)).value=pg.p[i].p;
     document.getElementById("k"+(i+1)).value=pg.p[i].k;
   }
@@ -326,11 +322,11 @@ Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
 <br/>
 Number of Oscillator :<select id="oscs" onchange="Edit()"><option>1</option><option>2</option><option>3</option><option>4</option></select>
 <table>
-  <tr id="desc1"><td>G</td><td>W</td><td>V</td><td>T</td><td>F</td><td>A</td><td>H</td><td>D</td><td>S</td><td>R</td><td>B</td><td>C</td><td>P</td><td>K</td></tr>
+  <tr id="desc1"><td>G</td><td>W</td><td>V</td><td>T</td><td>F</td><td>A</td><td>H</td><td>D</td><td>S</td><td>R</td><td>P</td><td>K</td></tr>
   <tr id="osc1">
   <td><input id="g1" oninput="Edit()" value="0" size="4"/></td>
   <td><input id="w1" oninput="Edit()" value="" size="4" style="width:45px"/>
-  <select id="w1s" style="width:20px" onchange="document.getElementById('w1').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
+  <select id="w1s" style="width:20px" onchange="document.getElementById('w1').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option><option value="noise">noise</option><option value="w9999">w9999</option></select></td>
   <td><input id="v1"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="t1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="f1"  oninput="Edit()" value="0" size="4"/></td>
@@ -339,8 +335,6 @@ Number of Oscillator :<select id="oscs" onchange="Edit()"><option>1</option><opt
   <td><input id="d1"  oninput="Edit()" value="0.1" size="4"/></td>
   <td><input id="s1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="r1"  oninput="Edit()" value="0.1" size="4"/></td>
-  <td><input id="b1"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="c1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="p1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="k1"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
@@ -356,8 +350,6 @@ Number of Oscillator :<select id="oscs" onchange="Edit()"><option>1</option><opt
   <td><input id="d2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="s2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="r2"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="b2"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="c2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="p2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="k2"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
@@ -374,8 +366,6 @@ Number of Oscillator :<select id="oscs" onchange="Edit()"><option>1</option><opt
 <td><input id="d3"  oninput="Edit()" value="0" size="4"/></td>
 <td><input id="s3"  oninput="Edit()" value="0" size="4"/></td>
 <td><input id="r3"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="b3"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="c3"  oninput="Edit()" value="0" size="4"/></td>
 <td><input id="p3"  oninput="Edit()" value="0" size="4"/></td>
 <td><input id="k3"  oninput="Edit()" value="0" size="4"/></td>
 </tr>
@@ -391,8 +381,6 @@ Number of Oscillator :<select id="oscs" onchange="Edit()"><option>1</option><opt
 <td><input id="d4"  oninput="Edit()" value="0" size="4"/></td>
 <td><input id="s4"  oninput="Edit()" value="0" size="4"/></td>
 <td><input id="r4"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="b4"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="c4"  oninput="Edit()" value="0" size="4"/></td>
 <td><input id="p4"  oninput="Edit()" value="0" size="4"/></td>
 <td><input id="k4"  oninput="Edit()" value="0" size="4"/></td>
 </tr>
