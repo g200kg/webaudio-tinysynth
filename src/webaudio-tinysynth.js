@@ -1,8 +1,9 @@
-function WebAudioTinySynth(){
+function WebAudioTinySynth(opt){
     this.sy=
     /*include webaudio-tinysynth-coreobj.js*/
     ;
     this.setQuality=function(q){this.sy.setQuality(q);};
+    this.setVoices=function(n){this.sy.setVoices(n);};
     this.setReverbLev=function(v){this.sy.setReverbLev(v);};
     this.setMasterVol=function(v){this.sy.setMasterVol(v);};
     this.setLoop=function(v){this.sy.setLoop(v);};
@@ -17,5 +18,13 @@ function WebAudioTinySynth(){
       this.sy[k]=this.sy.properties[k].value;
     }
     this.setQuality(1);
+    if(opt){
+      if(opt.useReverb!=undefined)
+        this.sy.useReverb=opt.useReverb;
+      if(opt.quality!=undefined)
+        this.setQuality(opt.quality);
+      if(opt.voices!=undefined)
+        this.setVoices(opt.voices);
+    }
     this.sy.ready();
 }

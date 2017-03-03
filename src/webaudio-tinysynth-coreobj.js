@@ -16,6 +16,7 @@
       tsmode:     {type:Number, value:0},
       perfmon:    {type:Number, value:0},
       voices:     {type:Number, value:64},
+      useReverb:  {type:Number, value:1},
     },
     layout:function(){
       this.$["wa-canvas"].style.width=this.width;
@@ -549,8 +550,10 @@
         this.canvas.addEventListener("click",this.click.bind(this),false);
       }
       console.log("internalcontext:"+this.internalcontext)
-      if(this.internalcontext)
+      if(this.internalcontext){
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
         this.setAudioContext(new AudioContext());
+      }
       this.isReady=1;
     },
     setMasterVol:function(v){
@@ -821,8 +824,10 @@
         }
         g[i]=this.actx.createGain();
         r[i]=pn.r;
-        this.chmod[ch].connect(o[i].detune);
-        o[i].detune.value=this.bend[ch];
+        if(o[i].detune!=undefined){
+          this.chmod[ch].connect(o[i].detune);
+          o[i].detune.value=this.bend[ch];
+        }
         o[i].connect(g[i]); g[i].connect(out);
         vp[i]=sc*pn.v;
         if(pn.k)
@@ -885,8 +890,10 @@
       this.bend[ch]=0; this.vol[ch]=100/127*100/127; this.ex[ch]=1.0;
       this.brange[ch]=2<<7; this.rpnidx[ch]=0x3fff; this.sustain[ch]=0;
       this.chvol[ch].gain.value=this.vol[ch]*this.ex[ch];
-      this.chmod[ch].gain.value=0; this.chpan[ch].pan.value=0;
+      this.chmod[ch].gain.value=0;
       this.pg[ch]=0;
+      if(this.chpan[ch])
+       this.chpan[ch].pan.value=0;
     },
     send:function(msg,t,tsmode){    /* send midi message */
       var i;
@@ -918,7 +925,8 @@
           this.chvol[ch].gain.setValueAtTime(this.vol[ch]*this.ex[ch],t);
           break;
         case 10: /* pan */
-          this.chpan[ch].pan.setValueAtTime((msg[2]-64)/64,t);
+          if(this.chpan[ch])
+            this.chpan[ch].pan.setValueAtTime((msg[2]-64)/64,t);
           break;
         case 11: /* expression */
           this.ex[ch]=msg[2]*msg[2]/(127*127);
@@ -1013,17 +1021,8 @@
         this.dest=actx.destination;
       this.tsdiff=performance.now()*.001-this.actx.currentTime;
       console.log("TSDiff:"+this.tsdiff);
-      this.conv=this.actx.createConvolver();
-      this.rev=this.actx.createGain();
-      this.comp=this.actx.createDynamicsCompressor();
-      this.rev.gain.value=this.reverbLev;
       this.out=this.actx.createGain();
-      this.setMasterVol();
-      this.out.connect(this.conv);
-      this.out.connect(this.comp);
-      this.conv.connect(this.rev);
-      this.rev.connect(this.comp);
-      this.comp.connect(this.dest);
+      this.comp=this.actx.createDynamicsCompressor();
       var blen=this.actx.sampleRate*.5|0;
       this.convBuf=this.actx.createBuffer(2,blen,this.actx.sampleRate);
       this.noiseBuf=this.actx.createBuffer(1,blen,this.actx.sampleRate);
@@ -1038,18 +1037,35 @@
         }
         d=dn[i]=Math.sin(i*440*2*3.14/blen+d*1500);
       }
-      this.conv.buffer=this.convBuf;
+      if(this.useReverb){
+        this.conv=this.actx.createConvolver();
+        this.conv.buffer=this.convBuf;
+        this.rev=this.actx.createGain();
+        this.rev.gain.value=this.reverbLev;
+        this.out.connect(this.conv);
+        this.conv.connect(this.rev);
+        this.rev.connect(this.comp);
+      }
+      this.setMasterVol();
+      this.out.connect(this.comp);
+      this.comp.connect(this.dest);
       this.chvol=[]; this.chmod=[]; this.chpan=[];
       this.wave={};
       this.createWave("w9999");
       this.lfo=this.actx.createOscillator();
       this.lfo.frequency.value=5;
-      this.lfo.start();
+      this.lfo.start(0);
       for(i=0;i<16;++i){
         this.chvol[i]=this.actx.createGain();
-        this.chpan[i]=this.actx.createStereoPanner();
-        this.chvol[i].connect(this.chpan[i]);
-        this.chpan[i].connect(this.out);
+        if(this.actx.createStereoPanner){
+          this.chpan[i]=this.actx.createStereoPanner();
+          this.chvol[i].connect(this.chpan[i]);
+          this.chpan[i].connect(this.out);
+        }
+        else{
+          this.chpan[i]=null;
+          this.chvol[i].connect(this.out);
+        }
         this.chmod[i]=this.actx.createGain();
         this.lfo.connect(this.chmod[i]);
         this.pg[i]=i;

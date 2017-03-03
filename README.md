@@ -34,7 +34,9 @@ Test Pages are here :
 ### JavaScript Library Version
 * Necessary file is a `webaudio-tinysynth.js` only. Load webaudio-tinysynth library by `<script src='webaudio-tinysynth.js'></script>`.  
 
-* To make the instance of synthesizer, use command `var synth = new WebAudioTinySynth();`  
+* To make the instance of synthesizer, use command `var synth = new WebAudioTinySynth();`.  Some options are acceptable. For example :
+  * `synth = new WebAudioTinySynth({quality:0, useReverb:0});`
+
 
 * Then use the function calls described later for that instance. For example...  
  `synth.send([0x90, 60, 100]); // NoteOn Note#:60 Velocity:100 `
@@ -72,6 +74,7 @@ Test Pages are here :
 |**height**         |String |"64px"    | height of element        |
 |**masterVol**      |Number | 1.0      | master volume            |
 |**reverbLev**      |Number | 0.3      | reverb level             |
+|**useReverb**      |Number | 1        | disable Reverb if 0      |
 |**quality**        |Number | 1        | 0: 1osc/note chiptune like<br/> 1: 2osc/note FM based|
 |**src**            |String |null      | .mid file url            |
 |**loop**           |Number | 0        | loop playMIDI            |
@@ -102,6 +105,17 @@ timerid=setInterval(function(){
 
 ## Functions
   These functions are available for polymer module and javascript version.  
+
+**WebAudioTinySynth(options)**  
+> Constructor of WebAudioTinySynth for JavaScript version. This is not used for Polymer version. options is a object with members :  
+
+>  **quality** : Specify timbre quality same as setQuality(). default is `1`.  
+>  **useReverb** : If zero, disable reverb function.  
+>  **voices** : max number of voices.
+>
+>  For example, `new WebAudioTinySynth({quality:0, useReverb:0, voices:32})`
+
+
 
 **setAudioContext(audioContext, destinationNode)**  
 > In default, though audioContext is internally created and used, this function can specify `audioContext` should be used.  

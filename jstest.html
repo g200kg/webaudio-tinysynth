@@ -4,10 +4,8 @@
 <script src="webaudio-tinysynth.js"></script>
 <script>
 
-var synth=new WebAudioTinySynth();
-
 function loadMidiUrl(){
-  synth.loadMIDIUrl('./websequencerdemo.mid');
+  synth.loadMIDIUrl('ws.mid');
 }
 function loadMidi(files){
   var reader = new FileReader();
@@ -26,6 +24,7 @@ function SetProgram(p){
   synth.send([0xc0,p]);
 }
 function Init(){
+  synth=new WebAudioTinySynth({voices:32});
   for(var i=0;i<128;++i){
     var o=document.createElement("option");
     o.innerHTML=synth.getTimbreName(0,i);
@@ -36,9 +35,14 @@ function Init(){
     document.getElementById("status").innerHTML="Play:"+st.play+"  Pos:"+st.curTick+"/"+st.maxTick;
   },100);
 }
-
+function Test(){
+  var o=synth.sy.audioContext.createOscillator();
+  o.connect(synth.sy.audioContext.destination);
+  o.start(0);
+  o.stop(synth.sy.audioContext.currentTime+1);
+  console.log(synth)
+}
 window.onload=Init;
-
 
 </script>
 </head>
@@ -46,7 +50,9 @@ window.onload=Init;
 <h1>webaudio-tinysynth : js version test</h1>
 This is a simple sample of webaudio-tinysynth (JavaScript library version) page.
 <hr/>
-Load Sample MIDI from URL : <button onclick="loadMidiUrl()">Load (./websequencerdemo.mid)</button><br/>
+<button onclick="Test()">Test audioContext</button>
+<hr/>
+Load Sample MIDI from URL : <button onclick="loadMidiUrl()">Load (ws.mid)</button><br/>
 Load MIDI file from local : <input type="file" onchange="loadMidi(this.files)"/><br/>
 <button onclick="playMidi()">Play</button>
 <button onclick="stopMidi()">Stop</button>
