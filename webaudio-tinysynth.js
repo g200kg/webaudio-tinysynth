@@ -664,7 +664,7 @@ function WebAudioTinySynth(opt){
       else
         e=ev;
       this.downpos=this.getPos(e);
-      if(e.touches[0] || (e.buttons&1)){
+      if(e.touches || (e.buttons&1)){
         if(this.song&&this.downpos.x>=80&&this.downpos.x<=208){
           var p=(this.downpos.x-80)/128*this.maxTick;
           synth.locateMIDI(p);
@@ -678,7 +678,7 @@ function WebAudioTinySynth(opt){
     pointermove:function(e){
       if(e.touches)
         e = e.touches[0];
-      if(e.buttons&1){
+      if(e.touches || (e.buttons&1)){
         var pos=this.getPos(e);
         if(this.song&&pos.x>=80&&pos.x<=208){
           var p=(pos.x-80)/128*this.maxTick;
@@ -914,7 +914,7 @@ function WebAudioTinySynth(opt){
       for(var i=this.notetab.length-1;i>=0;--i){
         var nt=this.notetab[i];
         if(this.actx.currentTime>nt.e
-           || (nt.ch==ch&&nt.n==n&&nt.f) || i>=(this.voices-1)){
+           || i>=(this.voices-1)){
           this.pruneNote(nt);
           this.notetab.splice(i,1);
         }
