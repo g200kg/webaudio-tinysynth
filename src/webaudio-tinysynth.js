@@ -12,6 +12,7 @@ function WebAudioTinySynth(opt){
     this.loadMIDIUrl=function(url){this.sy.loadMIDIUrl(url);};
     this.loadMIDI=function(ar){this.sy.loadMIDI(ar);};
     this.playMIDI=function(){this.sy.playMIDI();};
+    this.locateMIDI=function(p){this.sy.locateMIDI(p);};
     this.stopMIDI=function(){this.sy.stopMIDI();};
     this.getPlayStatus=function(){return this.sy.getPlayStatus();};
     this.getAudioContext=function(){return this.sy.getAudioContext();};
