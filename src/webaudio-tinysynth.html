@@ -1,6 +1,6 @@
 <dom-module id="webaudio-tinysynth">
   <template>
-  <canvas id="wa-canvas" width="256" height="64" touch-action="none" tabindex="0"></canvas>
+  <canvas id="wa-canvas" width="300" height="32" touch-action="none" tabindex="0"></canvas>
   <div id="wa-logo">TinySynth</div>
   <style>
   :host {
@@ -13,11 +13,12 @@
   #wa-canvas {
     display:block;
     margin:0;
-    border:2px solid #666;
-    width:256px;
+    border:none;
+    width:300px;
     height:32px;
   }
   #wa-logo{
+    display:none;
     position:absolute;
     top:5px;
     left:5px;
