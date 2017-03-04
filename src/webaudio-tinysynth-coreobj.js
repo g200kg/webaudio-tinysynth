@@ -603,6 +603,8 @@
         this.canvas.addEventListener("mousedown",this.pointerdown.bind(this),false);
         this.canvas.addEventListener("mousemove",this.pointermove.bind(this),false);
         this.canvas.addEventListener("touchstart",this.pointerdown.bind(this),false);
+        this.canvas.addEventListener("touchend",this.pointerup.bind(this),false);
+        this.canvas.addEventListener("touchcancel",this.pointerup.bind(this),false);
         this.canvas.addEventListener("touchmove",this.pointermove.bind(this),false);
       }
       console.log("internalcontext:"+this.internalcontext)
@@ -655,6 +657,12 @@
       var p=e.target.getBoundingClientRect();
       return {x:e.clientX-p.left,y:e.clientY-p.top};
     },
+    preventScroll:function(e){
+      e.preventDefault();
+    },
+    pointerup:function(ev){
+      document.body.removeEventListener('touchstart',this.preventScroll,false);
+    },
     pointerdown:function(ev){
       var e;
       if(ev.touches)
@@ -662,21 +670,25 @@
       else
         e=ev;
       this.downpos=this.getPos(e);
-      if(e.touches || (e.buttons&1)){
+      if(ev.touches || (e.buttons&1)){
         if(this.song&&this.downpos.x>=80&&this.downpos.x<=208){
           var p=(this.downpos.x-80)/128*this.maxTick;
           synth.locateMIDI(p);
+          document.body.addEventListener('touchstart',this.preventScroll,false);
         }
         if(this.downpos.x>=250&&this.downpos.x<282){
           var p=(this.downpos.x-250)/32;
           synth.setMasterVol(p);
+          document.body.addEventListener('touchstart',this.preventScroll,false);
         }
       }
     },
-    pointermove:function(e){
-      if(e.touches)
-        e = e.touches[0];
-      if(e.touches || (e.buttons&1)){
+    pointermove:function(ev){
+      if(ev.touches)
+        e=ev.touches[0];
+      else
+        e=ev;
+      if(ev.touches || (e.buttons&1)){
         var pos=this.getPos(e);
         if(this.song&&pos.x>=80&&pos.x<=208){
           var p=(pos.x-80)/128*this.maxTick;
