@@ -5,10 +5,11 @@ ehthumbs.db
 # Folder config file
 Desktop.ini
 
-# Download Test file
+# Test file
 test/
 tmp/
 node_modules/
+npm-debug.log
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/

@@ -173,14 +173,16 @@ timerid=setInterval(function(){
 > return value is a object `{play:playstatus, curTick:currenttick, maxTick:maxtick}`
 
 **setTsMode(mode)**
-> Set time stamp mode that is used in send() or Channel message functions.
+> Set time stamp mode that is used in send() or Channel message functions.  
+> If `mode=0` timestamp is a time of in-use audioContext's currentTime timeline.
+> If `mode=1` timestamp is HighResolutionTime timeline.
 
 **setTimbre(m,n,p)**
 > Even webaudio-tinysynth has defaultly GM mapped timbre set, This function can overwrite with user-definable timbre.  
 > `m=0` : timbre for normal channel.  
 > `m=1` : timbre for rhythm channel (ch=9).  
 > `n` : program number for normal channel or notenumber for rhythm channel.  
-> `p` : timbre object. Source of this object can be created by soundedit.html **(Details are note yet documented)**
+> `p` : timbre object. Source of this object can be created by soundedit.html **(Details are not yet documented)**
 
 **send([midi-message], t)**
 > midi-message is an array of midi data-bytes for one message. For example,  
