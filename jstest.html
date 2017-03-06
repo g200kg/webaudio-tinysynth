@@ -24,7 +24,7 @@ function SetProgram(p){
   synth.send([0xc0,p]);
 }
 function Init(){
-  synth=new WebAudioTinySynth({voices:32});
+  synth=new WebAudioTinySynth({voices:64});
   for(var i=0;i<128;++i){
     var o=document.createElement("option");
     o.innerHTML=synth.getTimbreName(0,i);

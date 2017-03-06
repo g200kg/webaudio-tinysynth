@@ -209,6 +209,11 @@ function ViewParam(pg){
     if(o.firstChild)
       o.firstChild.disabled=(oscs>=3)?false:true;
   }
+  o=document.getElementById("osc4").firstChild;
+  while(o=o.nextSibling){
+    if(o.firstChild)
+      o.firstChild.disabled=(oscs>=4)?false:true;
+  }
   document.getElementById("name").innerHTML=pg.name+" : ";
   for(var i=0;i<oscs;++i){
     document.getElementById("g"+(i+1)).value=pg.p[i].g;
@@ -296,7 +301,7 @@ Repository : <a href="https://github.com/g200kg/webaudio-tinysynth">https://gith
   <li>webaudio-tinysynth also has built-in MIDI sequencer. Drag &amp; drop .mid file to TinySynth to play.</li>
 </ul>
 <hr/>
-<webaudio-tinysynth id="tinysynth" src="ws.mid" quality="1" loop="1" disableDrop="0" masterVol="0.2"></webaudio-tinysynth>
+<webaudio-tinysynth id="tinysynth" src="ws.mid" quality="1" loop="1" disableDrop="0" masterVol="0.3"></webaudio-tinysynth>
 <br/>
 <input id="pos" type="range" min="0" max="100" value="0" oninput="synth.locateMIDI(this.value)"/>
 <table>
@@ -327,7 +332,7 @@ Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
 <hr/>
 <hr/>
 <br/>
-<button onclick="OpenEditor()">Sound Editor</button> <span id="name"></span><button id="shot"></button><br/>
+<button onclick="OpenEditor()">Timbre Editor</button> <span id="name"></span><button id="shot">--</button><br/>
 <div id="soundeditor">
 <br/>
 Number of Oscillator :<select id="oscs" onchange="Edit()"><option>1</option><option>2</option><option>3</option><option>4</option></select>
@@ -335,8 +340,7 @@ Number of Oscillator :<select id="oscs" onchange="Edit()"><option>1</option><opt
   <tr id="desc1"><td>G</td><td>W</td><td>V</td><td>T</td><td>F</td><td>A</td><td>H</td><td>D</td><td>S</td><td>R</td><td>P</td><td>K</td></tr>
   <tr id="osc1">
   <td><input id="g1" oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="w1" oninput="Edit()" value="" size="4" style="width:45px"/>
-  <select id="w1s" style="width:20px" onchange="document.getElementById('w1').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option><option value="noise">noise</option><option value="w9999">w9999</option></select></td>
+  <td><select id="w1" style="width:60px" onchange="document.getElementById('w1').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option><option value="n0">n0</option><option value="n1">n1</option><option value="w9999">w9999</option></select></td>
   <td><input id="v1"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="t1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="f1"  oninput="Edit()" value="0" size="4"/></td>
@@ -350,8 +354,7 @@ Number of Oscillator :<select id="oscs" onchange="Edit()"><option>1</option><opt
   </tr>
   <tr id="osc2">
   <td><input id="g2" oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="w2" oninput="Edit()" value="" size="4" style="width:45px"/>
-  <select id="w2s" style="width:20px" onchange="document.getElementById('w2').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
+  <td><select id="w2" style="width:60px" onchange="document.getElementById('w2').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option><option value="n0">n0</option><option value="n1">n1</option><option value="w9999">w9999</option></select></td>
   <td><input id="v2"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="t2"  oninput="Edit()" value="0.5" size="4"/></td>
   <td><input id="f2"  oninput="Edit()" value="0.5" size="4"/></td>
@@ -363,37 +366,34 @@ Number of Oscillator :<select id="oscs" onchange="Edit()"><option>1</option><opt
   <td><input id="p2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="k2"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
-</tr>
-<tr id="osc3">
-<td><input id="g3" oninput="Edit()" value="0" size="4"/></td>
-<td><input id="w3" oninput="Edit()" value="" size="4" style="width:45px"/>
-<select id="w3s" style="width:20px" value="sine" onchange="document.getElementById('w3').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
-<td><input id="v3"  oninput="Edit()" value="0.5" size="4"/></td>
-<td><input id="t3"  oninput="Edit()" value="0.5" size="4"/></td>
-<td><input id="f3"  oninput="Edit()" value="0.5" size="4"/></td>
-<td><input id="a3"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="h3"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="d3"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="s3"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="r3"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="p3"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="k3"  oninput="Edit()" value="0" size="4"/></td>
-</tr>
-<tr id="osc4">
-<td><input id="g4" oninput="Edit()" value="0" size="4"/></td>
-<td><input id="w4" oninput="Edit()" value="" size="4" style="width:45px"/>
-<select id="w4s" style="width:20px" value="sine" onchange="document.getElementById('w4').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option></select></td>
-<td><input id="v4"  oninput="Edit()" value="0.5" size="4"/></td>
-<td><input id="t4"  oninput="Edit()" value="0.5" size="4"/></td>
-<td><input id="f4"  oninput="Edit()" value="0.5" size="4"/></td>
-<td><input id="a4"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="h4"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="d4"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="s4"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="r4"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="p4"  oninput="Edit()" value="0" size="4"/></td>
-<td><input id="k4"  oninput="Edit()" value="0" size="4"/></td>
-</tr>
+  <tr id="osc3">
+  <td><input id="g3" oninput="Edit()" value="0" size="4"/></td>
+  <td><select id="w3" style="width:60px" onchange="document.getElementById('w3').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option><option value="n0">n0</option><option value="n1">n1</option><option value="w9999">w9999</option></select></td>
+  <td><input id="v3"  oninput="Edit()" value="0.5" size="4"/></td>
+  <td><input id="t3"  oninput="Edit()" value="0.5" size="4"/></td>
+  <td><input id="f3"  oninput="Edit()" value="0.5" size="4"/></td>
+  <td><input id="a3"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="h3"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="d3"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="s3"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="r3"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="p3"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="k3"  oninput="Edit()" value="0" size="4"/></td>
+  </tr>
+  <tr id="osc4">
+  <td><input id="g4" oninput="Edit()" value="0" size="4"/></td>
+  <td><select id="w4" style="width:60px" onchange="document.getElementById('w4').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option><option value="n0">n0</option><option value="n1">n1</option><option value="w9999">w9999</option></select></td>
+  <td><input id="v4"  oninput="Edit()" value="0.5" size="4"/></td>
+  <td><input id="t4"  oninput="Edit()" value="0.5" size="4"/></td>
+  <td><input id="f4"  oninput="Edit()" value="0.5" size="4"/></td>
+  <td><input id="a4"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="h4"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="d4"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="s4"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="r4"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="p4"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="k4"  oninput="Edit()" value="0" size="4"/></td>
+  </tr>
 </table>
 <br/>
 <input id="patch" size="80"/>

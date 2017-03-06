@@ -5,7 +5,17 @@ module.exports = function(grunt) {
     watch: {
       dev: {
         files: ["src/*"],
-        tasks: ["include_file","uglify",],
+        tasks: ["replace","include_file","uglify",],
+      }
+    },
+    replace: {
+      nogui:{
+        src:["src/webaudio-tinysynth-coreobj.js"],
+        dest:"tmp/webaudio-tinysynth-nogui.js",
+        replacements:[{
+          from:/@@gui([\s\S]*?)@@guiEND/g,
+          to:"",
+        }]
       }
     },
     include_file: {
@@ -27,5 +37,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-include-file');
+  grunt.loadNpmTasks('grunt-text-replace');
   grunt.registerTask('default', ['include_file','uglify',]);
 };
