@@ -272,6 +272,33 @@ Almost function has the timestamp, `t` parameter. That specify accurate timing o
 |**0**                   | Yes      | Bend Range                     |
 |------------------------|----------|--------------------------------|
 
+## Timbre Object Structure
+As you can see that in source code, each timbre is represented as a object array. Fore example the program# 1 "Acoustic Grand Piano" is like this :
+
+```
+[{w:"sine",v:.4,d:0.7,r:0.1,},{w:"triangle",v:3,d:0.7,s:0.1,g:1,a:0.01,k:-1.2}]
+```
+Each element of the array means a oscillator and object member means :  
+* g: output destination 0=final output / n=FM to specified osc
+* w: waveform  
+     "sine"/"sawtooth"/"square"/"triangle" (basic waveforms)  
+     "w9999" (summing 1-4 harmonics)  
+     "n0" (white noise)  
+     "n1" (metalic noise)  
+* v: volume  
+* t: tune factor according to note#
+* f: fixed frequency in Hz
+* a: attack time
+* h: hold time
+* d: decay time
+* s: sustain level
+* r: release time  (5 params make AHDSR envelope)
+* p: pitch bend
+* q: pitch bend speed factor
+* k: volume key tracking factor
+
+You can test how these parameter work with 'Timbre Editor' panel in 'soundedit.html'.  And the created timbre can be used with `setTimbre()` function.
+
 ## License
 
 webaudio-pianoroll is licensed under the Apache License, Version 2.0

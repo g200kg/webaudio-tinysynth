@@ -683,6 +683,7 @@
       this.pg=[]; this.vol=[]; this.ex=[]; this.bend=[]; this.rpnidx=[]; this.brange=[];
       this.sustain=[]; this.notetab=[];
       this.maxTick=0, this.playTick=0, this.playing=0;
+      this.releaseRatio=3;
       for(var i=0;i<16;++i){
         this.pg[i]=0; this.vol[i]=100*100/(127*127);
         this.bend[i]=0; this.brange[i]=0x100;
@@ -771,13 +772,30 @@
       this.stopMIDI();
       for(i=0;i<this.song.ev.length && tick>this.song.ev[i].t;++i){
         var m=this.song.ev[i];
-        if((m.m[0]&0xf0)==0xc0)
-          this.pg[m.m[0]&0x0f]=m.m[1];
+        var ch=m.m[0]&0xf;
+        switch(m.m[0]&0xf0){
+        case 0xb0:
+          switch(m.m[1]){
+          case 1:  this.setModulation(ch,m.m[2]); break;
+          case 7:  this.setChVol(ch,m.m[2]); break;
+          case 10: this.setPan(ch,m.m[2]); break;
+          case 11: this.setExpression(ch,m.m[2]); break;
+          case 64: this.setSustain(ch,m.m[2]); break;
+          }
+          break;
+        case 0xc0: this.pg[m.m[0]&0x0f]=m.m[1]; break;
+        }
         if(m.m[0]==0xff51)
           this.song.tempo=m.m[1];
       }
-      this.playIndex=i;
-      this.playTick=this.song.ev[i].t;
+      if(!this.song.ev[i]){
+        this.playIndex=0;
+        this.playTick=this.maxTick;
+      }
+      else{
+        this.playIndex=i;
+        this.playTick=this.song.ev[i].t;
+      }
       if(p)
         this.playMIDI();
     },
@@ -810,8 +828,8 @@
     },
     stopMIDI:function(){
       this.playing=0;
-      this.reset();
-      this._releaseAllNote();
+      for(var i=0;i<16;++i)
+        this.allSoundOff(i);
     },
     playMIDI:function(){
       if(!this.song)
@@ -923,7 +941,7 @@
     },
     setQuality:function(q){
       var i,k,n,p;
-      var defp={g:0,w:"sine",t:1,f:0,v:0.5,a:0,h:0.01,d:0.01,s:0,r:0.05,p:1,k:0};
+      var defp={g:0,w:"sine",t:1,f:0,v:0.5,a:0,h:0.01,d:0.01,s:0,r:0.05,p:1,q:1,k:0};
       function filldef(p){
         for(n=0;n<p.length;++n){
           for(k in defp){
@@ -972,14 +990,14 @@
     },
     _limitVoices:function(ch,n){
       this.notetab.sort(function(n1,n2){
-        if(n1.f!=n2.f) return n1.f?1:-1;
+        if(n1.f!=n2.f) return n1.f-n2.f;
         if(n1.e!=n2.e) return n2.e-n1.e;
         return n2.t-n1.t;
       });
-      for(var i=this.notetab.length-1;i>=0;--i){
+      var l=this.notetab.length;
+      for(var i=l-1;i>=0;--i){
         var nt=this.notetab[i];
-        if(this.actx.currentTime>nt.e
-           /*|| (nt.ch==ch&&nt.n==n&&nt.f)*/ || i>=(this.voices-1)){
+        if(this.actx.currentTime>nt.e || i>=(this.voices-1)){
           this._pruneNote(nt);
           this.notetab.splice(i,1);
         }
@@ -1006,13 +1024,13 @@
           o[i].loop=true;
           o[i].playbackRate.value=fp[i]/440;
           if(pn.p!=1)
-            this._setParamTarget(o[i].playbackRate,fp[i]/440*pn.p,t,pn.d);
+            this._setParamTarget(o[i].playbackRate,fp[i]/440*pn.p,t,pn.q);
           break;
         default:
           o[i]=this.actx.createOscillator();
           o[i].frequency.value=fp[i];
           if(pn.p!=1)
-            this._setParamTarget(o[i].frequency,fp[i]*pn.p,t,pn.d);
+            this._setParamTarget(o[i].frequency,fp[i]*pn.p,t,pn.q);
           if(pn.w[0]=="w")
             o[i].setPeriodicWave(this.wave[pn.w]);
           else
@@ -1036,8 +1054,11 @@
           g[i].gain.setValueAtTime(vp[i],t);
         this._setParamTarget(g[i].gain,pn.s*vp[i],dt,pn.d);
         o[i].start(t);
+        if(ch==9)
+          o[i].stop(t+p[0].d*5);
       }
-      this.notetab.push({t:t,e:ch==9?t+p[0].d*10:99999,ch:ch,n:n,o:o,g:g,t2:t+pn.a,v:vp,r:r,f:ch==9?1:0});
+      if(ch!=9)
+        this.notetab.push({t:t,e:99999,ch:ch,n:n,o:o,g:g,t2:t+pn.a,v:vp,r:r,f:0});
     },
     _setParamTarget:function(p,v,t,d){
       if(d!=0)
@@ -1058,15 +1079,17 @@
       }
     },
     _releaseNote:function(nt,t){
-      for(var k=nt.g.length-1;k>=0;--k){
-        nt.g[k].gain.cancelScheduledValues(t);
-        if(t==nt.t2)
-          nt.g[k].gain.setValueAtTime(nt.v[k],t);
-        else if(t<nt.t2)
-          nt.g[k].gain.setValueAtTime(nt.v[k]*(t-nt.t)/(nt.t2-nt.t),t);
-        this._setParamTarget(nt.g[k].gain,0,t,nt.r[k]);
+      if(nt.ch!=9){
+        for(var k=nt.g.length-1;k>=0;--k){
+          nt.g[k].gain.cancelScheduledValues(t);
+          if(t==nt.t2)
+            nt.g[k].gain.setValueAtTime(nt.v[k],t);
+          else if(t<nt.t2)
+            nt.g[k].gain.setValueAtTime(nt.v[k]*(t-nt.t)/(nt.t2-nt.t),t);
+          this._setParamTarget(nt.g[k].gain,0,t,nt.r[k]);
+        }
       }
-      nt.e=t+nt.r[0]*10;
+      nt.e=t+nt.r[0]*this.releaseRatio;
       nt.f=1;
     },
     setModulation:function(ch,v,t){
@@ -1146,6 +1169,8 @@
         this._note(t,ch,n,v,this.program[this.pg[ch]].p);
     },
     noteOff:function(ch,n,t){
+      if(ch==9)
+        return;
       t=this._tsConv(t);
       for(var i=this.notetab.length-1;i>=0;--i){
         var nt=this.notetab[i];

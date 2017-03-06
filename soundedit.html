@@ -141,7 +141,7 @@ function ChChange(e){
 function ViewDef(pg){
   var s=JSON.stringify(pg.p);
   s=s.replace(/}/g,",}").replace(/\"([a-z])\"/g,"$1");
-  var ss=["g:0,","t:1,","f:0,","v:0.5,","a:0,","h:0.01,","d:0.01,","s:0,","r:0.05,","p:1,","b:0,","c:2","k:0"];
+  var ss=["g:0,","t:1,","f:0,","v:0.5,","a:0,","h:0.01,","d:0.01,","s:0,","r:0.05,","p:1,","q:1","k:0"];
   for(p=0;p<ss.length;++p){
     s=s.replace(ss[p],",");
     s=s.replace(ss[p],",");
@@ -177,7 +177,7 @@ function Edit(){
     prog.p.length=oscs;
   if(prog.p.length<oscs)
     for(var i=oscs-prog.p.length;i>=0;--i)
-      prog.p.push({g:0,w:"sine",v:0,t:0,f:0,a:0,h:0,d:1,s:0,r:1,b:0,c:0,p:1,k:0});
+      prog.p.push({g:0,w:"sine",v:0,t:0,f:0,a:0,h:0,d:1,s:0,r:1,b:0,c:0,p:1,q:1,k:0});
   for(var i=0;i<oscs;++i){
     prog.p[i].g=GetVal("g"+(i+1));
     prog.p[i].w=document.getElementById("w"+(i+1)).value;
@@ -190,6 +190,7 @@ function Edit(){
     prog.p[i].s=GetVal("s"+(i+1));
     prog.p[i].r=GetVal("r"+(i+1));
     prog.p[i].p=GetVal("p"+(i+1));
+    prog.p[i].q=GetVal("q"+(i+1));
     prog.p[i].k=GetVal("k"+(i+1));
   }
   ViewDef(prog);
@@ -227,6 +228,7 @@ function ViewParam(pg){
     document.getElementById("s"+(i+1)).value=pg.p[i].s;
     document.getElementById("r"+(i+1)).value=pg.p[i].r;
     document.getElementById("p"+(i+1)).value=pg.p[i].p;
+    document.getElementById("q"+(i+1)).value=pg.p[i].q;
     document.getElementById("k"+(i+1)).value=pg.p[i].k;
   }
   ViewDef(pg);
@@ -337,61 +339,65 @@ Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
 <br/>
 Number of Oscillator :<select id="oscs" onchange="Edit()"><option>1</option><option>2</option><option>3</option><option>4</option></select>
 <table>
-  <tr id="desc1"><td>G</td><td>W</td><td>V</td><td>T</td><td>F</td><td>A</td><td>H</td><td>D</td><td>S</td><td>R</td><td>P</td><td>K</td></tr>
+  <tr id="desc1"><td>G</td><td>W</td><td>V</td><td>T</td><td>F</td><td>A</td><td>H</td><td>D</td><td>S</td><td>R</td><td>P</td><td>Q</td><td>K</td></tr>
   <tr id="osc1">
   <td><input id="g1" oninput="Edit()" value="0" size="4"/></td>
   <td><select id="w1" style="width:60px" onchange="document.getElementById('w1').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option><option value="n0">n0</option><option value="n1">n1</option><option value="w9999">w9999</option></select></td>
   <td><input id="v1"  oninput="Edit()" value="0.5" size="4"/></td>
-  <td><input id="t1"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="t1"  oninput="Edit()" value="1" size="4"/></td>
   <td><input id="f1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="a1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="h1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="d1"  oninput="Edit()" value="0.1" size="4"/></td>
   <td><input id="s1"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="r1"  oninput="Edit()" value="0.1" size="4"/></td>
-  <td><input id="p1"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="p1"  oninput="Edit()" value="1" size="4"/></td>
+  <td><input id="q1"  oninput="Edit()" value="1" size="4"/></td>
   <td><input id="k1"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
   <tr id="osc2">
   <td><input id="g2" oninput="Edit()" value="0" size="4"/></td>
   <td><select id="w2" style="width:60px" onchange="document.getElementById('w2').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option><option value="n0">n0</option><option value="n1">n1</option><option value="w9999">w9999</option></select></td>
   <td><input id="v2"  oninput="Edit()" value="0.5" size="4"/></td>
-  <td><input id="t2"  oninput="Edit()" value="0.5" size="4"/></td>
-  <td><input id="f2"  oninput="Edit()" value="0.5" size="4"/></td>
+  <td><input id="t2"  oninput="Edit()" value="1" size="4"/></td>
+  <td><input id="f2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="a2"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="h2"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="d2"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="d2"  oninput="Edit()" value="0.1" size="4"/></td>
   <td><input id="s2"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="r2"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="p2"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="r2"  oninput="Edit()" value="0.1" size="4"/></td>
+  <td><input id="p2"  oninput="Edit()" value="1" size="4"/></td>
+  <td><input id="q2"  oninput="Edit()" value="1" size="4"/></td>
   <td><input id="k2"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
   <tr id="osc3">
   <td><input id="g3" oninput="Edit()" value="0" size="4"/></td>
   <td><select id="w3" style="width:60px" onchange="document.getElementById('w3').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option><option value="n0">n0</option><option value="n1">n1</option><option value="w9999">w9999</option></select></td>
   <td><input id="v3"  oninput="Edit()" value="0.5" size="4"/></td>
-  <td><input id="t3"  oninput="Edit()" value="0.5" size="4"/></td>
-  <td><input id="f3"  oninput="Edit()" value="0.5" size="4"/></td>
+  <td><input id="t3"  oninput="Edit()" value="1" size="4"/></td>
+  <td><input id="f3"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="a3"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="h3"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="d3"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="d3"  oninput="Edit()" value="0.1" size="4"/></td>
   <td><input id="s3"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="r3"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="p3"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="r3"  oninput="Edit()" value="0.1" size="4"/></td>
+  <td><input id="p3"  oninput="Edit()" value="1" size="4"/></td>
+  <td><input id="q3"  oninput="Edit()" value="1" size="4"/></td>
   <td><input id="k3"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
   <tr id="osc4">
   <td><input id="g4" oninput="Edit()" value="0" size="4"/></td>
   <td><select id="w4" style="width:60px" onchange="document.getElementById('w4').value=this.value;Edit()"><option value="sine">sine</option><option value="sawtooth">sawtooth</option><option value="square">square</option><option value="triangle">triangle</option><option value="n0">n0</option><option value="n1">n1</option><option value="w9999">w9999</option></select></td>
   <td><input id="v4"  oninput="Edit()" value="0.5" size="4"/></td>
-  <td><input id="t4"  oninput="Edit()" value="0.5" size="4"/></td>
-  <td><input id="f4"  oninput="Edit()" value="0.5" size="4"/></td>
+  <td><input id="t4"  oninput="Edit()" value="1" size="4"/></td>
+  <td><input id="f4"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="a4"  oninput="Edit()" value="0" size="4"/></td>
   <td><input id="h4"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="d4"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="d4"  oninput="Edit()" value="0.1" size="4"/></td>
   <td><input id="s4"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="r4"  oninput="Edit()" value="0" size="4"/></td>
-  <td><input id="p4"  oninput="Edit()" value="0" size="4"/></td>
+  <td><input id="r4"  oninput="Edit()" value="0.1" size="4"/></td>
+  <td><input id="p4"  oninput="Edit()" value="1" size="4"/></td>
+  <td><input id="q4"  oninput="Edit()" value="1" size="4"/></td>
   <td><input id="k4"  oninput="Edit()" value="0" size="4"/></td>
   </tr>
 </table>
