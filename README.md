@@ -80,8 +80,8 @@ Test Pages are here :
 
 |Attribute          |Options|Default   |Description               |
 |-------------------|-------|----------|--------------------------|
-|**width**          |String |"256px"   | width of element         |
-|**height**         |String |"64px"    | height of element        |
+|**width**          |String |"300px"   | width of element         |
+|**height**         |String |"32px"    | height of element        |
 |**masterVol**      |Number | 1.0      | master volume            |
 |**reverbLev**      |Number | 0.3      | reverb level             |
 |**useReverb**      |Number | 1        | disable Reverb if 0. It makes a little save the CPU consumption.      |

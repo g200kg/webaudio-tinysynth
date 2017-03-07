@@ -731,7 +731,7 @@ function WebAudioTinySynth(opt){
         }
       }
     },
-    setTimber:function(m,n,p){
+    setTimbre:function(m,n,p){
       if(m && n>=35 && n<=81)
         this.drummap[n-35].p=filldef(p);
       if(m==0 && n>=0 && n<=127)

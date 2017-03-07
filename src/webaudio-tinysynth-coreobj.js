@@ -572,7 +572,9 @@
     },
     getPos(e){
       var p=e.target.getBoundingClientRect();
-      return {x:e.clientX-p.left,y:e.clientY-p.top};
+      if(p.right!=p.left)
+        return {x:(e.clientX-p.left)*300/(p.right-p.left),y:e.clientY-p.top};
+      return {x:0,y:0};
     },
     pointerdown:function(ev){
       var e;
@@ -934,7 +936,7 @@
         }
       }
     },
-    setTimber:function(m,n,p){
+    setTimbre:function(m,n,p){
       if(m && n>=35 && n<=81)
         this.drummap[n-35].p=filldef(p);
       if(m==0 && n>=0 && n<=127)
