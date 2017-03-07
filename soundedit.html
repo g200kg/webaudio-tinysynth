@@ -58,16 +58,6 @@ function Init(){
         document.getElementById("prog").appendChild(o);
       }
       ProgChange(0);
-      var st=synth.getPlayStatus();
-      pos.max=st.maxTick;
-      setInterval(function(){
-        var st=synth.getPlayStatus();
-        if(st.play){
-          var pos=document.getElementById("pos");
-          pos.max=st.maxTick;
-          pos.value=st.curTick;
-        }
-      },100);
     }
   },200);
 }
@@ -305,7 +295,6 @@ Repository : <a href="https://github.com/g200kg/webaudio-tinysynth">https://gith
 <hr/>
 <webaudio-tinysynth id="tinysynth" src="ws.mid" quality="1" loop="1" disableDrop="0" masterVol="0.3"></webaudio-tinysynth>
 <br/>
-<input id="pos" type="range" min="0" max="100" value="0" oninput="synth.locateMIDI(this.value)"/>
 <table>
 <tr>
   <td><webaudio-knob diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" onchange="Ctrl()"></webaudio-knob></td>
