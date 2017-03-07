@@ -184,6 +184,9 @@ timerid=setInterval(function(){
 > `n` : program number for normal channel or notenumber for rhythm channel.  
 > `p` : timbre object. Source of this object can be created by soundedit.html **(Details are not yet documented)**
 
+**reset()**
+> Reset all channel to initial state. Including all controllers, program, chVol, pan and bendRange. 
+
 **send([midi-message], t)**
 > midi-message is an array of midi data-bytes for one message. For example,  
 > `send([0x90, 60, 100], t)` is for NoteOn ch=1 note#=60 velocity=100.  
@@ -230,7 +233,7 @@ Almost function has the timestamp, `t` parameter. That specify accurate timing o
 > Set timbre for that channel. `pg` range is 0-127 that is timbre number in GM map.
 
 **setBend(ch, val, t)**
-> Set pitch bend state. Notes in this channel are all affected to this pitch modification. `val` range is -8192 to +8191. sensitivity is depends on `setBendRange()` setting. Default state is `0`.
+> Set pitch bend state. Notes in this channel are all affected to this pitch modification. `val` range is 0 to 16384 and the center with no bend is 8192. sensitivity is depends on `setBendRange()` setting. Default state is `8192`.
 
 **setBendRange(ch, val)**
 > Set bend sensitivity for that channel. `val` unit is 100/127 cent. That means +-1 octave if 0x600, +-1 semitone if 0x80.
