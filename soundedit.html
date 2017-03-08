@@ -20,6 +20,7 @@ body{
 #container{
   background:#333;
   background:linear-gradient(#000 0%,#888 1%,#333 2%,#222 99%,#000 100%);
+  background:linear-gradient(#004 0%,#88c 1%,#338 2%,#226 99%,#004 100%);
   padding:20px 30px;
   color:#ccc;
 }
@@ -31,7 +32,7 @@ h1{
 #base {
     width:1000px;
     margin:0 auto;
-    background:#338;
+    background:#000;
     padding:10px 20px;
     color:#fff;
 }
@@ -382,7 +383,6 @@ Oct : <label><input type="radio" name="oct" onclick="OctChange(-2)"/> -2</label>
 Ch : <select onchange="ChChange(this)"><option>Ch1</option><option>Ch2</option><option>Ch3</option><option>Ch4</option><option>Ch5</option><option>Ch6</option><option>Ch7</option><option>Ch8</option><option>Ch9</option><option>Drum (Ch10)</option></select>
 Prog : <select id="prog" onchange="ProgChange(this.selectedIndex)">
 </select>
-<hr/>
 <hr/>
 <br/>
 <button onclick="OpenEditor()">Timbre Editor</button> <span id="name"></span><button id="shot">--</button><br/>
