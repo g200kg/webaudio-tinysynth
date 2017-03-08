@@ -402,37 +402,21 @@
         [{w:"n1",v:0.25,f:390,t:0,d:0.2,r:0.2,},{w:"n0",v:0.3,t:0,c:0,f:440,h:0.005,d:0.05,}],
         [{w:"triangle",f:320,v:0.9,d:0.12,h:0.02,p:0.5,t:0,r:0.12,},{g:1,w:"n0",v:5,t:0.3,h:0.015,d:0.005,r:0.005,}],
         [{w:"triangle",f:360,v:0.9,d:0.12,h:0.02,p:0.5,t:0,r:0.12,},{g:1,w:"n0",v:5,t:0.3,h:0.015,d:0.005,r:0.005,}],
-        [{w:"n1",v:0.3,f:1200,d:0.2,r:0.2,h:0.05,t:0,},{w:"n0",t:0,v:1,d:0.1,r:0.1,p:1.2,f:440,}],
+        [{w:"n1",v:0.3,f:1200,d:0.2,r:0.2,h:0.05,t:0,},{w:"n1",t:0,v:1,d:0.1,r:0.1,p:1.2,f:440,}],
 /*50*/  [{w:"triangle",f:420,v:0.9,d:0.12,h:0.02,p:0.5,t:0,r:0.12,},{g:1,w:"n0",v:5,t:0.3,h:0.015,d:0.005,r:0.005,}],
         [{w:"n1",f:500,v:0.15,d:0.4,r:0.4,h:0,t:0,},{w:"n0",v:0.1,t:0,r:0.01,f:440,}],
-        [{w:"n1",v:0.3,f:800,d:0.2,r:0.2,h:0.05,t:0,p:1.1,},{w:"n0",t:0,v:1,d:0.1,r:0.1,p:2,f:440,}],
+        [{w:"n1",v:0.3,f:800,d:0.2,r:0.2,h:0.05,t:0,p:1.1,},{w:"n1",t:0,v:1,d:0.1,r:0.1,p:2,f:440,}],
         [{w:"sine",f:1651,v:0.15,d:0.2,r:0.2,h:0,t:0,},{w:"sawtooth",g:1,t:1.21,v:7.2,d:0.1,r:11,h:1,},{g:1,w:"n0",v:3.1,t:0.152,d:0.002,r:0.002,}],
         null,
-/*55*/  [{w:"n1",v:.3,f:1200,d:0.2,r:0.2,h:0.05,t:0,},{w:"n0",t:0,v:1,d:0.1,r:0.1,p:1.2,f:440,}],
+/*55*/  [{w:"n1",v:.3,f:1200,d:0.2,r:0.2,h:0.05,t:0,},{w:"n1",t:0,v:1,d:0.1,r:0.1,p:1.2,f:440,}],
         null,
-        [{w:"n1",v:0.3,f:555,d:0.25,r:0.25,h:0.05,t:0,},{w:"n0",t:0,v:1,d:0.1,r:0.1,f:440,a:0.005,h:0.02,}],
+        [{w:"n1",v:0.3,f:555,d:0.25,r:0.25,h:0.05,t:0,},{w:"n1",t:0,v:1,d:0.1,r:0.1,f:440,a:0.005,h:0.02,}],
         [{w:"n1",f:11,v:0.7,d:0.3,t:0,r:0.3,},{g:1,w:"square",v:6,t:0,f:18,a:0.005,h:0.02,d:0.1,s:1,r:0.1,c:0,}],
         [{w:"n1",f:440,v:0.15,d:0.4,r:0.4,h:0,t:0,},{w:"n0",v:0.4,t:0,r:0.01,f:440,}],
-/*60*/  null,
-        null,
-        null,
-        null,
-        null,
-/*65*/  null,
-        null,
-        null,
-        null,
-        null,
-/*70*/  null,
-        null,
-        null,
-        null,
-        null,
-/*75*/  null,
-        null,
-        null,
-        null,
-        null,
+/*60*/  null,null,null,null,null,
+/*65*/  null,null,null,null,null,
+/*70*/  null,null,null,null,null,
+/*75*/  null,null,null,null,null,
 /*80*/  [{w:"sine",f:1720,v:0.3,d:0.02,t:0,r:0.02,},{w:"square",g:1,t:0,f:2876,v:6,d:0.2,s:1,r:0.2,}],
         [{w:"sine",f:1720,v:0.3,d:0.25,t:0,r:0.25,},{w:"square",g:1,t:0,f:2876,v:6,d:0.2,s:1,r:0.2,}],
     ],
@@ -494,6 +478,7 @@
         this.ctx.fillStyle="#000";
         this.ctx.fillRect(0,0,300,32);
         this.canvas.addEventListener("dragover",this.dragOver.bind(this),false);
+        this.canvas.addEventListener("dragleave",this.dragLeave.bind(this),false);
         this.canvas.addEventListener("drop",this.execDrop.bind(this),false);
         this.canvas.addEventListener("click",this.click.bind(this),false);
         this.canvas.addEventListener("mousedown",this.pointerdown.bind(this),false);
@@ -588,6 +573,12 @@
           this.ctx.fill();
           this.ctx.stroke();
         }
+        if(this.waitdrop){
+          this.ctx.fillStyle="rgba(0,0,0,0.7)"
+          this.ctx.fillRect(0,0,300,32);
+          this.ctx.fillStyle="#fff";
+          this.ctx.fillText("Drop MIDI File Here",100,20);
+        }
       }
     },
     toTime:function(ti){
@@ -662,12 +653,17 @@
           this.masterVol=this.lastMasterVol;
       }
     },
+    dragLeave:function(e){
+      this.waitdrop=0;
+    },
     dragOver:function(e){
+      this.waitdrop=1;
       e.stopPropagation();
       e.preventDefault();
       e.dataTransfer.dropEffect = "copy";
     },
     execDrop:function(e){
+      this.waitdrop=0;
       var f = e.dataTransfer.files;
       if(this.disabledrop==0){
         var reader = new FileReader();
@@ -684,8 +680,7 @@
       var i;
       this.pg=[]; this.vol=[]; this.ex=[]; this.bend=[]; this.rpnidx=[]; this.brange=[];
       this.sustain=[]; this.notetab=[];
-      this.maxTick=0, this.playTick=0, this.playing=0;
-      this.releaseRatio=3;
+      this.maxTick=0, this.playTick=0, this.playing=0; this.releaseRatio=3;
       for(var i=0;i<16;++i){
         this.pg[i]=0; this.vol[i]=3*100*100/(127*127);
         this.bend[i]=0; this.brange[i]=0x100;
@@ -946,6 +941,22 @@
     },
     setQuality:function(q){
       var i,k,n,p;
+      if(q!=undefined)
+        this.quality=q;
+      for(i=0;i<128;++i)
+        this.setTimbre(0,i,this.program0[i]);
+      for(i=0;i<this.drummap0.length;++i)
+        this.setTimbre(1,i+35,this.drummap0[i]);
+      if(this.quality){
+        for(i=0;i<this.program1.length;++i)
+          this.setTimbre(0,i,this.program1[i]);
+        for(i=0;i<this.drummap.length;++i){
+          if(this.drummap1[i])
+            this.setTimbre(1,i+35,this.drummap1[i]);
+        }
+      }
+    },
+    setTimbre:function(m,n,p){
       var defp={g:0,w:"sine",t:1,f:0,v:0.5,a:0,h:0.01,d:0.01,s:0,r:0.05,p:1,q:1,k:0};
       function filldef(p){
         for(n=0;n<p.length;++n){
@@ -956,22 +967,6 @@
         }
         return p;
       }
-      if(q!=undefined)
-        this.quality=q;
-      for(i=0;i<128;++i)
-        this.program[i].p=filldef(this.program0[i]);
-      for(i=0;i<this.drummap0.length;++i)
-        this.drummap[i].p=filldef(this.drummap0[i]);
-      if(this.quality){
-        for(i=0;i<this.program1.length;++i)
-          this.program[i].p=filldef(this.program1[i]);
-        for(i=0;i<this.drummap.length;++i){
-          if(this.drummap1[i])
-            this.drummap[i].p=filldef(this.drummap1[i]);
-        }
-      }
-    },
-    setTimbre:function(m,n,p){
       if(m && n>=35 && n<=81)
         this.drummap[n-35].p=filldef(p);
       if(m==0 && n>=0 && n<=127)
@@ -999,8 +994,7 @@
         if(n1.e!=n2.e) return n2.e-n1.e;
         return n2.t-n1.t;
       });
-      var l=this.notetab.length;
-      for(var i=l-1;i>=0;--i){
+      for(var i=this.notetab.length-1;i>=0;--i){
         var nt=this.notetab[i];
         if(this.actx.currentTime>nt.e || i>=(this.voices-1)){
           this._pruneNote(nt);
@@ -1008,10 +1002,9 @@
         }
       }
     },
-    _note:function(t,ch,n,v,p){  /* note trigger */
-      var o=[],g=[],vp=[],fp=[],r=[];
+    _note:function(t,ch,n,v,p){
+      var o=[],g=[],vp=[],fp=[],r=[],i,out,sc,pn;
       var f=440*Math.pow(2,(n-69)/12);
-      var i,out,sc,pn;
       this._limitVoices(ch,n);
       for(i=0;i<p.length;++i){
         pn=p[i];
@@ -1060,7 +1053,7 @@
         this._setParamTarget(g[i].gain,pn.s*vp[i],dt,pn.d);
         o[i].start(t);
         if(ch==9)
-          o[i].stop(t+p[0].d*5);
+          o[i].stop(t+p[0].d*this.releaseRatio);
       }
       if(ch!=9)
         this.notetab.push({t:t,e:99999,ch:ch,n:n,o:o,g:g,t2:t+pn.a,v:vp,r:r,f:0});
@@ -1070,18 +1063,6 @@
         p.setTargetAtTime(v,t,d);
       else
         p.setValueAtTime(v,t);
-    },
-    _releaseAllNote:function(){
-      var t=this.actx.currentTime+.1;
-      for(var i=this.notetab.length-1;i>=0;--i){
-        var nt=this.notetab[i];
-        for(var k=nt.g.length-1;k>=0;--k){
-          nt.g[k].gain.cancelScheduledValues(t);
-          nt.g[k].gain.setValueAtTime(0,t);
-        }
-        nt.f=1;
-        nt.e=t;
-      }
     },
     _releaseNote:function(nt,t){
       if(nt.ch!=9){
@@ -1169,9 +1150,9 @@
       if(ch==9){
         if(n>=35&&n<=81)
           this._note(t,ch,n,v,this.drummap[n-35].p);
+        return;
       }
-      else
-        this._note(t,ch,n,v,this.program[this.pg[ch]].p);
+      this._note(t,ch,n,v,this.program[this.pg[ch]].p);
     },
     noteOff:function(ch,n,t){
       if(ch==9)
@@ -1244,7 +1225,7 @@
       var real=new Float32Array(w.length);
       for(var i=1;i<w.length;++i)
         imag[i]=w[i];
-      this.wave[w]=this.actx.createPeriodicWave(real,imag);
+      return this.actx.createPeriodicWave(real,imag);
     },
     getAudioContext:function(){
       return this.actx;
@@ -1274,11 +1255,12 @@
         }
         dn[i]=Math.random()*2-1;
       }
-      for(var jj=0;jj<256;++jj){
-        var r=Math.random()*50+1;
+      for(var jj=0;jj<64;++jj){
+        var r1=Math.random()*10+1;
+        var r2=Math.random()*10+1;
         for(i=0;i<blen;++i){
-          var dd=Math.sin((i/blen)*2*Math.PI*440*r);
-          dr[i]+=dd/16;
+          var dd=Math.sin((i/blen)*2*Math.PI*440*r1)*Math.sin((i/blen)*2*Math.PI*440*r2);
+          dr[i]+=dd/8;
         }
       }
       if(this.useReverb){
@@ -1294,8 +1276,7 @@
       this.out.connect(this.comp);
       this.comp.connect(this.dest);
       this.chvol=[]; this.chmod=[]; this.chpan=[];
-      this.wave={};
-      this._createWave("w9999");
+      this.wave={"w9999":this._createWave("w9999")};
       this.lfo=this.actx.createOscillator();
       this.lfo.frequency.value=5;
       this.lfo.start(0);
@@ -1316,9 +1297,9 @@
         this.resetAllControllers(i);
       }
       this.setReverbLev();
+      this.reset();
       this.send([0x90,60,1]);
       this.send([0x90,60,0]);
-      this.reset();
     },
   }
 /* webaudio-tinysynth coreobject */
