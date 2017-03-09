@@ -876,6 +876,18 @@
           break;
         case 0xf0:
           switch(v) {
+          case 0xf0:
+          case 0xf7:
+            var len=Delta(s,i+1);
+            datastart=1+datalen;
+/*
+            var sysex=[];
+            for(var jj=0;jj<len;++jj)
+              sysex.push(s[i+datastart+jj].toString(16));
+            console.log(sysex);
+*/
+            datalen+=len+1;
+            break;
           case 0xff:
             var len = Delta(s, i + 2);
             datastart = 2+datalen;
