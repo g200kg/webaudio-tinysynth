@@ -840,7 +840,7 @@ function WebAudioTinySynth(opt){
       if(this.chpan[ch])
         this.chpan[ch].pan.setValueAtTime((v-64)/64,this._tsConv(t));
     },
-    setExpression(ch,v,t){
+    setExpression:function(ch,v,t){
       this.ex[ch]=v*v/(127*127);
       this.chvol[ch].gain.setValueAtTime(this.vol[ch]*this.ex[ch],this._tsConv(t));
     },

@@ -288,6 +288,10 @@ function SetQuality(n){
     pg=synth.program[curProg];
   ViewParam(pg);
 }
+function SetLoop(n){
+  if(window.synth)
+    synth.loop=n;
+}
 function GetVal(id){
   var s=+document.getElementById(id).value;
   if(isNaN(s))
@@ -362,7 +366,7 @@ The demo on this page is based on webauido-tinysynth, and you can do the followi
   <td><webaudio-tinysynth id="tinysynth" src="ws.mid" quality="1" loop="1" disableDrop="0" masterVol="0.3"></webaudio-tinysynth></td>
   <td><webaudio-knob colors="#c00;#ccf;#fff" diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" onchange="Ctrl()"></webaudio-knob></td>
   <td><webaudio-knob colors="#c00;#ccf;#fff" diameter="40" min="0" max="1" step="0.01" id="rev" value="0.2" onchange="Ctrl()"></webaudio-knob></td>
-  <td><webaudio-switch onchange="synth.loop=this.value" value="1"></webaudio-synth></td>
+  <td><webaudio-switch onchange="SetLoop(this.value)" value="1"></webaudio-synth></td>
   <td><select onchange="SetQuality(this.selectedIndex)"><option>quality=0</option><option selected>quality=1</option></select>
 </td>
 </tr>
