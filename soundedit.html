@@ -17,12 +17,18 @@ body{
   background:#ddf;
   font-family: 'Roboto Condensed', sans-serif;
 }
+a{
+  color:#fff;
+}
 #container{
   background:#333;
   background:linear-gradient(#000 0%,#888 1%,#333 2%,#222 99%,#000 100%);
   background:linear-gradient(#004 0%,#88c 1%,#338 2%,#226 99%,#004 100%);
-  padding:20px 30px;
+  padding:5px 30px;
   color:#ccc;
+}
+#logo{
+  padding:10px 0px;
 }
 h1{
   margin:0px 0px;
@@ -33,7 +39,6 @@ h1{
     width:1000px;
     margin:0 auto;
     background:#000;
-    padding:10px 20px;
     color:#fff;
 }
 #aboutcontents{
@@ -339,9 +344,9 @@ function About(){
 </head>
 <body>
 <div id="base">
-<a href="http://www.g200kg.com/"><img src="./g200kg160x80.png" style="float:left;margin:0px 20px 0px 0px"/></a>
+<a href="http://www.g200kg.com/" target="_blank"><img id="logo" src="./g200kg160x80.png" style="float:left;margin:0px 20px 0px 0px"/></a>
 <h1>WebAudio-TinySynth</h1>
-<p>Light-weight GM mapped WebAudio-JavaScript Synthesizer Engine / MIDI Player</p>
+<p>Light-weight GM mapped WebAudio-JavaScript Synthesizer Engine / MIDI Player<br/> GitHub Repository : <a href="https://github.com/g200kg/webaudio-tinysynth" target="_blank">https://github.com/g200kg/webaudio-tinysynth</a></p>
 <button id="about" onclick="About()">About</button>
 <br/><hr/>
 <div id="aboutcontents">
