@@ -135,9 +135,9 @@ function WebAudioTinySynth(opt){
       [{w:"sine",v:0.2,d:1,r:1,},{w:"sine",v:11,t:3.5,d:1,r:1,g:1,}],
       [{w:"triangle",v:0.2,d:0.5,r:0.2,},{w:"sine",v:6,t:2.5,d:0.2,s:0.1,r:0.2,g:1,}],
       /* 17-24 : Organ */
-      [{w:"w9999",v:0.3,s:0.9,},{w:"w9999",v:0.3,t:2,f:2,s:0.9,}],
+      [{w:"w9999",v:0.22,s:0.9,},{w:"w9999",v:0.22,t:2,f:2,s:0.9,}],
       [{w:"w9999",v:0.2,s:1,},{w:"sine",v:11,t:6,f:2,s:0.1,g:1,h:0.006,r:0.002,d:0.002,},{w:"w9999",v:0.2,t:2,f:1,h:0,s:1,}],
-      [{w:"w9999",v:0.27,d:0.1,s:0.9,},{w:"w9999",v:0.3,t:4,f:2,s:0.5,}],
+      [{w:"w9999",v:0.2,d:0.1,s:0.9,},{w:"w9999",v:0.25,t:4,f:2,s:0.5,}],
       [{w:"w9999",v:0.3,a:0.04,s:0.9,},{w:"w9999",v:0.2,t:8,f:2,a:0.04,s:0.9,}],
       [{w:"sine",v:0.2,a:0.02,d:0.05,s:1,},{w:"sine",v:6,t:3,f:1,a:0.02,d:0.05,s:1,g:1,}],
       [{w:"triangle",v:0.2,a:0.02,d:0.05,s:0.8,},{w:"square",v:7,t:3,f:1,d:0.05,s:1.5,g:1,}],
@@ -252,10 +252,10 @@ function WebAudioTinySynth(opt){
       [{w:"square",d:0.15,r:0.15,p:0.5,},{w:"square",v:4,t:5,d:0.001,r:0.001,g:1,}],
       [{w:"n1",v:0.3,a:1,s:1,d:0.15,r:0,t:0.5,}],
       /* 121-128 : SE */
-      [{w:"sine",t:0,f:3322,d:0,r:0,p:1.3,v:0.3,h:0.03,},{g:1,w:"square",v:1,t:0,f:52,d:0,r:0,p:2,}],
+      [{w:"sine",t:12.5,d:0,r:0,p:0.5,v:0.3,h:0.2,q:0.5,},{g:1,w:"sine",v:1,t:2,d:0,r:0,s:1,},{g:1,w:"n0",v:0.2,t:2,a:0.6,h:0,d:0.1,r:0.1,b:0,c:0,}],//[{w:"sine",t:0,f:3322,d:0,r:0,p:1.3,v:0.3,h:0.03,},{g:1,w:"square",v:1,t:0,f:52,d:0,r:0,p:2,}],
       [{w:"n0",v:0.2,a:0.05,h:0.02,d:0.02,r:0.02,}],
       [{w:"n0",v:0.4,a:1,d:1,t:0.25,}],
-      [{w:"sine",v:0.3,a:0.1,d:1,s:0.5,},{w:"sawtooth",v:6,t:0,f:8,d:1,s:1,r:0.1,g:1,}],
+      [{w:"sine",v:0.3,a:0.1,d:1,s:0.5,},{w:"sine",v:4,t:0,f:1.5,d:1,s:1,r:0.1,g:1,},{g:1,w:"sine",v:4,t:0,f:2,a:0.6,h:0,d:0.1,s:1,r:0.1,b:0,c:0,}],//[{w:"sine",v:0.3,a:0.1,d:1,s:0.5,},{w:"sawtooth",v:6,t:0,f:8,d:1,s:1,r:0.1,g:1,}],
       [{w:"square",v:0.3,t:0.25,d:11,s:1,},{w:"square",v:12,t:0,f:8,d:1,s:1,r:11,g:1,}],
       [{w:"n0",v:0.4,t:0.5,a:1,d:11,s:1,r:0.5,},{w:"square",v:1,t:0,f:14,d:1,s:1,r:11,g:1,}],
       [{w:"sine",t:0,f:1221,a:0.2,d:1,r:0.25,s:1,},{g:1,w:"n0",v:3,t:0.5,d:1,s:1,r:1,}],
@@ -348,8 +348,8 @@ function WebAudioTinySynth(opt){
       [{w:"n0",v:0.5,t:0.25,d:0.4,r:0.4}],
     ],
     drummap1:[
-/*35*/  [{w:"triangle",t:0,f:66,v:1,d:0.02,h:0.03,p:0.9,r:0.02,},{w:"square",g:1,t:10.1,v:22,r:0.002,h:0,p:0,d:0.002,}],
-        [{w:"triangle",t:0,f:66,v:1,d:0.02,h:0.03,p:0.9,r:0.02,},{w:"square",g:1,t:10.1,v:22,r:0.002,h:0,p:0,d:0.002,}],
+/*35*/  [{w:"triangle",t:0,f:70,v:1,d:0.05,h:0.03,p:0.9,q:0.1,},{w:"n0",g:1,t:6,v:17,r:0.01,h:0,p:0,}],//[{w:"triangle",t:0,f:66,v:1,d:0.02,h:0.03,p:0.9,r:0.02,},{w:"square",g:1,t:10.1,v:22,r:0.002,h:0,p:0,d:0.002,}],
+        [{w:"triangle",t:0,f:88,v:1,d:0.05,h:0.03,p:0.5,q:0.1,},{w:"n0",g:1,t:5,v:42,r:0.01,h:0,p:0,}],//[{w:"triangle",t:0,f:66,v:1,d:0.02,h:0.03,p:0.9,r:0.02,},{w:"square",g:1,t:10.1,v:22,r:0.002,h:0,p:0,d:0.002,}],
         [{w:"n0",f:222,p:0,t:0,r:0.01,h:0,}],
         [{w:"triangle",v:0.3,f:180,d:0.05,t:0,h:0.03,p:0.9,q:0.1,},{w:"n0",v:0.6,t:0,f:70,h:0.02,r:0.01,p:0,},{g:1,w:"square",v:2,t:0,f:360,r:0.01,b:0,c:0,}],
         [{w:"square",f:1150,v:0.34,t:0,r:0.03,h:0.025,d:0.03,},{g:1,w:"n0",t:0,f:13,h:0.025,d:0.1,s:1,r:0.1,v:1,}],
@@ -371,7 +371,7 @@ function WebAudioTinySynth(opt){
 /*55*/  [{w:"n1",v:.3,f:1200,d:0.2,r:0.2,h:0.05,t:0,},{w:"n1",t:0,v:1,d:0.1,r:0.1,p:1.2,f:440,}],
         null,
         [{w:"n1",v:0.3,f:555,d:0.25,r:0.25,h:0.05,t:0,},{w:"n1",t:0,v:1,d:0.1,r:0.1,f:440,a:0.005,h:0.02,}],
-        [{w:"n1",f:11,v:0.7,d:0.3,t:0,r:0.3,},{g:1,w:"square",v:6,t:0,f:18,a:0.005,h:0.02,d:0.1,s:1,r:0.1,c:0,}],
+        [{w:"sawtooth",f:776,v:0.1,d:0.3,t:0,r:0.3,},{g:1,w:"n0",v:2,t:0,f:776,a:0.005,h:0.02,d:0.1,s:1,r:0.1,c:0,},{g:11,w:"sine",v:0.1,t:0,f:22,d:0.3,r:0.3,b:0,c:0,}],
         [{w:"n1",f:440,v:0.15,d:0.4,r:0.4,h:0,t:0,},{w:"n0",v:0.4,t:0,r:0.01,f:440,}],
 /*60*/  null,null,null,null,null,
 /*65*/  null,null,null,null,null,
@@ -434,12 +434,14 @@ function WebAudioTinySynth(opt){
     ready:function(){
       var i;
       this.pg=[]; this.vol=[]; this.ex=[]; this.bend=[]; this.rpnidx=[]; this.brange=[];
-      this.sustain=[]; this.notetab=[];
-      this.maxTick=0, this.playTick=0, this.playing=0; this.releaseRatio=3;
+      this.sustain=[]; this.notetab=[]; this.rhythm=[];
+      this.maxTick=0, this.playTick=0, this.playing=0; this.releaseRatio=3.5;
       for(var i=0;i<16;++i){
         this.pg[i]=0; this.vol[i]=3*100*100/(127*127);
         this.bend[i]=0; this.brange[i]=0x100;
+        this.rhythm[i]=0;
       }
+      this.rhythm[9]=1;
       /**/
       this.preroll=0.2;
       this.relcnt=0;
@@ -575,7 +577,9 @@ function WebAudioTinySynth(opt){
         this.setPan(i,64);
         this.resetAllControllers(i);
         this.allSoundOff(i);
+        this.rhythm[i]=0;
       }
+      this.rhythm[9]=1;
     },
     stopMIDI:function(){
       this.playing=0;
@@ -631,6 +635,9 @@ function WebAudioTinySynth(opt){
           case 0xf7:
             var len=Delta(s,i+1);
             datastart=1+datalen;
+            var exd=Array.from(s.slice(i+datastart,i+datastart+len));
+            exd.unshift(0xf0);
+            song.ev.push({t:tick,m:exd});
 /*
             var sysex=[];
             for(var jj=0;jj<len;++jj)
@@ -774,6 +781,8 @@ function WebAudioTinySynth(opt){
         var dt=t+pn.a+pn.h;
         if(pn.g==0)
           out=this.chvol[ch], sc=v*v/16384, fp[i]=f*pn.t+pn.f;
+        else if(pn.g>10)
+          out=g[pn.g-11].gain, sc=1, fp[i]=fp[pn.g-11]*pn.t+pn.f;
         else if(o[pn.g-1].frequency)
           out=o[pn.g-1].frequency, sc=fp[pn.g-1], fp[i]=fp[pn.g-1]*pn.t+pn.f;
         else
@@ -815,10 +824,10 @@ function WebAudioTinySynth(opt){
           g[i].gain.setValueAtTime(vp[i],t);
         this._setParamTarget(g[i].gain,pn.s*vp[i],dt,pn.d);
         o[i].start(t);
-        if(ch==9)
+        if(this.rhythm[ch])
           o[i].stop(t+p[0].d*this.releaseRatio);
       }
-      if(ch!=9)
+      if(!this.rhythm[ch])
         this.notetab.push({t:t,e:99999,ch:ch,n:n,o:o,g:g,t2:t+pn.a,v:vp,r:r,f:0});
     },
     _setParamTarget:function(p,v,t,d){
@@ -888,6 +897,8 @@ function WebAudioTinySynth(opt){
       this.brange[ch]=v;
     },
     setProgram:function(ch,v){
+      if(this.debug)
+        console.log("Pg("+ch+")="+v);
       this.pg[ch]=v;
     },
     setBend:function(ch,v,t){
@@ -910,7 +921,7 @@ function WebAudioTinySynth(opt){
         return;
       }
       t=this._tsConv(t);
-      if(ch==9){
+      if(this.rhythm[ch]){
         if(n>=35&&n<=81)
           this._note(t,ch,n,v,this.drummap[n-35].p);
         return;
@@ -918,7 +929,7 @@ function WebAudioTinySynth(opt){
       this._note(t,ch,n,v,this.program[this.pg[ch]].p);
     },
     noteOff:function(ch,n,t){
-      if(ch==9)
+      if(this.rhythm[ch])
         return;
       t=this._tsConv(t);
       for(var i=this.notetab.length-1;i>=0;--i){
@@ -981,6 +992,21 @@ function WebAudioTinySynth(opt){
       case 0xe0: this.setBend(ch,(msg[1]+(msg[2]<<7)),t); break;
       case 0x90: this.noteOn(ch,msg[1],msg[2],t); break;
       case 0x80: this.noteOff(ch,msg[1],t); break;
+      case 0xf0:
+        if(msg[0]!=254 && this.debug){
+          var ds=[];
+          for(var ii=0;ii<msg.length;++ii)
+            ds.push(msg[ii].toString(16));
+          console.log(ds);
+        }
+        if(msg[1]==0x41&&msg[2]==0x10&&msg[3]==0x42&&msg[4]==0x12&&msg[5]==0x40){
+          if((msg[6]&0xf0)==0x10&&msg[7]==0x15){
+            var ch=[9,0,1,2,3,4,5,6,7,8,10,11,12,13,14,15][msg[6]&0xf];
+            this.rhythm[ch]=msg[8];
+            console.log("UseForRhythmPart("+ch+")="+msg[8]);
+          }
+        }
+        break;
       }
     },
     _createWave:function(w){
@@ -1013,8 +1039,8 @@ function WebAudioTinySynth(opt){
       var dr=this.noiseBuf.n1.getChannelData(0);
       for(var i=0;i<blen;++i){
         if(i/blen<Math.random()){
-          d1[i]=Math.exp(-3*i/blen)*(Math.random()-.5);
-          d2[i]=Math.exp(-3*i/blen)*(Math.random()-.5);
+          d1[i]=Math.exp(-3*i/blen)*(Math.random()-.5)*.5;
+          d2[i]=Math.exp(-3*i/blen)*(Math.random()-.5)*.5;
         }
         dn[i]=Math.random()*2-1;
       }

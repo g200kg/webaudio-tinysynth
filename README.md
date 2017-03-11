@@ -185,7 +185,7 @@ timerid=setInterval(function(){
 > `p` : timbre object. Source of this object can be created by soundedit.html **(Details are not yet documented)**
 
 **reset()**
-> Reset all channel to initial state. Including all controllers, program, chVol, pan and bendRange. 
+> Reset all channel to initial state. Including all controllers, program, chVol, pan and bendRange.
 
 **send([midi-message], t)**
 > midi-message is an array of midi data-bytes for one message. For example,  
@@ -273,6 +273,9 @@ Almost function has the timestamp, `t` parameter. That specify accurate timing o
 |------------------------|----------|--------------------------------|
 |**RPN**                 |          |                                |
 |**0**                   | Yes      | Bend Range                     |
+|------------------------|----------|--------------------------------|
+|**GS Exclusive**        |          |                                |
+|**F0 41 10 42 12 40 1x 15 mm sum F7** | Yes      |UseForRhythmPart               |
 |------------------------|----------|--------------------------------|
 
 ## Timbre Object Structure
