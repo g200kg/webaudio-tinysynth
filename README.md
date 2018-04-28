@@ -42,7 +42,9 @@ Test Pages are here :
 ## Usage
 
 ### JavaScript Library Version
-* Necessary file is a `webaudio-tinysynth.js` only. Load webaudio-tinysynth library by `<script src='webaudio-tinysynth.js'></script>`.  
+* Necessary file is a `webaudio-tinysynth.js` only. Deploy webaudio-tinysynth.js appropriately and load  library by `<script src='webaudio-tinysynth.js'></script>`.  
+ Or if you want to use the file on this repository directly as a CDN, use following.  
+ `<script src='https://g200kg.github.io/webaudio-tinysynth/webaudio-tinysynth.js'></script>`
 
 * To make the instance of synthesizer, use command `var synth = new WebAudioTinySynth();`.  Some options are acceptable. For example :
   * `synth = new WebAudioTinySynth({quality:0, useReverb:0});`
