@@ -1,0 +1,11 @@
+bower_components
+src
+tmp
+.*
+bower.json
+Gruntfile.js
+*.html
+*.log
+*.mid
+*.min.js
+*.png
