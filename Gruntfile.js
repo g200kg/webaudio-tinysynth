@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     watch: {
       dev: {
         files: ["src/*"],
-        tasks: ["replace","include_file","uglify",],
+        tasks: ["replace", "include_file", "uglify"],
       }
     },
     replace: {
@@ -38,5 +38,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-include-file');
   grunt.loadNpmTasks('grunt-text-replace');
-  grunt.registerTask('default', ['include_file','uglify',]);
+  grunt.registerTask('default', ['replace', 'include_file', 'uglify']);
 };
