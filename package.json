@@ -1,6 +1,6 @@
 {
   "name": "webaudio-tinysynth",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "WebAudio Tiny GM Synthesizer [Polymer]",
   "main": "webaudio-tinysynth.js",
   "keywords": [
