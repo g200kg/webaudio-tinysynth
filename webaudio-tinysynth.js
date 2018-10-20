@@ -11,7 +11,6 @@
   }
 })(this, function() {
 
-// Please don't remove this comment!
 // START WebAudioTinySynth()
 
 function WebAudioTinySynth(opt){
@@ -1127,7 +1126,6 @@ function WebAudioTinySynth(opt){
 }
 
 // END WebAudioTinySynth()
-// Please don't remove this comment!
 
   return WebAudioTinySynth;
 });
