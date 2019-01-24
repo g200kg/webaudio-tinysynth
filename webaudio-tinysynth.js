@@ -1,23 +1,31 @@
 "use strict";
-function WebAudioTinySynth(opt){
-  this.__proto__ = this.sy =
-  /* webaudio-tynysynth core object */
-  {
-    is:"webaudio-tinysynth",
+function WebAudioTinySynthCore(target) {
+  Object.assign(target,{
     properties:{
       masterVol:  {type:Number, value:0.5, observer:"setMasterVol"},
       reverbLev:  {type:Number, value:0.3, observer:"setReverbLev"},
       quality:    {type:Number, value:1, observer:"setQuality"},
       debug:      {type:Number, value:0},
-      src:        {type:String, value:null, observer:"loadMIDIUrl"},
+      src:        {type:String, value:null, observer:"loadMIDIfromSrc"},
       loop:       {type:Number, value:0},
       internalcontext: {type:Number, value:1},
       tsmode:     {type:Number, value:0},
       voices:     {type:Number, value:64},
       useReverb:  {type:Number, value:1},
-      /**/
+      /*@@gui*/
+      width:      {type:String, value:"300px", observer:"layout"},
+      height:     {type:String, value:"32px", observer:"layout"},
+      graph:      {type:Number, value:1},
+      disabledrop:{type:Number, value:0},
+      perfmon:    {type:Number, value:0},
+      /*@@guiEND*/
     },
-    /**/
+    /*@@gui*/
+    layout:(()=>{
+      this.canvas.style.width=this.width;
+      this.canvas.style.height=this.height; 
+    }),
+    /*@@guiEND*/
     program:[
 // 1-8 : Piano
       {name:"Acoustic Grand Piano"},    {name:"Bright Acoustic Piano"},
@@ -430,36 +438,249 @@ function WebAudioTinySynth(opt){
       [{w:"sine",t:0,f:1200,v:0.3,d:0.2,r:0.2,}],
 
     ],
-    /**/
-    ready:function(){
-      var i;
+    /*@@gui*/
+    _guiInit:()=>{
+      if(this.canvas){
+        this.ctx=this.canvas.getContext("2d");
+        this.ctx.fillStyle="#000";
+        this.ctx.fillRect(0,0,300,32);
+        this.canvas.addEventListener("dragover",this.dragOver.bind(this),false);
+        this.canvas.addEventListener("dragleave",this.dragLeave.bind(this),false);
+        this.canvas.addEventListener("drop",this.execDrop.bind(this),false);
+        this.canvas.addEventListener("click",this.click.bind(this),false);
+        this.canvas.addEventListener("mousedown",this.pointerdown.bind(this),false);
+        this.canvas.addEventListener("mousemove",this.pointermove.bind(this),false);
+        this.canvas.addEventListener("touchstart",this.pointerdown.bind(this),false);
+        this.canvas.addEventListener("touchend",this.pointerup.bind(this),false);
+        this.canvas.addEventListener("touchcancel",this.pointerup.bind(this),false);
+        this.canvas.addEventListener("touchmove",this.pointermove.bind(this),false);
+      }
+    },
+    _guiUpdate:()=>{
+      if(this.canvas){
+        this.ctx.fillStyle="#000";
+        this.ctx.fillRect(0,0,300,32);
+        var row1=8,row2=20;
+        if(this.song)
+          row1=4,row2=24;
+        else {
+          this.ctx.fillStyle="#fff";
+          this.ctx.fillText("TinySynth",8,20);
+        }
+        if(this.graph){
+          this.ctx.fillStyle="#800";
+          this.ctx.fillRect(80,row1,132,4);
+          this.ctx.fillRect(80,row2,132,4);
+          this.ctx.fillStyle="#f00";
+          for(let i=this.notetab.length-1;i>=0;--i){
+            const nt=this.notetab[i];
+            if(!nt.f || this.rhythm[nt.ch]){
+              this.ctx.fillRect(80+nt.n,row1,4,4);
+              this.ctx.fillRect(80+nt.ch*8,row2,6,4);
+            }
+          }
+        }
+        if(this.perfmon){
+          this.ctx.fillStyle="#fff";
+          this.ctx.fillRect(180,30,28,-12);
+          this.ctx.fillStyle="#000";
+          this.ctx.fillText(this.notetab.length,185,28);
+        }
+        this.ctx.fillStyle="#fff";
+        this.ctx.fillRect(250,15,32,2);
+        this.ctx.fillStyle="#fff";
+        this.ctx.strokeStyle="#000";
+        this.ctx.beginPath();
+        this.ctx.arc(250+this.masterVol*32,16,6,0,6.28,0);
+        this.ctx.moveTo(220,12); this.ctx.lineTo(224,12); this.ctx.lineTo(230,6);
+        this.ctx.lineTo(230,26); this.ctx.lineTo(224,20); this.ctx.lineTo(220,20);
+        this.ctx.fill();
+        this.ctx.stroke();
+        this.ctx.strokeStyle="#fff";
+        this.ctx.lineWidth=2;
+        this.ctx.beginPath();
+        this.ctx.arc(230,16,4,-1,1,false);
+        this.ctx.stroke();
+        this.ctx.beginPath();
+        this.ctx.arc(230,16,8,-1,1,false);
+        this.ctx.stroke();
+        if(this.masterVol==0){
+          this.ctx.strokeStyle="#000";
+          this.ctx.lineWidth=4;
+          this.ctx.beginPath();
+          this.ctx.moveTo(220,7);
+          this.ctx.lineTo(238,25);
+          this.ctx.stroke();
+          this.ctx.strokeStyle="#fff";
+          this.ctx.lineWidth=2;
+          this.ctx.stroke();
+        }
+        if(this.song){
+          this.ctx.fillStyle="#fff";
+          this.ctx.fillRect(4,2,28,28);
+          this.ctx.fillRect(80,15,128,2);
+          this.ctx.fillStyle="#000";
+          if(this.playing){
+            this.ctx.fillRect(12,10,4,12);
+            this.ctx.fillRect(22,10,4,12);
+          }
+          else{
+            this.ctx.beginPath();
+            this.ctx.moveTo(12,9);
+            this.ctx.lineTo(25,16);
+            this.ctx.lineTo(12,23);
+            this.ctx.fill();
+          }
+          this.ctx.fillStyle="#fff"
+          this.ctx.fillText(this.toTime(this.playTick),38,14);
+          this.ctx.fillText(this.toTime(this.maxTick),38,28);
+          this.ctx.strokeStyle="#000";
+          this.ctx.beginPath();
+          this.ctx.arc(80+this.playTick/this.maxTick*128,16,6,0,6.28,0);
+          this.ctx.fill();
+          this.ctx.stroke();
+        }
+        if(this.waitdrop){
+          this.ctx.fillStyle="rgba(0,0,0,0.7)"
+          this.ctx.fillRect(0,0,300,32);
+          this.ctx.fillStyle="#fff";
+          this.ctx.fillText("Drop MIDI File Here",100,20);
+        }
+      }
+    },
+    toTime:(ti)=>{
+      ti=(ti*4*60/this.song.timebase/this.song.tempo)|0;
+      const m=(ti/60)|0;
+      const s=ti%60;
+      return ("00"+m).substr(-2)+":"+("00"+s).substr(-2);
+    },
+    preventScroll:(e)=>{
+      e.preventDefault();
+    },
+    pointerup:(ev)=>{
+      document.body.removeEventListener('touchstart',this.preventScroll,false);
+    },
+    getPos:(e)=>{
+      var p=e.target.getBoundingClientRect();
+      if(p.right!=p.left)
+        return {x:(e.clientX-p.left)*300/(p.right-p.left),y:e.clientY-p.top};
+      return {x:0,y:0};
+    },
+    pointerdown:(ev)=>{
+      let e=ev;
+      if(ev.touches)
+        e=ev.touches[0];
+      this.downpos=this.getPos(e);
+      if(ev.touches || (e.buttons&1)){
+        if(this.song&&this.downpos.x>=80&&this.downpos.x<=208){
+          const p=(this.downpos.x-80)/128*this.maxTick;
+          this.locateMIDI(p);
+          document.body.addEventListener('touchstart',this.preventScroll,false);
+        }
+        if(this.downpos.x>=250&&this.downpos.x<282){
+          const p=(this.downpos.x-250)/32;
+          this.setMasterVol(p);
+          document.body.addEventListener('touchstart',this.preventScroll,false);
+        }
+      }
+    },
+    pointermove:(ev)=>{
+      let e=ev;
+      if(ev.touches)
+        e=ev.touches[0];
+      if(ev.touches || (e.buttons&1)){
+        const pos=this.getPos(e);
+        if(this.song&&pos.x>=70&&pos.x<=208){
+          if(pos.x<80) pos.x=80;
+          const p=(pos.x-80)/128*this.maxTick;
+          this.locateMIDI(p);
+        }
+        if(pos.x>=250&&pos.x<282){
+          const p=(pos.x-250)/32;
+          this.setMasterVol(p);
+        }
+      }
+    },
+    click:(e)=>{
+      const pos=this.getPos(e);
+      if(pos.x<40 && this.song){
+        if(this.playing)
+          this.stopMIDI();
+        else if(this.song)
+          this.playMIDI();
+      }
+      if(pos.x>=215&&pos.x<243 && this.downpos.x>=215 && this.downpos.x<243){
+        if(this.masterVol>0){
+          this.lastMasterVol=this.masterVol;
+          this.masterVol=0;
+        }
+        else
+          this.masterVol=this.lastMasterVol;
+      }
+    },
+    dragLeave:(e)=>{
+      this.waitdrop=0;
+    },
+    dragOver:(e)=>{
+      this.waitdrop=1;
+      e.stopPropagation();
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
+    },
+    execDrop:(e)=>{
+      this.waitdrop=0;
+      const f = e.dataTransfer.files;
+      if(this.disabledrop==0){
+        var reader = new FileReader();
+        reader.onload=function(e){
+          this.loadMIDI(reader.result);
+        }.bind(this);
+        reader.readAsArrayBuffer(f[0]);
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    },
+    /*@@guiEND*/
+    ready:()=>{
+      return new Promise((resolv)=>{
+        const timerid=setInterval(()=>{
+          console.log("Initialize checking.");
+          if(this.isReady){
+            clearInterval(timerid);
+            console.log("Initialized");
+            resolv();
+          }
+        },100);
+      });
+    },
+    init:()=>{
       this.pg=[]; this.vol=[]; this.ex=[]; this.bend=[]; this.rpnidx=[]; this.brange=[];
       this.sustain=[]; this.notetab=[]; this.rhythm=[];
       this.maxTick=0, this.playTick=0, this.playing=0; this.releaseRatio=3.5;
-      for(var i=0;i<16;++i){
+      for(let i=0;i<16;++i){
         this.pg[i]=0; this.vol[i]=3*100*100/(127*127);
         this.bend[i]=0; this.brange[i]=0x100;
         this.rhythm[i]=0;
       }
       this.rhythm[9]=1;
-      /**/
       this.preroll=0.2;
       this.relcnt=0;
       setInterval(
         function(){
           if(++this.relcnt>=3){
             this.relcnt=0;
-            for(var i=this.notetab.length-1;i>=0;--i){
+            for(let i=this.notetab.length-1;i>=0;--i){
               var nt=this.notetab[i];
               if(this.actx.currentTime>nt.e){
                 this._pruneNote(nt);
                 this.notetab.splice(i,1);
               }
             }
-            /**/
+            /*@@gui*/
+            /*@@guiEND*/
           }
           if(this.playing && this.song.ev.length>0){
-            var e=this.song.ev[this.playIndex];
+            let e=this.song.ev[this.playIndex];
             while(this.actx.currentTime+this.preroll>this.playTime){
               if(e.m[0]==0xff51){
                 this.song.tempo=e.m[1];
@@ -495,30 +716,30 @@ function WebAudioTinySynth(opt){
       }
       this.isReady=1;
     },
-    setMasterVol:function(v){
+    setMasterVol:(v)=>{
       if(v!=undefined)
         this.masterVol=v;
       if(this.out)
         this.out.gain.value=this.masterVol;
     },
-    setReverbLev:function(v){
+    setReverbLev:(v)=>{
       if(v!=undefined)
         this.reverbLev=v;
       var r=parseFloat(this.reverbLev);
       if(this.rev&&!isNaN(r))
         this.rev.gain.value=r*8;
     },
-    setLoop:function(f){
+    setLoop:(f)=>{
       this.loop=f;
     },
-    setVoices:function(v){
+    setVoices:(v)=>{
       this.voices=v;
     },
-    getPlayStatus:function(){
+    getPlayStatus:()=>{
       return {play:this.playing, maxTick:this.maxTick, curTick:this.playTick};
     },
-    locateMIDI:function(tick){
-      var i,p=this.playing;
+    locateMIDI:(tick)=>{
+      let i,p=this.playing;
       this.stopMIDI();
       for(i=0;i<this.song.ev.length && tick>this.song.ev[i].t;++i){
         var m=this.song.ev[i];
@@ -549,13 +770,16 @@ function WebAudioTinySynth(opt){
       if(p)
         this.playMIDI();
     },
-    getTimbreName:function(m,n){
+    getTimbreName:(m,n)=>{
       if(m==0)
         return this.program[n].name;
       else
         return this.drummap[n-35].name;
     },
-    loadMIDIUrl:function(url){
+    loadMIDIfromSrc:()=>{
+      this.loadMIDIUrl(this.src);
+    },
+    loadMIDIUrl:(url)=>{
       if(!url)
         return;
       var xhr=new XMLHttpRequest();
@@ -569,8 +793,8 @@ function WebAudioTinySynth(opt){
       };
       xhr.send();
     },
-    reset:function(){
-      for(var i=0;i<16;++i){
+    reset:()=>{
+      for(let i=0;i<16;++i){
         this.setProgram(i,0);
         this.setBendRange(i,0x100);
         this.setChVol(i,100);
@@ -581,15 +805,15 @@ function WebAudioTinySynth(opt){
       }
       this.rhythm[9]=1;
     },
-    stopMIDI:function(){
+    stopMIDI:()=>{
       this.playing=0;
       for(var i=0;i<16;++i)
         this.allSoundOff(i);
     },
-    playMIDI:function(){
+    playMIDI:()=>{
       if(!this.song)
         return;
-      var dummy=this.actx.createOscillator();
+      const dummy=this.actx.createOscillator();
       dummy.connect(this.actx.destination);
       dummy.frequency.value=0;
       dummy.start(0);
@@ -600,7 +824,7 @@ function WebAudioTinySynth(opt){
       this.tick2Time=4*60/this.song.tempo/this.song.timebase;
       this.playing=1;
     },
-    loadMIDI:function(data){
+    loadMIDI:(data)=>{
       function Get2(s, i) { return (s[i]<<8) + s[i+1]; }
       function Get3(s, i) { return (s[i]<<16) + (s[i+1]<<8) + s[i+2]; }
       function Get4(s, i) { return (s[i]<<24) + (s[i+1]<<16) + (s[i+2]<<8) + s[i+3]; }
@@ -685,7 +909,7 @@ function WebAudioTinySynth(opt){
       var tb = Get2(s, 12)*4;
       idx = (len + 8);
       this.song={copyright:"",text:"",tempo:120,timebase:tb,ev:[]};
-      for(var tr=0;tr<numtrk;++tr){
+      for(let tr=0;tr<numtrk;++tr){
         hd=s.slice(idx, idx+4);
         len=Get4(s, idx+4);
         if(hd.toString()=="77,84,114,107") {//MTrk
@@ -709,28 +933,27 @@ function WebAudioTinySynth(opt){
       this.reset();
       this.locateMIDI(0);
     },
-    setQuality:function(q){
-      var i,k,n,p;
+    setQuality:(q)=>{
       if(q!=undefined)
         this.quality=q;
-      for(i=0;i<128;++i)
+      for(let i=0;i<128;++i)
         this.setTimbre(0,i,this.program0[i]);
-      for(i=0;i<this.drummap0.length;++i)
+      for(let i=0;i<this.drummap0.length;++i)
         this.setTimbre(1,i+35,this.drummap0[i]);
       if(this.quality){
-        for(i=0;i<this.program1.length;++i)
+        for(let i=0;i<this.program1.length;++i)
           this.setTimbre(0,i,this.program1[i]);
-        for(i=0;i<this.drummap.length;++i){
+        for(let i=0;i<this.drummap.length;++i){
           if(this.drummap1[i])
             this.setTimbre(1,i+35,this.drummap1[i]);
         }
       }
     },
-    setTimbre:function(m,n,p){
-      var defp={g:0,w:"sine",t:1,f:0,v:0.5,a:0,h:0.01,d:0.01,s:0,r:0.05,p:1,q:1,k:0};
+    setTimbre:(m,n,p)=>{
+      const defp={g:0,w:"sine",t:1,f:0,v:0.5,a:0,h:0.01,d:0.01,s:0,r:0.05,p:1,q:1,k:0};
       function filldef(p){
         for(n=0;n<p.length;++n){
-          for(k in defp){
+          for(let k in defp){
             if(!p[n].hasOwnProperty(k) || typeof(p[n][k])=="undefined")
               p[n][k]=defp[k];
           }
@@ -742,8 +965,8 @@ function WebAudioTinySynth(opt){
       if(m==0 && n>=0 && n<=127)
         this.program[n].p=filldef(p);
     },
-    _pruneNote:function(nt){
-      for(var k=nt.o.length-1;k>=0;--k){
+    _pruneNote:(nt)=>{
+      for(let k=nt.o.length-1;k>=0;--k){
         if(nt.o[k].frequency)
           this.chmod[nt.ch].disconnect(nt.o[k].detune);
         nt.o[k].disconnect();
@@ -753,18 +976,18 @@ function WebAudioTinySynth(opt){
           nt.o[k].playbackRate.cancelScheduledValues(0);
         nt.o[k].stop(0);
       }
-      for(var k=nt.g.length-1;k>=0;--k){
+      for(let k=nt.g.length-1;k>=0;--k){
         nt.g[k].disconnect();
         nt.g[k].gain.cancelScheduledValues(0);
       }
     },
-    _limitVoices:function(ch,n){
+    _limitVoices:(ch,n)=>{
       this.notetab.sort(function(n1,n2){
         if(n1.f!=n2.f) return n1.f-n2.f;
         if(n1.e!=n2.e) return n2.e-n1.e;
         return n2.t-n1.t;
       });
-      for(var i=this.notetab.length-1;i>=0;--i){
+      for(let i=this.notetab.length-1;i>=0;--i){
         var nt=this.notetab[i];
         if(this.actx.currentTime>nt.e || i>=(this.voices-1)){
           this._pruneNote(nt);
@@ -772,11 +995,11 @@ function WebAudioTinySynth(opt){
         }
       }
     },
-    _note:function(t,ch,n,v,p){
-      var o=[],g=[],vp=[],fp=[],r=[],i,out,sc,pn;
+    _note:(t,ch,n,v,p)=>{
+      var o=[],g=[],vp=[],fp=[],r=[],out,sc,pn;
       var f=440*Math.pow(2,(n-69)/12);
       this._limitVoices(ch,n);
-      for(i=0;i<p.length;++i){
+      for(let i=0;i<p.length;++i){
         pn=p[i];
         var dt=t+pn.a+pn.h;
         if(pn.g==0)
@@ -830,15 +1053,15 @@ function WebAudioTinySynth(opt){
       if(!this.rhythm[ch])
         this.notetab.push({t:t,e:99999,ch:ch,n:n,o:o,g:g,t2:t+pn.a,v:vp,r:r,f:0});
     },
-    _setParamTarget:function(p,v,t,d){
+    _setParamTarget:(p,v,t,d)=>{
       if(d!=0)
         p.setTargetAtTime(v,t,d);
       else
         p.setValueAtTime(v,t);
     },
-    _releaseNote:function(nt,t){
+    _releaseNote:(nt,t)=>{
       if(nt.ch!=9){
-        for(var k=nt.g.length-1;k>=0;--k){
+        for(let k=nt.g.length-1;k>=0;--k){
           nt.g[k].gain.cancelScheduledValues(t);
           if(t==nt.t2)
             nt.g[k].gain.setValueAtTime(nt.v[k],t);
@@ -850,42 +1073,42 @@ function WebAudioTinySynth(opt){
       nt.e=t+nt.r[0]*this.releaseRatio;
       nt.f=1;
     },
-    setModulation:function(ch,v,t){
+    setModulation:(ch,v,t)=>{
       this.chmod[ch].gain.setValueAtTime(v*100/127,this._tsConv(t));
     },
-    setChVol:function(ch,v,t){
+    setChVol:(ch,v,t)=>{
       this.vol[ch]=3*v*v/(127*127);
       this.chvol[ch].gain.setValueAtTime(this.vol[ch]*this.ex[ch],this._tsConv(t));
     },
-    setPan:function(ch,v,t){
+    setPan:(ch,v,t)=>{
       if(this.chpan[ch])
         this.chpan[ch].pan.setValueAtTime((v-64)/64,this._tsConv(t));
     },
-    setExpression:function(ch,v,t){
+    setExpression:(ch,v,t)=>{
       this.ex[ch]=v*v/(127*127);
       this.chvol[ch].gain.setValueAtTime(this.vol[ch]*this.ex[ch],this._tsConv(t));
     },
-    setSustain:function(ch,v,t){
+    setSustain:(ch,v,t)=>{
       this.sustain[ch]=v;
       t=this._tsConv(t);
       if(v<64){
-        for(var i=this.notetab.length-1;i>=0;--i){
-          var nt=this.notetab[i];
+        for(let i=this.notetab.length-1;i>=0;--i){
+          const nt=this.notetab[i];
           if(t>=nt.t && nt.ch==ch && nt.f==1)
             this._releaseNote(nt,t);
         }
       }
     },
-    allSoundOff:function(ch){
-      for(var i=this.notetab.length-1;i>=0;--i){
-        var nt=this.notetab[i];
+    allSoundOff:(ch)=>{
+      for(let i=this.notetab.length-1;i>=0;--i){
+        const nt=this.notetab[i];
         if(nt.ch==ch){
           this._pruneNote(nt);
           this.notetab.splice(i,1);
         }
       }
     },
-    resetAllControllers:function(ch){
+    resetAllControllers:(ch)=>{
       this.bend[ch]=0; this.ex[ch]=1.0;
       this.rpnidx[ch]=0x3fff; this.sustain[ch]=0;
       if(this.chvol[ch]){
@@ -893,29 +1116,54 @@ function WebAudioTinySynth(opt){
         this.chmod[ch].gain.value=0;
       }
     },
-    setBendRange:function(ch,v){
+    setBendRange:(ch,v)=>{
       this.brange[ch]=v;
     },
-    setProgram:function(ch,v){
+    setProgram:(ch,v)=>{
       if(this.debug)
         console.log("Pg("+ch+")="+v);
       this.pg[ch]=v;
     },
-    setBend:function(ch,v,t){
+    _tsConv:(t)=>{
+      if(t==undefined||t<=0){
+        t=0;
+        if(this.actx)
+          t=this.actx.currentTime;
+      }
+      else{
+        if(this.tsmode)
+          t=t*.001-this.tsdiff;
+      }
+      return t;
+    },
+    setBend:(ch,v,t)=>{
       t=this._tsConv(t);
-      var br=this.brange[ch]*100/127;
+      const br=this.brange[ch]*100/127;
       this.bend[ch]=(v-8192)*br/8192;
-      for(var i=this.notetab.length-1;i>=0;--i){
-        var nt=this.notetab[i];
+      for(let i=this.notetab.length-1;i>=0;--i){
+        const nt=this.notetab[i];
         if(nt.ch==ch){
-          for(var k=nt.o.length-1;k>=0;--k){
+          for(let k=nt.o.length-1;k>=0;--k){
             if(nt.o[k].frequency)
               nt.o[k].detune.setValueAtTime(this.bend[ch],t);
           }
         }
       }
     },
-    noteOn:function(ch,n,v,t){
+    noteOff:(ch,n,t)=>{
+      if(this.rhythm[ch])
+        return;
+      t=this._tsConv(t);
+      for(let i=this.notetab.length-1;i>=0;--i){
+        const nt=this.notetab[i];
+        if(t>=nt.t && nt.ch==ch && nt.n==n && nt.f==0){
+          nt.f=1;
+          if(this.sustain[ch]<64)
+            this._releaseNote(nt,t);
+        }
+      }
+    },
+    noteOn:(ch,n,v,t)=>{
       if(v==0){
         this.noteOff(ch,n,t);
         return;
@@ -928,37 +1176,12 @@ function WebAudioTinySynth(opt){
       }
       this._note(t,ch,n,v,this.program[this.pg[ch]].p);
     },
-    noteOff:function(ch,n,t){
-      if(this.rhythm[ch])
-        return;
-      t=this._tsConv(t);
-      for(var i=this.notetab.length-1;i>=0;--i){
-        var nt=this.notetab[i];
-        if(t>=nt.t && nt.ch==ch && nt.n==n && nt.f==0){
-          nt.f=1;
-          if(this.sustain[ch]<64)
-            this._releaseNote(nt,t);
-        }
-      }
-    },
-    _tsConv:function(t){
-      if(t==undefined||t<=0){
-        t=0;
-        if(this.actx)
-          t=this.actx.currentTime;
-      }
-      else{
-        if(this.tsmode)
-          t=t*.001-this.tsdiff;
-      }
-      return t;
-    },
-    setTsMode:function(tsmode){
+    setTsMode:(tsmode)=>{
       this.tsmode=tsmode;
     },
-    send:function(msg,t){    /* send midi message */
-      var ch=msg[0]&0xf;
-      var cmd=msg[0]&~0xf;
+    send:(msg,t)=>{    /* send midi message */
+      const ch=msg[0]&0xf;
+      const cmd=msg[0]&~0xf;
       if(cmd<0x80||cmd>=0x100)
         return;
       if(this.audioContext.state=="suspended"){
@@ -998,31 +1221,30 @@ function WebAudioTinySynth(opt){
       case 0xf0:
         if(msg[0]!=254 && this.debug){
           var ds=[];
-          for(var ii=0;ii<msg.length;++ii)
+          for(let ii=0;ii<msg.length;++ii)
             ds.push(msg[ii].toString(16));
           console.log(ds);
         }
         if(msg[1]==0x41&&msg[2]==0x10&&msg[3]==0x42&&msg[4]==0x12&&msg[5]==0x40){
           if((msg[6]&0xf0)==0x10&&msg[7]==0x15){
-            var ch=[9,0,1,2,3,4,5,6,7,8,10,11,12,13,14,15][msg[6]&0xf];
-            this.rhythm[ch]=msg[8];
-//            console.log("UseForRhythmPart("+ch+")="+msg[8]);
+            const c=[9,0,1,2,3,4,5,6,7,8,10,11,12,13,14,15][msg[6]&0xf];
+            this.rhythm[c]=msg[8];
           }
         }
         break;
       }
     },
-    _createWave:function(w){
-      var imag=new Float32Array(w.length);
-      var real=new Float32Array(w.length);
-      for(var i=1;i<w.length;++i)
+    _createWave:(w)=>{
+      const imag=new Float32Array(w.length);
+      const real=new Float32Array(w.length);
+      for(let i=1;i<w.length;++i)
         imag[i]=w[i];
       return this.actx.createPeriodicWave(real,imag);
     },
-    getAudioContext:function(){
+    getAudioContext:()=>{
       return this.actx;
     },
-    setAudioContext:function(actx,dest){
+    setAudioContext:(actx,dest)=>{
       this.audioContext=this.actx=actx;
       this.dest=dest;
       if(!dest)
@@ -1040,17 +1262,17 @@ function WebAudioTinySynth(opt){
       var d2=this.convBuf.getChannelData(1);
       var dn=this.noiseBuf.n0.getChannelData(0);
       var dr=this.noiseBuf.n1.getChannelData(0);
-      for(var i=0;i<blen;++i){
+      for(let i=0;i<blen;++i){
         if(i/blen<Math.random()){
           d1[i]=Math.exp(-3*i/blen)*(Math.random()-.5)*.5;
           d2[i]=Math.exp(-3*i/blen)*(Math.random()-.5)*.5;
         }
         dn[i]=Math.random()*2-1;
       }
-      for(var jj=0;jj<64;++jj){
-        var r1=Math.random()*10+1;
-        var r2=Math.random()*10+1;
-        for(i=0;i<blen;++i){
+      for(let jj=0;jj<64;++jj){
+        const r1=Math.random()*10+1;
+        const r2=Math.random()*10+1;
+        for(let i=0;i<blen;++i){
           var dd=Math.sin((i/blen)*2*Math.PI*440*r1)*Math.sin((i/blen)*2*Math.PI*440*r2);
           dr[i]+=dd/8;
         }
@@ -1072,7 +1294,7 @@ function WebAudioTinySynth(opt){
       this.lfo=this.actx.createOscillator();
       this.lfo.frequency.value=5;
       this.lfo.start(0);
-      for(i=0;i<16;++i){
+      for(let i=0;i<16;++i){
         this.chvol[i]=this.actx.createGain();
         if(this.actx.createStereoPanner){
           this.chpan[i]=this.actx.createStereoPanner();
@@ -1093,20 +1315,100 @@ function WebAudioTinySynth(opt){
       this.send([0x90,60,1]);
       this.send([0x90,60,0]);
     },
-  }
-/* webaudio-tinysynth coreobject */
+  });
+}
+if(window.customElements){
+  class TinySynthElement extends HTMLElement {
+    constructor(){
+      super();
+    }
+    connectedCallback(){
+      const div = document.createElement("div");
+      div.innerHTML=
+  `<canvas
+    id='wa-canvas' width='300' height='32'
+    touch-action='none' tabindex='0'
+    style='
+      position:relative;
+      margin:0;
+      border:none;
+      width:300px;
+      height:32px;
+    '
+  ></canvas>
+  <div id='wa-logo'
+    style='
+      display:none;
+      position:absolute;
+      top:5px;
+      left:5px;
+      color:#fff;
+      font-size:8px;
+      background:rgba(0,0,0,0.5);
+    '
+  >TinySynth</div>`;
 
-;
-  for(var k in this.sy.properties)
-    this[k]=this.sy.properties[k].value;
-  this.setQuality(1);
-  if(opt){
-    if(opt.useReverb!=undefined)
-      this.useReverb=opt.useReverb;
-    if(opt.quality!=undefined)
-      this.setQuality(opt.quality);
-    if(opt.voices!=undefined)
-      this.setVoices(opt.voices);
+      this.getAttr = (n,def)=>{
+        let v=this.getAttribute(n);
+        if(v==""||v==null) return def;
+        switch(typeof(def)){
+        case "number":
+          if(v=="true") return 1;
+          v=+v;
+          if(isNaN(v)) return 0;
+          return v;
+        }
+        return v;
+      };
+
+      this.canvas = div.children[0];
+      this.appendChild(div);
+      WebAudioTinySynthCore.bind(this)(this);
+      const plist=this.properties;
+      for(let k in plist){
+        const v = plist[k];
+        if(v.observer){
+          this["_"+k] = v.value;
+          Object.defineProperty(this, k, {
+            get:()=>{return this["_"+k]},
+            set:(val)=>{
+              this["_"+k] = val;
+              this[v.observer]();
+            }
+          });
+        }
+        else{
+          this[k]=v;
+        }
+      }
+      for(let k in plist){
+        const v = plist[k];
+        this[k] = this.getAttr(k,v.value);
+      }
+      this.setQuality(1);
+      this.init();
+      this._guiInit.bind(this)();
+      setInterval(this._guiUpdate.bind(this),100);
+    }
   }
-  this.ready();
+  window.customElements.define('webaudio-tinysynth', TinySynthElement);
+}
+
+class WebAudioTinySynth {
+  constructor(opt){
+    WebAudioTinySynthCore.bind(this)(this);
+    for(let k in this.properties){
+      this[k]=this.properties[k].value;
+    }
+    this.setQuality(1);
+    if(opt){
+      if(opt.useReverb!=undefined)
+        this.useReverb=opt.useReverb;
+      if(opt.quality!=undefined)
+        this.setQuality(opt.quality);
+      if(opt.voices!=undefined)
+        this.setVoices(opt.voices);
+    }
+    this.init();
+  }
 }

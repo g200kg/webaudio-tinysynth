@@ -15,7 +15,6 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "polymer/polymer#^1.8.0",
     "webaudio-controls": "g200kg/webaudio-controls"
   }
 }

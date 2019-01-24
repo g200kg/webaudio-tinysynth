@@ -2,11 +2,9 @@
 <html>
 <head>
 <meta charset="utf-8">
-<script src="./bower_components/webcomponentsjs/webcomponents.min.js"></script>
-<link rel="import" href="./bower_components/polymer/polymer.html">
-<link rel="import" href="./bower_components/webaudio-controls/webaudio-controls.html" >
-<link rel="import" href="./webaudio-tinysynth.html" >
-<link rel="import" href="./webaudio-pianoroll.html" >
+<script src="https://unpkg.com/@webcomponents/custom-elements"></script>
+<script src="./webaudio-tinysynth.js"></script>
+<script src="https://g200kg.github.io/webaudio-controls/webaudio-controls.js" ></script>
 <link href="https://fonts.googleapis.com/css?family=Audiowide" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
 <style>
@@ -81,12 +79,8 @@ function Init(){
   kb=document.getElementById("kb");
   kb.addEventListener("change",KeyIn);
   var sh=document.getElementById("shot");
-  timerid=setInterval(function(){
-    console.log("Initialize checking.");
-    if(synth.isReady){
-      clearInterval(timerid);
-      console.log("Initialized");
-      sh.addEventListener("mousedown",function(){
+  synth.ready().then(()=>{
+    sh.addEventListener("mousedown",function(){
         synth.send([0x90+curMidi,curNote,100],0);
       });
       sh.addEventListener("mouseup",function(){
@@ -98,8 +92,7 @@ function Init(){
         document.getElementById("prog").appendChild(o);
       }
       ProgChange(0);
-    }
-  },200);
+  });
 }
 function MidiIn(e){
   if(synth){
@@ -367,8 +360,8 @@ The demo on this page is based on webauido-tinysynth, and you can do the followi
 <table>
 <tr>
   <td><webaudio-tinysynth id="tinysynth" src="ws.mid" quality="1" loop="1" disableDrop="0" masterVol="0.3"></webaudio-tinysynth></td>
-  <td><webaudio-knob colors="#c00;#ccf;#fff" diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" onchange="Ctrl()"></webaudio-knob></td>
-  <td><webaudio-knob colors="#c00;#ccf;#fff" diameter="40" min="0" max="1" step="0.01" id="rev" value="0.2" onchange="Ctrl()"></webaudio-knob></td>
+  <td><webaudio-knob colors="#c00;#ccf;#fff" diameter="40" min="0" max="1" step="0.01" id="vol" value="0.5" oninput="Ctrl()"></webaudio-knob></td>
+  <td><webaudio-knob colors="#c00;#ccf;#fff" diameter="40" min="0" max="1" step="0.01" id="rev" value="0.2" oninput="Ctrl()"></webaudio-knob></td>
   <td><webaudio-switch id="loop" onchange="Ctrl()" value="1"></webaudio-switch></td>
   <td><select onchange="SetQuality(this.selectedIndex)"><option>quality=0</option><option selected>quality=1</option></select>
 </td>
