@@ -1,0 +1,10 @@
+bower_components
+test
+tmp
+.*
+bower.json
+Gruntfile.js
+*.html
+*.log
+*.mid
+*.png
