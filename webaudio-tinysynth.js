@@ -1,4 +1,6 @@
+( function(window){
 "use strict";
+
 function WebAudioTinySynthCore(target) {
   Object.assign(target,{
     properties:{
@@ -644,7 +646,7 @@ function WebAudioTinySynthCore(target) {
     ready:()=>{
       return new Promise((resolv)=>{
         const timerid=setInterval(()=>{
-          console.log("Initialize checking.");
+//          console.log("Initialize checking.");
           if(this.isReady){
             clearInterval(timerid);
             console.log("Initialized");
@@ -1223,7 +1225,7 @@ function WebAudioTinySynthCore(target) {
           var ds=[];
           for(let ii=0;ii<msg.length;++ii)
             ds.push(msg[ii].toString(16));
-          console.log(ds);
+//          console.log(ds);
         }
         if(msg[1]==0x41&&msg[2]==0x10&&msg[3]==0x42&&msg[4]==0x12&&msg[5]==0x40){
           if((msg[6]&0xf0)==0x10&&msg[7]==0x15){
@@ -1317,8 +1319,8 @@ function WebAudioTinySynthCore(target) {
     },
   });
 }
-if(window.customElements){
-  class TinySynthElement extends HTMLElement {
+if(window && window.customElements){
+  class WebAudioTinySynthElement extends HTMLElement {
     constructor(){
       super();
     }
@@ -1391,7 +1393,7 @@ if(window.customElements){
       setInterval(this._guiUpdate.bind(this),100);
     }
   }
-  window.customElements.define('webaudio-tinysynth', TinySynthElement);
+  window.customElements.define('webaudio-tinysynth', WebAudioTinySynthElement);
 }
 
 class WebAudioTinySynth {
@@ -1412,3 +1414,17 @@ class WebAudioTinySynth {
     this.init();
   }
 }
+
+if(typeof exports === 'object' && typeof module !== 'undefined'){
+  module.exports = WebAudioTinySynth;
+}
+else if(typeof define === 'function' && define.amd){
+    define(function(){
+      return WebAudioTinySynth;
+    });
+}
+else{
+  window.WebAudioTinySynth = WebAudioTinySynth;
+}
+
+})(this);

@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     watch: {
       dev: {
         files: ['webaudio-tinysynth.js'],
-        tasks: ['uglify',],
+        tasks: ['uglify'],
       }
     },
     uglify: {
@@ -19,5 +19,5 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-uglify-es');
-  grunt.registerTask('default', ['uglify',]);
+  grunt.registerTask('default', ['uglify']);
 };
