@@ -1,16 +1,4 @@
 "use strict";
-(function(global,factory) {
-  if(typeof exports === 'object' && typeof module !== 'undefined'){
-    module.exports = factory();
-  }
-  else if(typeof define === 'function' && define.amd) {
-    define('WebAudioTinySynth', [], factory);
-  }
-  else {
-    global.WebAudioTinySynth = factory();
-  }
-})(this, function() {
-
 function WebAudioTinySynthCore(target) {
   Object.assign(target,{
     properties:{
@@ -979,11 +967,8 @@ function WebAudioTinySynthCore(target) {
     },
     _pruneNote:(nt)=>{
       for(let k=nt.o.length-1;k>=0;--k){
-        if(nt.o[k].frequency) {
-          try {
-            this.chmod[nt.ch].disconnect(nt.o[k].detune);
-          } catch (e) {} // this was crashing after calling setAudioContext()
-        }
+        if(nt.o[k].frequency)
+          this.chmod[nt.ch].disconnect(nt.o[k].detune);
         nt.o[k].disconnect();
         if(nt.o[k].frequency)
           nt.o[k].frequency.cancelScheduledValues(0);
@@ -1427,5 +1412,3 @@ class WebAudioTinySynth {
     this.init();
   }
 }
-
-});

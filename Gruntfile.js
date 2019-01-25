@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     watch: {
       dev: {
         files: ['webaudio-tinysynth.js'],
-        tasks: ['uglify'],
+        tasks: ['uglify',],
       }
     },
     uglify: {

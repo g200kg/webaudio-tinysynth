@@ -1,8 +1,6 @@
 # webaudio-tinysynth
 WebAudio Tiny GM mapped Synthesizer [JavaScript]
 
-[![npm](https://img.shields.io/npm/v/webaudio-tinysynth.svg)](https://www.npmjs.com/package/webaudio-tinysynth)
-
 ## Overview
 
 **webaudio-tinysynth** is a small synthesizer written in JavaScript with GM like timbre map.
@@ -45,14 +43,9 @@ Test Pages are here :
 
 ### Load this Library
 
-* Necessary file is a `webaudio-tinysynth.js` only. Deploy webaudio-tinysynth.js appropriately and load library:
-  * `<script src='webaudio-tinysynth.js'></script>`.  
-  * Or load it from a CDN:  
-  `<script src='https://g200kg.github.io/webaudio-tinysynth/webaudio-tinysynth.js'></script>`
-  * Or:  
-  `<script src='https://cdn.jsdelivr.net/npm/webaudio-tinysynth'></script>`
-  * Or via npm (`npm install webaudio-tinysynth --save`):  
-  `var WebAudioTinySynth = require('webaudio-tinysynth');`
+* Necessary file is a `webaudio-tinysynth.js` only. Deploy webaudio-tinysynth.js appropriately and load library by `<script src='webaudio-tinysynth.js'></script>`.  
+ Or if you want to use the file on this repository directly as a CDN, use following.  
+ `<script src='https://g200kg.github.io/webaudio-tinysynth/webaudio-tinysynth.js'></script>`
 
 ### Without GUI
 
