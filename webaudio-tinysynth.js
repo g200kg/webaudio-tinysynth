@@ -969,18 +969,18 @@ function WebAudioTinySynthCore(target) {
     },
     _pruneNote:(nt)=>{
       for(let k=nt.o.length-1;k>=0;--k){
-        if(nt.o[k].frequency)
-          this.chmod[nt.ch].disconnect(nt.o[k].detune);
-        nt.o[k].disconnect();
-        if(nt.o[k].frequency)
+        if(nt.o[k].frequency){
           nt.o[k].frequency.cancelScheduledValues(0);
-        else
+        }
+        else{
           nt.o[k].playbackRate.cancelScheduledValues(0);
-        nt.o[k].stop(0);
-      }
-      for(let k=nt.g.length-1;k>=0;--k){
-        nt.g[k].disconnect();
+        }
         nt.g[k].gain.cancelScheduledValues(0);
+
+        nt.o[k].stop();
+        if(nt.o[k].detune)
+          this.chmod[nt.ch].disconnect(nt.o[k].detune);
+        nt.g[k].gain.value = 0;
       }
     },
     _limitVoices:(ch,n)=>{
@@ -998,12 +998,13 @@ function WebAudioTinySynthCore(target) {
       }
     },
     _note:(t,ch,n,v,p)=>{
-      var o=[],g=[],vp=[],fp=[],r=[],out,sc,pn;
-      var f=440*Math.pow(2,(n-69)/12);
+      let out,sc,pn;
+      const o=[],g=[],vp=[],fp=[],r=[];
+      const f=440*Math.pow(2,(n-69)/12);
       this._limitVoices(ch,n);
       for(let i=0;i<p.length;++i){
         pn=p[i];
-        var dt=t+pn.a+pn.h;
+        const dt=t+pn.a+pn.h;
         if(pn.g==0)
           out=this.chvol[ch], sc=v*v/16384, fp[i]=f*pn.t+pn.f;
         else if(pn.g>10)
@@ -1020,6 +1021,8 @@ function WebAudioTinySynthCore(target) {
           o[i].playbackRate.value=fp[i]/440;
           if(pn.p!=1)
             this._setParamTarget(o[i].playbackRate,fp[i]/440*pn.p,t,pn.q);
+          this.chmod[ch].connect(o[i].detune);
+          o[i].detune.value=this.bend[ch];
           break;
         default:
           o[i]=this.actx.createOscillator();
@@ -1049,8 +1052,13 @@ function WebAudioTinySynthCore(target) {
           g[i].gain.setValueAtTime(vp[i],t);
         this._setParamTarget(g[i].gain,pn.s*vp[i],dt,pn.d);
         o[i].start(t);
-        if(this.rhythm[ch])
+        if(this.rhythm[ch]){
+
+          o[i].onended = ()=>{
+              this.chmod[ch].disconnect(o[i].detune);
+          };
           o[i].stop(t+p[0].d*this.releaseRatio);
+        }
       }
       if(!this.rhythm[ch])
         this.notetab.push({t:t,e:99999,ch:ch,n:n,o:o,g:g,t2:t+pn.a,v:vp,r:r,f:0});
@@ -1225,7 +1233,6 @@ function WebAudioTinySynthCore(target) {
           var ds=[];
           for(let ii=0;ii<msg.length;++ii)
             ds.push(msg[ii].toString(16));
-//          console.log(ds);
         }
         if(msg[1]==0x41&&msg[2]==0x10&&msg[3]==0x42&&msg[4]==0x12&&msg[5]==0x40){
           if((msg[6]&0xf0)==0x10&&msg[7]==0x15){
