@@ -978,8 +978,11 @@ function WebAudioTinySynthCore(target) {
         nt.g[k].gain.cancelScheduledValues(0);
 
         nt.o[k].stop();
-        if(nt.o[k].detune)
-          this.chmod[nt.ch].disconnect(nt.o[k].detune);
+        if(nt.o[k].detune) {
+          try {
+            this.chmod[nt.ch].disconnect(nt.o[k].detune);
+          } catch (e) {}
+        }
         nt.g[k].gain.value = 0;
       }
     },
