@@ -1232,6 +1232,10 @@ function WebAudioTinySynthCore(target) {
       case 0x90: this.noteOn(ch,msg[1],msg[2],t); break;
       case 0x80: this.noteOff(ch,msg[1],t); break;
       case 0xf0:
+        if (msg[0] == 0xff) {
+          this.reset();
+          break;
+        }
         if(msg[0]!=254 && this.debug){
           var ds=[];
           for(let ii=0;ii<msg.length;++ii)
