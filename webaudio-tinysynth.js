@@ -799,6 +799,7 @@ function WebAudioTinySynthCore(target) {
       for(let i=0;i<16;++i){
         this.setProgram(i,0);
         this.setBendRange(i,0x100);
+        this.setModulation(i,0);
         this.setChVol(i,100);
         this.setPan(i,64);
         this.resetAllControllers(i);
