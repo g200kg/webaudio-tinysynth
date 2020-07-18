@@ -95,7 +95,7 @@ Test Pages are here :
 |**voices**         |Number | 64       | Max number of simultaneous voices. Large number needs more CPU.               |
 
 * In default, necessary audioContext will be created internally. `internalContext="0"` will prevent this and should provide audioContext with `setAudioContext()` function.
-* Note that the webaudio-tinysynth may not be ready yet immediately after 'window.onload' if you use 'CustomElement'. especially be careful for Edge because of webcomponents may be polyfilled. Use `ready()` function for wait to complete th initialize that return a `Promise` that will be resolved when initialize completed.  
+* Note that the webaudio-tinysynth may not be ready yet immediately after 'window.onload' if you use 'CustomElement'. especially be careful if using webcomponents polyfill. Use `ready()` function for wait to complete th initialize that return a `Promise` that will be resolved when initialize completed.  
  `isReady` flag also be usable for confirming the synth is ready.
 
 ```
@@ -105,7 +105,7 @@ synth.ready().then(()=>{
   ...
 });
 
-// or in "aync" function : 
+// or in "async" function : 
 async function() {
   synth = document.getElementById("synth");
   await synth.ready();
