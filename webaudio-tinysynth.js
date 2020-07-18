@@ -799,6 +799,7 @@ function WebAudioTinySynthCore(target) {
       for(let i=0;i<16;++i){
         this.setProgram(i,0);
         this.setBendRange(i,0x100);
+        this.setModulation(i,0);
         this.setChVol(i,100);
         this.setPan(i,64);
         this.resetAllControllers(i);
@@ -978,8 +979,11 @@ function WebAudioTinySynthCore(target) {
         nt.g[k].gain.cancelScheduledValues(0);
 
         nt.o[k].stop();
-        if(nt.o[k].detune)
-          this.chmod[nt.ch].disconnect(nt.o[k].detune);
+        if(nt.o[k].detune) {
+          try {
+            this.chmod[nt.ch].disconnect(nt.o[k].detune);
+          } catch (e) {}
+        }
         nt.g[k].gain.value = 0;
       }
     },
@@ -1229,6 +1233,10 @@ function WebAudioTinySynthCore(target) {
       case 0x90: this.noteOn(ch,msg[1],msg[2],t); break;
       case 0x80: this.noteOff(ch,msg[1],t); break;
       case 0xf0:
+        if (msg[0] == 0xff) {
+          this.reset();
+          break;
+        }
         if(msg[0]!=254 && this.debug){
           var ds=[];
           for(let ii=0;ii<msg.length;++ii)
