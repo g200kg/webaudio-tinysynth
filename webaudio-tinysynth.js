@@ -1025,8 +1025,10 @@ function WebAudioTinySynthCore(target) {
           o[i].playbackRate.value=fp[i]/440;
           if(pn.p!=1)
             this._setParamTarget(o[i].playbackRate,fp[i]/440*pn.p,t,pn.q);
-          this.chmod[ch].connect(o[i].detune);
-          o[i].detune.value=this.bend[ch];
+          if (o[i].detune) {
+            this.chmod[ch].connect(o[i].detune);
+            o[i].detune.value=this.bend[ch];
+          }
           break;
         default:
           o[i]=this.actx.createOscillator();
@@ -1037,8 +1039,10 @@ function WebAudioTinySynthCore(target) {
             o[i].setPeriodicWave(this.wave[pn.w]);
           else
             o[i].type=pn.w;
-          this.chmod[ch].connect(o[i].detune);
-          o[i].detune.value=this.bend[ch];
+          if (o[i].detune) {
+            this.chmod[ch].connect(o[i].detune);
+            o[i].detune.value=this.bend[ch];
+          }
           break;
         }
         g[i]=this.actx.createGain();
@@ -1059,7 +1063,7 @@ function WebAudioTinySynthCore(target) {
         if(this.rhythm[ch]){
 
           o[i].onended = ()=>{
-              this.chmod[ch].disconnect(o[i].detune);
+              if (o[i].detune) this.chmod[ch].disconnect(o[i].detune);
           };
           o[i].stop(t+p[0].d*this.releaseRatio);
         }
@@ -1159,7 +1163,7 @@ function WebAudioTinySynthCore(target) {
         if(nt.ch==ch){
           for(let k=nt.o.length-1;k>=0;--k){
             if(nt.o[k].frequency)
-              nt.o[k].detune.setValueAtTime(this.bend[ch],t);
+              if (nt.o[k].detune) nt.o[k].detune.setValueAtTime(this.bend[ch],t);
           }
         }
       }
