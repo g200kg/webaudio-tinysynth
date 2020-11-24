@@ -1214,7 +1214,7 @@ function WebAudioTinySynthCore(target) {
         case 11: this.setExpression(ch,msg[2],t); break;
         case 64: this.setSustain(ch,msg[2],t); break;
         case 98:  case 98: this.rpnidx[ch]=0x3fff; break; /* nrpn lsb/msb */
-        case 100: this.rpnidx[ch]=(this.rpnidx[ch]&0x380)|msg[2]; break; /* rpn lsb */
+        case 100: this.rpnidx[ch]=(this.rpnidx[ch]&0x3f80)|msg[2]; break; /* rpn lsb */
         case 101: this.rpnidx[ch]=(this.rpnidx[ch]&0x7f)|(msg[2]<<7); break; /* rpn msb */
         case 6:  /* data entry msb */
           if(this.rpnidx[ch]==0)
@@ -1222,7 +1222,7 @@ function WebAudioTinySynthCore(target) {
           break;
         case 38:  /* data entry lsb */
           if(this.rpnidx[ch]==0)
-            this.brange[ch]=(this.brange[ch]&0x380)|msg[2];
+            this.brange[ch]=(this.brange[ch]&0x3f80)|msg[2];
           break;
         case 120:  /* all sound off */
         case 123:  /* all notes off */
