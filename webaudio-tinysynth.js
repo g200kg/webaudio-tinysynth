@@ -1213,7 +1213,7 @@ function WebAudioTinySynthCore(target) {
         case 10: this.setPan(ch,msg[2],t); break;
         case 11: this.setExpression(ch,msg[2],t); break;
         case 64: this.setSustain(ch,msg[2],t); break;
-        case 98:  case 98: this.rpnidx[ch]=0x3fff; break; /* nrpn lsb/msb */
+        case 98:  case 99: this.rpnidx[ch]=0x3fff; break; /* nrpn lsb/msb */
         case 100: this.rpnidx[ch]=(this.rpnidx[ch]&0x3f80)|msg[2]; break; /* rpn lsb */
         case 101: this.rpnidx[ch]=(this.rpnidx[ch]&0x7f)|(msg[2]<<7); break; /* rpn msb */
         case 6:  /* data entry msb */
