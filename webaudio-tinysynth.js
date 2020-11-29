@@ -1277,7 +1277,7 @@ function WebAudioTinySynthCore(target) {
               this.masterTuningC = msg[6]-0x40;
             }
           }
-          if(msg[1]==0x41&&msg[2]==0x10&&msg[3]==0x42&&msg[4]==0x12&&msg[5]==0x40){
+          if(msg[1]==0x41&&msg[3]==0x42&&msg[4]==0x12&&msg[5]==0x40){
             if((msg[6]&0xf0)==0x10&&msg[7]==0x15){
               const c=[9,0,1,2,3,4,5,6,7,8,10,11,12,13,14,15][msg[6]&0xf];
               this.rhythm[c]=msg[8];
