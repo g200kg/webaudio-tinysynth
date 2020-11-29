@@ -274,6 +274,12 @@ Almost function has the timestamp, `t` parameter. That specify accurate timing o
 |------------------------|----------|--------------------------------|
 |**RPN**                 |          |                                |
 |**0**                   | Yes      | Bend Range                     |
+|**1**                   | Yes      | Channel Fine Tuning            |
+|**2**                   | Yes      | Channel Coarse Tuning          |
+|------------------------|----------|--------------------------------|
+|**Universal SysEx**     |          |                                |
+|**F0 F7 xx 04 03 lsb msb F7** | Yes | Master Fine Tuning            |
+|**F0 F7 xx 04 04 00 msb F7** | Yes | Master Coarse Tuning           |
 |------------------------|----------|--------------------------------|
 |**GS Exclusive**        |          |                                |
 |**F0 41 10 42 12 40 1x 15 mm sum F7** | Yes      |UseForRhythmPart               |
