@@ -1069,7 +1069,10 @@ function WebAudioTinySynthCore(target) {
         if(this.rhythm[ch]){
 
           o[i].onended = ()=>{
+            try {
               if (o[i].detune) this.chmod[ch].disconnect(o[i].detune);
+            }
+            catch(e){}
           };
           o[i].stop(t+p[0].d*this.releaseRatio);
         }
