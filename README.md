@@ -281,7 +281,10 @@ Almost function has the timestamp, `t` parameter. That specify accurate timing o
 |**F0 F7 xx 04 04 00 msb F7** | Yes | Master Coarse Tuning           |
 |------------------------|----------|--------------------------------|
 |**GS Exclusive**        |          |                                |
-|**F0 41 xx 42 12 40 1x 15 mm sum F7** | Yes      |UseForRhythmPart               |
+|**F0 41 xx 42 12 40 00 05 xx xx xx xx sum F7** | Yes |Master Tuning |
+|**F0 41 xx 42 12 40 00 05 xx sum F7** | Yes    |Master Transpose    |
+|**F0 41 xx 42 12 40 1x 15 xx sum F7** | Yes    |Use For Rhythm Part |
+|**F0 41 xx 42 12 40 1x 4x xx sum F7** | Yes    |Scale Tuning        |
 |------------------------|----------|--------------------------------|
 
 ## Timbre Object Structure
