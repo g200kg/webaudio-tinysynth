@@ -658,12 +658,13 @@ function WebAudioTinySynthCore(target) {
     init:()=>{
       this.pg=[]; this.vol=[]; this.ex=[]; this.bend=[]; this.rpnidx=[]; this.brange=[];
       this.sustain=[]; this.notetab=[]; this.rhythm=[];
-      this.masterTuningC=0; this.masterTuningF=0; this.tuningC=[]; this.tuningF=[];
+      this.masterTuningC=0; this.masterTuningF=0; this.tuningC=[]; this.tuningF=[]; this.scaleTuning=[];
       this.maxTick=0, this.playTick=0, this.playing=0; this.releaseRatio=3.5;
       for(let i=0;i<16;++i){
         this.pg[i]=0; this.vol[i]=3*100*100/(127*127);
         this.bend[i]=0; this.brange[i]=0x100;
         this.tuningC[i]=0; this.tuningF[i]=0;
+        this.scaleTuning[i]=[0,0,0,0,0,0,0,0,0,0,0,0];
         this.rhythm[i]=0;
       }
       this.rhythm[9]=1;
@@ -1010,7 +1011,7 @@ function WebAudioTinySynthCore(target) {
     _note:(t,ch,n,v,p)=>{
       let out,sc,pn;
       const o=[],g=[],vp=[],fp=[],r=[];
-      const f=440*Math.pow(2,(n-69 + this.masterTuningC + this.tuningC[ch] + (this.masterTuningF + this.tuningF[ch])/8192)/12);
+      const f=440*Math.pow(2,(n-69 + this.masterTuningC + this.tuningC[ch] + (this.masterTuningF + this.tuningF[ch] + this.scaleTuning[ch][n%12]))/12);
       this._limitVoices(ch,n);
       for(let i=0;i<p.length;++i){
         pn=p[i];
@@ -1274,16 +1275,29 @@ function WebAudioTinySynthCore(target) {
         if (msg[0]==0xf0) {
           if (msg[1]==0x7f && msg[3]==4) {
             if (msg[4]==3 && msg.length >= 8) { // Master Fine Tuning
-              this.masterTuningF = msg[6]*0x80 + msg[5] - 8192;
+              this.masterTuningF = (msg[6]*0x80 + msg[5] - 8192) / 8192;
             }
             if (msg[4]==4 && msg.length >= 8) { // Master Coarse Tuning
               this.masterTuningC = msg[6]-0x40;
             }
           }
-          if(msg[1]==0x41&&msg[3]==0x42&&msg[4]==0x12&&msg[5]==0x40){
-            if((msg[6]&0xf0)==0x10&&msg[7]==0x15){
+          if (msg[1]==0x41 && msg[3]==0x42 && msg[4]==0x12 &&msg[5]==0x40) { // GS
+            if ((msg[6]&0xf0)==0x10 && msg.length==11) {
               const c=[9,0,1,2,3,4,5,6,7,8,10,11,12,13,14,15][msg[6]&0xf];
-              this.rhythm[c]=msg[8];
+              if (msg[7]==0x15) {
+                this.rhythm[c]=msg[8];
+              }
+              else if (msg[7] >= 0x40 && msg[7] <= 0x4b) { // Scale Tuning
+                this.scaleTuning[c][msg[7]-0x40] = (msg[8]-0x40) / 100;
+              }
+            }
+            else if (msg[6]==0) {
+              if (msg[7]==0 && msg.length==14) { // Master Tuning
+                this.masterTuningF = (msg[8]*0x1000 + msg[9]*0x100 + msg[10]*0x10 + msg[11] - 0x400) / 1000;
+              }
+              else if (msg[7]==5 && msg.length==11) { // Master Transpose
+                this.masterTuningC = msg[8]-0x40;
+              }
             }
           }
         }
