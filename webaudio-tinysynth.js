@@ -1011,7 +1011,7 @@ function WebAudioTinySynthCore(target) {
     _note:(t,ch,n,v,p)=>{
       let out,sc,pn;
       const o=[],g=[],vp=[],fp=[],r=[];
-      const f=440*Math.pow(2,(n-69 + this.masterTuningC + this.tuningC[ch] + (this.masterTuningF + this.tuningF[ch] + this.scaleTuning[ch][n%12]))/12);
+      const f=440*Math.pow(2,(n-69 + this.masterTuningC + this.tuningC[ch] + (this.masterTuningF + this.tuningF[ch]/8192 + this.scaleTuning[ch][n%12]))/12);
       this._limitVoices(ch,n);
       for(let i=0;i<p.length;++i){
         pn=p[i];
@@ -1245,7 +1245,7 @@ function WebAudioTinySynthCore(target) {
               this.brange[ch]=(this.brange[ch]&0x3f80)|msg[2];
               break;
             case 1:
-              this.tuningF[ch]=((this.tuningF[ch]+0x2000)&0x3f80)|msg[2]-0x2000;
+              this.tuningF[ch]=(((this.tuningF[ch]+0x2000)&0x3f80)|msg[2])-0x2000;
               break;
             case 2: break;
           }
