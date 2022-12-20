@@ -646,10 +646,14 @@ function WebAudioTinySynthCore(target) {
     ready:()=>{
       return new Promise((resolv)=>{
         const timerid=setInterval(()=>{
-//          console.log("Initialize checking.");
+/*
+          if(this.debug)
+            console.log("Initialize checking.");
+*/
           if(this.isReady){
             clearInterval(timerid);
-            console.log("Initialized");
+            if(this.debug)
+              console.log("Initialized.");
             resolv();
           }
         },100);
@@ -714,7 +718,8 @@ function WebAudioTinySynthCore(target) {
           }
         }.bind(this),60
       );
-      console.log("internalcontext:"+this.internalcontext)
+      if(this.debug)
+        console.log("internalcontext:"+this.internalcontext)
       if(this.internalcontext){
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
         this.setAudioContext(new AudioContext());
@@ -876,7 +881,8 @@ function WebAudioTinySynthCore(target) {
             var sysex=[];
             for(var jj=0;jj<len;++jj)
               sysex.push(s[i+datastart+jj].toString(16));
-            console.log(sysex);
+            if(this.debug)
+              console.log(sysex);
 */
             datalen+=len+1;
             break;
@@ -1320,7 +1326,8 @@ function WebAudioTinySynthCore(target) {
       if(!dest)
         this.dest=actx.destination;
       this.tsdiff=performance.now()*.001-this.actx.currentTime;
-      console.log("TSDiff:"+this.tsdiff);
+      if(this.debug)
+        console.log("TSDiff:"+this.tsdiff);
       this.out=this.actx.createGain();
       this.comp=this.actx.createDynamicsCompressor();
       var blen=this.actx.sampleRate*.5|0;
